@@ -1,0 +1,852 @@
+{% comment %} Velin - Review Cards (Figma: 1087 container, 3 cards 349px each) {% endcomment %}
+
+<div class="velin-revc" style="
+  padding: {{ section.settings.padding_v }}px {{ section.settings.padding_h }}px;
+">
+
+  <div class="velin-revc__wrap">
+
+    {% if section.settings.show_write_button %}
+      <div class="velin-revc__top">
+        <button type="button" class="velin-revc__write-btn" data-review-modal-open>
+          {{ section.settings.write_review_text }}
+        </button>
+      </div>
+    {% endif %}
+
+    <div class="velin-revc__wrap-scroll">
+  <button type="button" class="velin-revc__arrow velin-revc__arrow--prev" data-revc-prev aria-label="Previous">
+    <svg width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M7 1L1 7L7 13" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+
+  <div class="velin-revc__grid" style="gap: {{ section.settings.card_gap }}px;">
+      {% for block in section.blocks %}
+        {% if block.type == 'review_card' %}
+          <div class="velin-revc__card" {{ block.shopify_attributes }}>
+
+            <div class="velin-revc__image">
+              {% if block.settings.image != blank %}
+                <img src="{{ block.settings.image | image_url: width: 700 }}" alt="{{ block.settings.name | escape }}" loading="lazy" draggable="false">
+              {% endif %}
+            </div>
+
+            <div class="velin-revc__text">
+              <div class="velin-revc__header">
+                <span class="velin-revc__name">{{ block.settings.name }}</span>
+                <span class="velin-revc__verified" style="color: {{ section.settings.verified_color }};">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="{{ section.settings.verified_badge_color }}"/><path d="M7 12.5l3 3 7-7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  {{ block.settings.verified_text }}
+                </span>
+              </div>
+
+              <div class="velin-revc__stars">
+                {% for i in (1..5) %}
+                  <span class="velin-revc__star{% if i > block.settings.rating %} is-empty{% endif %}">
+                    <svg width="16" height="14" viewBox="0 0 16 14" fill="currentColor"><path d="M8 0l2.1 4.5 5 .6-3.6 3.3 1 4.9L8 10.9l-4.5 2.4 1-4.9L1 5.1l5-.6L8 0z"/></svg>
+                  </span>
+                {% endfor %}
+              </div>
+
+              <div class="velin-revc__body" data-testi-body>
+                <p class="velin-revc__review" data-testi-review>{{ block.settings.review_text }}</p>
+                <button type="button" class="velin-revc__readmore" data-testi-toggle style="display: none;">{{ block.settings.readmore_text }}</button>
+              </div>
+            </div>
+
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+  <button type="button" class="velin-revc__arrow velin-revc__arrow--next" data-revc-next aria-label="Next">
+    <svg width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M1 1L7 7L1 13" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  </div>
+
+  </div>
+
+</div>
+
+{%- comment -%} ---------- Write a review modal ---------- {%- endcomment -%}
+{% if section.settings.show_write_button %}
+<div class="velin-review-modal" data-review-modal aria-hidden="true">
+  <div class="velin-review-modal__overlay" data-review-modal-close></div>
+  <div class="velin-review-modal__panel">
+    <button type="button" class="velin-review-modal__close" data-review-modal-close aria-label="Fermer">&times;</button>
+
+    {%- assign review_form_id = 'VelinReviewForm-' | append: section.id -%}
+    {% form 'contact', id: review_form_id, class: 'velin-review-modal__form' %}
+
+      <div class="velin-review-modal__cols">
+        <div class="velin-review-modal__left">
+          <h3 class="velin-review-modal__title">{{ section.settings.review_form_title }}</h3>
+
+          <p class="velin-review-modal__success" data-review-form-success style="display:none;">{{ section.settings.review_success_text }}</p>
+          <p class="velin-review-modal__error" data-review-form-error style="display:none;">{{ section.settings.review_error_text }}</p>
+
+          <div class="velin-review-modal__field">
+            <label>{{ section.settings.rating_label }}</label>
+            <div class="velin-review-modal__stars" data-rating-input>
+              <input type="hidden" name="contact[{{ section.settings.rating_label }}]" value="0" data-rating-value>
+              {% for i in (1..5) %}
+                <button type="button" class="velin-review-modal__star" data-rating-star="{{ i }}" aria-label="{{ i }}">
+                  <svg width="26" height="24" viewBox="0 0 16 14" fill="currentColor"><path d="M8 0l2.1 4.5 5 .6-3.6 3.3 1 4.9L8 10.9l-4.5 2.4 1-4.9L1 5.1l5-.6L8 0z"/></svg>
+                </button>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="velin-review-modal__row">
+            <div class="velin-review-modal__field">
+              <label for="ReviewName-{{ section.id }}">{{ section.settings.name_label }}</label>
+              <input type="text" id="ReviewName-{{ section.id }}" name="contact[{{ section.settings.name_label }}]" placeholder="{{ section.settings.name_placeholder }}" required>
+            </div>
+            <div class="velin-review-modal__field">
+              <label for="ReviewEmail-{{ section.id }}">{{ section.settings.email_label }}</label>
+              <input type="email" id="ReviewEmail-{{ section.id }}" name="contact[email]" placeholder="{{ section.settings.email_placeholder }}" required>
+            </div>
+          </div>
+
+          <div class="velin-review-modal__field">
+            <label for="ReviewMessage-{{ section.id }}">{{ section.settings.message_label }}</label>
+            <textarea id="ReviewMessage-{{ section.id }}" name="contact[body]" placeholder="{{ section.settings.message_placeholder }}" required></textarea>
+          </div>
+
+          <div class="velin-review-modal__actions">
+            <button type="submit" class="velin-review-modal__submit">{{ section.settings.submit_text }}</button>
+            <button type="button" class="velin-review-modal__cancel" data-review-modal-close>{{ section.settings.cancel_text }}</button>
+          </div>
+        </div>
+
+        <div class="velin-review-modal__right">
+          <div class="velin-review-modal__media-grid" data-upload-grid>
+            <label class="velin-review-modal__upload" data-upload-zone>
+              <input type="file" accept="image/*,video/*" multiple data-upload-input hidden>
+              <span data-upload-placeholder>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 16V4M12 4l-4 4M12 4l4 4" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>{{ section.settings.upload_text }}</span>
+              </span>
+            </label>
+          </div>
+          <p class="velin-review-modal__upload-note">{{ section.settings.upload_note }}</p>
+        </div>
+      </div>
+
+    {% endform %}
+  </div>
+</div>
+{% endif %}
+
+<style>
+  .velin-revc {
+    box-sizing: border-box;
+    font-family: 'Merriweather', serif;
+  }
+
+  .velin-revc__wrap {
+    max-width: 1087px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .velin-revc__top {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .velin-revc__write-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 14px 24px;
+    border-radius: 30px;
+    border: 1px solid rgba(0,0,0,0.3);
+    background: #fff;
+    font-family: 'Lusitana', serif;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .velin-revc__wrap-scroll {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .velin-revc__arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+  }
+
+  .velin-revc__arrow--prev {
+    left: -14px;
+  }
+
+  .velin-revc__arrow--next {
+    right: -14px;
+  }
+
+  .velin-revc__grid {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    overflow-x: auto;
+    overflow-y: visible;
+    padding-bottom: 12px;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .velin-revc__grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .velin-revc__card{
+    width:349px;
+    min-width:349px;
+    max-width:349px;
+    height:520px;
+    flex:0 0 349px;
+
+    display:flex;
+    flex-direction:column;
+
+    background:#fff;
+    border-radius:12px;
+    padding-bottom:20px;
+    overflow:hidden;
+    box-sizing:border-box;
+
+    box-shadow:0 1px 4.2px rgba(0,0,0,.25);
+    scroll-snap-align: start;
+}
+
+  .velin-revc__image{
+    width:100%;
+    height:317px;
+    flex:0 0 317px;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+  .velin-revc__image img{
+    width:100%;
+    height:100%;
+    display:block;
+
+    object-fit:cover;
+    object-position:center;
+}
+
+  .velin-revc__text {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .velin-revc__header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .velin-revc__name {
+    font-size: 20px;
+    font-weight: 400;
+    text-transform: capitalize;
+    color: #000;
+  }
+
+  .velin-revc__verified {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: rgba(0,0,0,0.6);
+  }
+
+  .velin-revc__stars {
+    display: flex;
+    gap: 2px;
+  }
+
+  .velin-revc__star {
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(0,0,0,0.9);
+  }
+
+  .velin-revc__star.is-empty {
+    color: rgba(0,0,0,0.2);
+  }
+
+  .velin-revc__body {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .velin-revc__review {
+    margin: 0;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 150%;
+    letter-spacing: 0.02em;
+    color: rgba(0,0,0,0.7);
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 5;
+    overflow: hidden;
+  }
+
+  .velin-revc__review.is-expanded {
+    -webkit-line-clamp: unset;
+    display: block;
+  }
+
+  .velin-revc__readmore {
+    background: none;
+    border: none;
+    padding: 0;
+    align-self: flex-start;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: capitalize;
+    color: #000;
+    cursor: pointer;
+  }
+
+  /* Modal */
+  .velin-review-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .velin-review-modal.is-open {
+    display: flex;
+  }
+
+  .velin-review-modal__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+  }
+
+  .velin-review-modal__panel {
+    position: relative;
+    background: #fff;
+    border-radius: 12px;
+    padding: 32px;
+    width: 90%;
+    max-width: 730px;
+    max-height: 88vh;
+    overflow-y: auto;
+    z-index: 1;
+    font-family: 'Merriweather', serif;
+  }
+
+  .velin-review-modal__close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  .velin-review-modal__title {
+    margin: 0 0 20px;
+    font-family: 'Lusitana', serif;
+    font-weight: 400;
+    text-transform: uppercase;
+    font-size: 26px;
+  }
+
+  .velin-review-modal__success {
+    color: #1a7a3c;
+    font-size: 13px;
+    margin: -10px 0 16px;
+  }
+
+  .velin-review-modal__error {
+    color: #c0392b;
+    font-size: 13px;
+    margin: -10px 0 16px;
+  }
+
+  .velin-review-modal__cols {
+    display: flex;
+    gap: 32px;
+    align-items: stretch;
+  }
+
+  .velin-review-modal__left {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .velin-review-modal__right {
+    flex: 0 0 220px;
+  }
+
+  .velin-review-modal__field {
+    margin-bottom: 18px;
+  }
+
+  .velin-review-modal__row {
+    display: flex;
+    gap: 16px;
+  }
+
+  .velin-review-modal__row .velin-review-modal__field {
+    flex: 1;
+  }
+
+  .velin-review-modal__field label {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 8px;
+    color: #1c1c1c;
+  }
+
+  .velin-review-modal__field input[type="text"],
+  .velin-review-modal__field input[type="email"],
+  .velin-review-modal__field textarea {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 14px;
+    background: #fafafa;
+  }
+
+  .velin-review-modal__field textarea {
+    min-height: 80px;
+    resize: vertical;
+  }
+
+  .velin-review-modal__stars {
+    display: flex;
+    gap: 4px;
+  }
+
+  .velin-review-modal__star {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: #e5ddd0;
+    line-height: 0;
+  }
+
+  .velin-review-modal__star.is-active {
+    color: #e8a33d;
+  }
+
+  .velin-review-modal__actions {
+    display: flex;
+    gap: 12px;
+    margin-top: auto;
+  }
+
+  .velin-review-modal__submit {
+    flex: 1;
+    padding: 13px 20px;
+    border: none;
+    border-radius: 6px;
+    background: #957F68;
+    color: #fff;
+    font-family: 'Lusitana', serif;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+  }
+
+  .velin-review-modal__submit[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .velin-review-modal__cancel {
+    padding: 13px 20px;
+    border: 1px solid rgba(0,0,0,0.3);
+    border-radius: 6px;
+    background: #fff;
+    font-family: 'Lusitana', serif;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+  }
+
+  .velin-review-modal__media-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    min-height: 220px;
+    align-content: flex-start;
+  }
+
+  .velin-review-modal__upload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    height: 220px;
+    flex: 1 1 100%;
+    border: 1.5px dashed rgba(0,0,0,0.3);
+    border-radius: 8px;
+    cursor: pointer;
+    color: rgba(0,0,0,0.55);
+    font-size: 14px;
+    text-align: center;
+    padding: 12px;
+    box-sizing: border-box;
+  }
+
+  .velin-review-modal__media-grid.has-items .velin-review-modal__upload {
+    width: 100px;
+    height: 100px;
+    flex: 0 0 100px;
+    font-size: 11px;
+    gap: 6px;
+  }
+
+  .velin-review-modal__upload svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  .velin-review-modal__media-grid.has-items .velin-review-modal__upload svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .velin-review-modal__upload span {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .velin-review-modal__media-item {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    flex: 0 0 100px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f0f0f0;
+    box-sizing: border-box;
+  }
+
+  .velin-review-modal__media-item img,
+  .velin-review-modal__media-item video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .velin-review-modal__media-remove {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    font-size: 13px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .velin-review-modal__upload-note {
+    margin: 10px 0 0;
+    font-size: 11px;
+    color: rgba(0,0,0,0.45);
+    text-align: center;
+  }
+
+  @media screen and (max-width: 640px) {
+    .velin-review-modal__cols {
+      flex-direction: column;
+    }
+    .velin-review-modal__right {
+      flex: none;
+    }
+  }
+
+  @media screen and (max-width: 678px) {
+    .velin-revc {
+      padding: 40px 20px !important;
+    }
+    .velin-revc__card {
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Read more / less for review cards
+    document.querySelectorAll("[data-testi-body]").forEach(function (body) {
+      var review = body.querySelector("[data-testi-review]");
+      var btn = body.querySelector("[data-testi-toggle]");
+      if (!review || !btn) return;
+
+      if (review.scrollHeight > review.clientHeight + 2) {
+        btn.style.display = "block";
+      }
+
+      var originalText = btn.textContent;
+
+      btn.addEventListener("click", function () {
+        var isExpanded = review.classList.toggle("is-expanded");
+        btn.textContent = isExpanded ? "Lire moins" : originalText;
+      });
+    });
+// Prev/next arrows for review cards
+    document.querySelectorAll(".velin-revc__wrap-scroll").forEach(function (wrap) {
+      var grid = wrap.querySelector(".velin-revc__grid");
+      var prevBtn = wrap.querySelector("[data-revc-prev]");
+      var nextBtn = wrap.querySelector("[data-revc-next]");
+      if (!grid) return;
+      var firstCard = grid.querySelector(".velin-revc__card");
+      var scrollAmount = firstCard ? firstCard.offsetWidth + 20 : 300;
+
+      if (prevBtn) {
+        prevBtn.addEventListener("click", function () {
+          grid.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+        });
+      }
+      if (nextBtn) {
+        nextBtn.addEventListener("click", function () {
+          grid.scrollBy({ left: scrollAmount, behavior: "smooth" });
+        });
+      }
+    });
+    // Write a review modal
+    var modal = document.querySelector("[data-review-modal]");
+    if (modal) {
+      document.querySelectorAll("[data-review-modal-open]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          modal.classList.add("is-open");
+          modal.setAttribute("aria-hidden", "false");
+        });
+      });
+      modal.querySelectorAll("[data-review-modal-close]").forEach(function (el) {
+        el.addEventListener("click", function () {
+          modal.classList.remove("is-open");
+          modal.setAttribute("aria-hidden", "true");
+        });
+      });
+
+      // Star rating input
+      var ratingWrap = modal.querySelector("[data-rating-input]");
+      if (ratingWrap) {
+        var ratingValue = ratingWrap.querySelector("[data-rating-value]");
+        var stars = Array.prototype.slice.call(ratingWrap.querySelectorAll("[data-rating-star]"));
+        stars.forEach(function (star) {
+          star.addEventListener("click", function () {
+            var val = parseInt(star.getAttribute("data-rating-star"), 10);
+            ratingValue.value = val;
+            stars.forEach(function (s) {
+              s.classList.toggle("is-active", parseInt(s.getAttribute("data-rating-star"), 10) <= val);
+            });
+          });
+        });
+      }
+
+      // Media (photo/video) upload previews — unlimited, visual only, not sent with the form
+      var uploadGrid = modal.querySelector("[data-upload-grid]");
+      var uploadZone = modal.querySelector("[data-upload-zone]");
+      if (uploadZone && uploadGrid) {
+        var uploadInput = uploadZone.querySelector("[data-upload-input]");
+        var updateMediaGridState = function () {
+          var hasItems = uploadGrid.querySelector(".velin-review-modal__media-item") !== null;
+          uploadGrid.classList.toggle("has-items", hasItems);
+        };
+        uploadInput.addEventListener("change", function () {
+          Array.prototype.forEach.call(uploadInput.files, function (file) {
+            var isVideo = file.type.indexOf("video") === 0;
+            var reader = new FileReader();
+            reader.onload = function (e) {
+              var item = document.createElement("div");
+              item.className = "velin-review-modal__media-item";
+
+              var media = document.createElement(isVideo ? "video" : "img");
+              media.src = e.target.result;
+              if (isVideo) {
+                media.muted = true;
+                media.setAttribute("playsinline", "");
+                media.controls = true;
+              } else {
+                media.alt = "";
+              }
+
+              var removeBtn = document.createElement("button");
+              removeBtn.type = "button";
+              removeBtn.className = "velin-review-modal__media-remove";
+              removeBtn.setAttribute("aria-label", "Supprimer");
+              removeBtn.innerHTML = "&times;";
+              removeBtn.addEventListener("click", function () {
+                item.remove();
+                updateMediaGridState();
+              });
+
+              item.appendChild(media);
+              item.appendChild(removeBtn);
+              uploadGrid.insertBefore(item, uploadZone);
+              updateMediaGridState();
+            };
+            reader.readAsDataURL(file);
+          });
+          uploadInput.value = "";
+        });
+      }
+
+      // Shopify's /contact endpoint refuses to render inside an iframe and won't
+      // reliably answer fetch() either, so we let the browser submit the form the
+      // normal way (full page POST). Shopify redirects back to this same page with
+      // ?contact_posted=true — we detect that on load and show the success popup.
+      var reviewForm = modal.querySelector(".velin-review-modal__form");
+      if (reviewForm) {
+        var successEl = modal.querySelector("[data-review-form-success]");
+        var errorEl = modal.querySelector("[data-review-form-error]");
+
+        if (window.location.search.indexOf("contact_posted=true") !== -1) {
+          modal.classList.add("is-open");
+          modal.setAttribute("aria-hidden", "false");
+          if (errorEl) errorEl.style.display = "none";
+          if (successEl) successEl.style.display = "";
+
+          if (window.history && window.history.replaceState) {
+            var cleanUrl = window.location.pathname + window.location.hash;
+            window.history.replaceState(null, "", cleanUrl);
+          }
+
+          setTimeout(function () {
+            modal.classList.remove("is-open");
+            modal.setAttribute("aria-hidden", "true");
+            if (successEl) successEl.style.display = "none";
+          }, 3500);
+        }
+
+        reviewForm.addEventListener("submit", function (e) {
+          if (!reviewForm.checkValidity()) {
+            e.preventDefault();
+            reviewForm.reportValidity();
+            return;
+          }
+          if (successEl) successEl.style.display = "none";
+          if (errorEl) errorEl.style.display = "none";
+          var submitBtn = reviewForm.querySelector(".velin-review-modal__submit");
+          if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = "...";
+          }
+          // No preventDefault — the browser performs a real, full-page POST to /contact.
+        });
+      }
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Velin Review Cards",
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "padding_v", "label": "Padding top/bottom (px)", "min": 0, "max": 150, "step": 5, "default": 60 },
+    { "type": "range", "id": "padding_h", "label": "Padding left/right (px)", "min": 0, "max": 150, "step": 5, "default": 100 },
+    { "type": "range", "id": "card_gap", "label": "Gap between cards (px)", "min": 0, "max": 40, "step": 1, "default": 20 },
+    { "type": "header", "content": "Verified badge" },
+    { "type": "color", "id": "verified_badge_color", "label": "Verified tick circle color", "default": "#1D9BF0" },
+    { "type": "color", "id": "verified_color", "label": "Verified label text color", "default": "#00000099" },
+    { "type": "header", "content": "Write a review button" },
+    { "type": "checkbox", "id": "show_write_button", "label": "Show write-a-review button", "default": false },
+    { "type": "text", "id": "write_review_text", "label": "Button text", "default": "Écrire Un Avis" },
+    { "type": "header", "content": "Write a review popup" },
+    { "type": "text", "id": "review_form_title", "label": "Popup title", "default": "Écrire un avis" },
+    { "type": "text", "id": "rating_label", "label": "Rating label", "default": "Notez le produit" },
+    { "type": "text", "id": "name_label", "label": "Name field label", "default": "Nom" },
+    { "type": "text", "id": "name_placeholder", "label": "Name field placeholder", "default": "Nom" },
+    { "type": "text", "id": "email_label", "label": "Email field label", "default": "Email" },
+    { "type": "text", "id": "email_placeholder", "label": "Email field placeholder", "default": "nom123@gmail.com" },
+    { "type": "text", "id": "message_label", "label": "Message field label", "default": "Message" },
+    { "type": "text", "id": "message_placeholder", "label": "Message field placeholder", "default": "Message" },
+    { "type": "text", "id": "upload_text", "label": "Upload box text", "default": "Ajouter un média" },
+    { "type": "text", "id": "upload_note", "label": "Upload box note", "default": "Les photos et vidéos sont visibles uniquement dans l'e-mail, elles ne sont pas publiées automatiquement." },
+    { "type": "text", "id": "submit_text", "label": "Submit button text", "default": "Envoyer" },
+    { "type": "text", "id": "cancel_text", "label": "Cancel button text", "default": "Annuler" },
+    { "type": "text", "id": "review_success_text", "label": "Success message", "default": "Merci pour votre avis ! Nous l'examinerons avant de le publier." },
+    { "type": "text", "id": "review_error_text", "label": "Error message", "default": "Une erreur est survenue. Veuillez réessayer." }
+  ],
+  "blocks": [
+    {
+      "type": "review_card",
+      "name": "Review card",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "name", "label": "Name", "default": "Gigi K" },
+        { "type": "range", "id": "rating", "label": "Star rating", "min": 1, "max": 5, "step": 1, "default": 5 },
+        { "type": "text", "id": "verified_text", "label": "Verified label", "default": "Achat Vérifié" },
+        { "type": "textarea", "id": "review_text", "label": "Review text", "default": "Je suis absolument amoureux/amoureuse de ce sac ! La qualité est exceptionnelle, les coutures sont parfaites et il est encore plus beau en vrai." },
+        { "type": "text", "id": "readmore_text", "label": "Read more text", "default": "Lire la suite" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Velin Review Cards",
+      "blocks": [
+        { "type": "review_card", "settings": { "name": "Gigi K" } },
+        { "type": "review_card", "settings": { "name": "Danique M." } },
+        { "type": "review_card", "settings": { "name": "Hanna L." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

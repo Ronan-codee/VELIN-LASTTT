@@ -1,0 +1,130 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "about-hero",
+      "settings": {
+        "header_style": "white",
+        "image": "shopify://shop_images/hf_20260808_163602_8ed6d548-7be5-4c23-825a-5b2f34ec52e2.png",
+        "hero_height": 480,
+        "overlay_opacity": 35,
+        "label": "",
+        "heading": "L'ART DU CUIR, PENSÉ POUR DURER.",
+        "caption": "Cuir grainé ou lisse, choisi à la main et cousu point par point. Sacs à partir de 119 €."
+      }
+    },
+    "story": {
+      "type": "about-story",
+      "settings": {
+        "matiere_image": "shopify://shop_images/hf_20260825_164230_5d960ffd-25f1-441d-8229-f1e6d5a7cb9a.png",
+        "fabrication_image": "shopify://shop_images/image_4_1.png",
+        "durabilite_image": "shopify://shop_images/Gemini_Generated_Image_22s8ha22s8ha22s8.png",
+        "button_text": "Voir la collection",
+        "button_link": "/collections/nos-produits"
+      }
+    },
+    "video": {
+      "type": "video-banner",
+      "custom_css": [],
+      "settings": {
+        "banner_video": "shopify://files/videos/0808(2).mp4",
+        "fallback_color": "#b1b1b1",
+        "overlay_opacity": 100,
+        "banner_height": 610
+      }
+    },
+    "featured_products_ef8kAy": {
+      "type": "featured-products",
+      "blocks": {
+        "product_FEBLEB": {
+          "type": "product",
+          "settings": {
+            "product": "le-sac-hobo-croissant-cuir",
+            "option_1_label": "",
+            "option_1_has_dropdown": true,
+            "option_2_label": "",
+            "option_2_has_dropdown": true
+          }
+        },
+        "product_UzPyNB": {
+          "type": "product",
+          "settings": {
+            "product": "le-chevron-sac-cuir-lisse",
+            "option_1_label": "",
+            "option_1_has_dropdown": true,
+            "option_2_label": "",
+            "option_2_has_dropdown": true
+          }
+        },
+        "product_NkfNKT": {
+          "type": "product",
+          "settings": {
+            "product": "le-trapeze-sac-hobo-cuir",
+            "option_1_label": "",
+            "option_1_has_dropdown": true,
+            "option_2_label": "",
+            "option_2_has_dropdown": true
+          }
+        },
+        "product_m3cNV9": {
+          "type": "product",
+          "settings": {
+            "product": "le-tote-cabas-cuir",
+            "option_1_label": "",
+            "option_1_has_dropdown": true,
+            "option_2_label": "",
+            "option_2_has_dropdown": true
+          }
+        },
+        "product_leCroco1": {
+          "type": "product",
+          "settings": {
+            "product": "le-croco-portefeuille-cuir-verni",
+            "option_1_label": "",
+            "option_1_has_dropdown": true,
+            "option_2_label": "",
+            "option_2_has_dropdown": true
+          }
+        }
+      },
+      "block_order": [
+        "product_FEBLEB",
+        "product_UzPyNB",
+        "product_NkfNKT",
+        "product_m3cNV9",
+        "product_leCroco1"
+      ],
+      "name": "Velin Featured Products",
+      "settings": {
+        "heading": "Nos produits",
+        "collection": "nos-produits",
+        "cta_text": "Voir toute la collection",
+        "cta_link": "",
+        "heading_size": 28,
+        "bg_color": "#f4f1ec",
+        "section_padding": 50,
+        "card_gap": 20,
+        "card_width": 295,
+        "image_height": 275,
+        "title_size": 15,
+        "rating_size": 13,
+        "option_size": 13,
+        "price_size": 14
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "story",
+    "video",
+    "featured_products_ef8kAy"
+  ]
+}

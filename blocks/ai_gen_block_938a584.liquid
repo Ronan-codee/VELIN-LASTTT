@@ -1,0 +1,232 @@
+{% doc %}
+  @prompt
+    Create an announcement bar that rotates through 3 different text messages with a 2-second interval between each. The bar should smoothly transition between the messages in a loop. Each message should be customizable from the theme editor settings.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-announcement-bar-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    color: {{ block.settings.text_color }};
+    padding: {{ block.settings.padding }}px 20px;
+    text-align: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .ai-announcement-bar__container-{{ ai_gen_id }} {
+    position: relative;
+    height: {{ block.settings.font_size | times: 1.5 }}px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-announcement-bar__message-{{ ai_gen_id }} {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, calc(-50% + 14px));
+    width: 100%;
+    font-size: {{ block.settings.font_size }}px;
+    opacity: 0;
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 20px;
+  }
+
+  .ai-announcement-bar__message-{{ ai_gen_id }}.active {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+
+  .ai-announcement-bar__message-{{ ai_gen_id }} a {
+    color: {{ block.settings.link_color }};
+    text-decoration: underline;
+  }
+
+  .ai-announcement-bar__message-{{ ai_gen_id }} a:hover {
+    opacity: 0.8;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-announcement-bar__message-{{ ai_gen_id }} {
+      font-size: {{ block.settings.font_size | times: 0.9 }}px;
+    }
+  }
+{% endstyle %}
+
+<announcement-bar-{{ ai_gen_id }}
+  class="ai-announcement-bar-{{ ai_gen_id }}"
+  data-interval="{{ block.settings.rotation_interval }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-announcement-bar__container-{{ ai_gen_id }}">
+    {% if block.settings.message_1 != blank %}
+      <div class="ai-announcement-bar__message-{{ ai_gen_id }}" data-message="1">
+        {{ block.settings.message_1 }}
+      </div>
+    {% endif %}
+
+    {% if block.settings.message_2 != blank %}
+      <div class="ai-announcement-bar__message-{{ ai_gen_id }}" data-message="2">
+        {{ block.settings.message_2 }}
+      </div>
+    {% endif %}
+
+    {% if block.settings.message_3 != blank %}
+      <div class="ai-announcement-bar__message-{{ ai_gen_id }}" data-message="3">
+        {{ block.settings.message_3 }}
+      </div>
+    {% endif %}
+
+    {% if block.settings.message_4 != blank %}
+      <div class="ai-announcement-bar__message-{{ ai_gen_id }}" data-message="4">
+        {{ block.settings.message_4 }}
+      </div>
+    {% endif %}
+  </div>
+</announcement-bar-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class AnnouncementBar{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.currentIndex = 0;
+        this.messages = [];
+        this.interval = null;
+      }
+
+      connectedCallback() {
+        this.messages = Array.from(this.querySelectorAll('.ai-announcement-bar__message-{{ ai_gen_id }}'));
+        
+        if (this.messages.length === 0) return;
+
+        const intervalSeconds = parseInt(this.dataset.interval) || 2;
+        this.intervalDuration = intervalSeconds * 1000;
+
+        this.messages[0].classList.add('active');
+
+        if (this.messages.length > 1) {
+          this.startRotation();
+        }
+      }
+
+      startRotation() {
+        this.interval = setInterval(() => {
+          this.messages[this.currentIndex].classList.remove('active');
+          
+          this.currentIndex = (this.currentIndex + 1) % this.messages.length;
+          
+          this.messages[this.currentIndex].classList.add('active');
+        }, this.intervalDuration);
+      }
+
+      disconnectedCallback() {
+        if (this.interval) {
+          clearInterval(this.interval);
+        }
+      }
+    }
+
+    customElements.define('announcement-bar-{{ ai_gen_id }}', AnnouncementBar{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Rotating announcement bar",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Messages"
+    },
+    {
+      "type": "richtext",
+      "id": "message_1",
+      "label": "Message 1",
+      "default": "<p>Livraison gratuite à partir de 50€</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "message_2",
+      "label": "Message 2",
+      "default": "<p>Retours gratuits sous 30 jours</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "message_3",
+      "label": "Message 3",
+      "default": "<p>Service client disponible 7j/7</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "message_4",
+      "label": "Message 4",
+      "default": "<p>Livraison offerte</p>"
+    },
+    {
+      "type": "range",
+      "id": "rotation_interval",
+      "label": "Rotation interval",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "default": 2
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#2B241D"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#F1EAE0"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Link color",
+      "default": "#F1EAE0"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "padding",
+      "label": "Vertical padding",
+      "min": 5,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    }
+  ],
+  "presets": [
+    {
+      "name": "Rotating announcement bar"
+    }
+  ]
+}
+{% endschema %}

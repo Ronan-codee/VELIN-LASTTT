@@ -1,0 +1,77 @@
+{% comment %} Velin - Collection Hero Banner {% endcomment %}
+{% render 'header-color-override', style: section.settings.header_style %}
+<div class="velin-collection-hero" style="
+  background-image: url('{{ collection.image | image_url: width: 1600 }}');
+  height: {{ section.settings.hero_height }}px;
+">
+  <div class="velin-collection-hero__overlay"></div>
+  {%- assign hero_title = collection.title -%}
+  <div class="velin-collection-hero__content">
+    <p class="velin-collection-hero__label">COLLECTION</p>
+    <h1 class="velin-collection-hero__title">{{ hero_title }}</h1>
+  </div>
+</div>
+
+<style>
+  .velin-collection-hero {
+    position: relative;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+  }
+  .velin-collection-hero__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,{{ section.settings.overlay_opacity | divided_by: 100.0 }});
+  }
+  .velin-collection-hero__content {
+    position: relative;
+    z-index: 2;
+    color: #fff;
+    max-width: 500px;
+    padding-left: 80px;
+  }
+  .velin-collection-hero__label {
+    letter-spacing: 2px;
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+  .velin-collection-hero__title {
+    font-family: serif;
+    font-size: 48px;
+    text-transform: uppercase;
+    margin: 0 0 10px 0;
+  }
+  .velin-collection-hero__desc {
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  @media screen and (max-width: 749px) {
+    .velin-collection-hero__content { padding-left: 24px; }
+    .velin-collection-hero__title { font-size: 32px; }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Velin Collection Hero",
+  "settings": [
+    {
+      "type": "select",
+      "id": "header_style",
+      "label": "Header color (logo, text, icons) on this page",
+      "options": [
+        { "value": "auto", "label": "Automatic" },
+        { "value": "black", "label": "Black" },
+        { "value": "white", "label": "White" }
+      ],
+      "default": "auto"
+    },
+    { "type": "range", "id": "hero_height", "label": "Hero Height (px)", "min": 200, "max": 700, "step": 10, "default": 420 },
+    { "type": "range", "id": "overlay_opacity", "label": "Overlay Opacity (%)", "min": 0, "max": 100, "step": 5, "default": 30 }
+  ],
+  "presets": [{ "name": "Velin Collection Hero" }]
+}
+{% endschema %}

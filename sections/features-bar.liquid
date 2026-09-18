@@ -1,0 +1,84 @@
+<section class="features-bar">
+  <div class="features-bar__marquee" style="--velin-marquee-duration: {{ section.settings.marquee_speed }}s;">
+    <div class="features-bar__track">
+      {%- for i in (1..8) -%}
+        <div class="features-bar__inner" aria-hidden="{% if i == 1 %}false{% else %}true{% endif %}">
+          {%- for block in section.blocks -%}
+            <div class="features-bar__item" style="gap: {{ section.settings.icon_text_gap }}px;" {% if i == 1 %}{{ block.shopify_attributes }}{% endif %}>
+              <span class="features-bar__icon">
+                {%- if block.settings.custom_icon != blank -%}
+                  <img
+                    src="{{ block.settings.custom_icon | image_url: width: 48 }}"
+                    alt=""
+                    width="24"
+                    height="24"
+                    loading="lazy"
+                  >
+                {%- else -%}
+                  {% render 'feature-icon', icon: block.settings.icon %}
+                {%- endif -%}
+              </span>
+              <p class="features-bar__label">{{ block.settings.label }}</p>
+            </div>
+          {%- endfor -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Features bar",
+  "settings": [
+    { "type": "range", "id": "marquee_speed", "label": "Marquee speed (seconds per loop)", "info": "Lower = faster", "min": 5, "max": 60, "step": 1, "default": 20 },
+    { "type": "range", "id": "icon_text_gap", "label": "Gap between icon and text (px)", "min": 0, "max": 40, "step": 1, "default": 13 }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "custom_icon",
+          "label": "Custom icon image",
+          "info": "Optional. Overrides the built-in icon below. Use a square image (PNG/SVG), ideally 48×48px."
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Built-in icon",
+          "options": [
+            { "value": "pin", "label": "Location pin" },
+            { "value": "mic", "label": "Microphone" },
+            { "value": "truck", "label": "Truck" },
+            { "value": "note", "label": "Music note" },
+            { "value": "thumbs_up", "label": "Thumbs up" },
+            { "value": "phone", "label": "Phone" }
+          ],
+          "default": "pin"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Text",
+          "default": "PRÉSENCE MONDIALE"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [
+    {
+      "name": "Features bar",
+      "blocks": [
+        { "type": "feature", "settings": { "icon": "pin", "label": "PRÉSENCE MONDIALE" } },
+        { "type": "feature", "settings": { "icon": "mic", "label": "PLUS DE 100 000 CLIENTS DANS LE MONDE" } },
+        { "type": "feature", "settings": { "icon": "truck", "label": "LIVRAISON RAPIDE" } },
+        { "type": "feature", "settings": { "icon": "note", "label": "PLUS DE 150 MILLIONS DE VUES" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,189 @@
+{% comment %}
+  VELIN — Custom Features & Satisfaction Guarantee Bar Section
+{% endcomment %}
+
+{%- assign sec_id = section.id -%}
+
+<style>
+  #velin-features-{{ sec_id }} {
+    width: 100%;
+    background-color: #F8F8F8;
+    padding: 100px;
+    box-sizing: border-box;
+  }
+
+  #velin-features-{{ sec_id }} .features-container {
+    max-width: 1440px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 40px;
+  }
+
+  #velin-features-{{ sec_id }} .feature-card {
+    width: 349px;
+    min-height: 413px;
+    background: #FFFFFF;
+    border-radius: 12px;
+    padding: 40px 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  #velin-features-{{ sec_id }} .feature-head {
+    width: 247px;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  #velin-features-{{ sec_id }} .feature-icon-wrapper {
+    width: 73px;
+    height: 73px;
+    background-color: #EDEDED;
+    border-radius: 36.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  #velin-features-{{ sec_id }} .feature-icon-wrapper svg {
+    width: 39.66px;
+    height: 40px;
+    fill: none;
+    stroke: #000000;
+    stroke-width: 1.3;
+  }
+
+  #velin-features-{{ sec_id }} .feature-title {
+    width: 280px;
+    max-width: 100%;
+    font-family: "Manuale", serif;
+    font-weight: 400;
+    font-size: 28px;
+    line-height: 120%;
+    letter-spacing: -0.02em;
+    text-align: center;
+    text-transform: uppercase;
+    color: #111111;
+    margin: 0;
+  }
+
+  #velin-features-{{ sec_id }} .feature-divider {
+    width: 76.33px;
+    height: 0;
+    border-top: 1px solid #F0640B;
+    margin: 0;
+  }
+
+  #velin-features-{{ sec_id }} .feature-text {
+    width: 268px;
+    max-width: 100%;
+    font-family: "Merriweather", serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 140%;
+    letter-spacing: 0;
+    text-align: center;
+    text-transform: uppercase;
+    color: rgba(0, 0, 0, 0.7);
+    margin: 0;
+  }
+
+  /* Responsive Mobile View Fix */
+  @media (max-width: 768px) {
+    #velin-features-{{ sec_id }} {
+      padding: 60px 20px;
+    }
+    #velin-features-{{ sec_id }} .features-container {
+      gap: 24px;
+    }
+    #velin-features-{{ sec_id }} .feature-card {
+      width: 100%;
+      max-width: 349px;
+    }
+  }
+</style>
+
+<div id="velin-features-{{ sec_id }}">
+  <div class="features-container">
+    {%- for block in section.blocks -%}
+      <div class="feature-card" {{ block.shopify_attributes }}>
+
+        <div class="feature-head">
+          <div class="feature-icon-wrapper">
+            {%- if block.settings.icon_type == 'thumbs' -%}
+              <svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
+            {%- elsif block.settings.icon_type == 'phone' -%}
+              <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            {%- else -%}
+              <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+            {%- endif -%}
+          </div>
+
+          <h3 class="feature-title">{{ block.settings.title }}</h3>
+        </div>
+
+        <div class="feature-divider"></div>
+        <p class="feature-text">{{ block.settings.text }}</p>
+
+      </div>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Features Guarantees Bar",
+  "max_blocks": 3,
+  "settings": [],
+  "blocks": [
+    {
+      "type": "feature_item",
+      "name": "Feature Card",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon_type",
+          "label": "Select Icon",
+          "options": [
+            { "value": "thumbs", "label": "Thumbs Up / Satisfaction" },
+            { "value": "phone", "label": "Phone / Support" },
+            { "value": "truck", "label": "Truck / Shipping" }
+          ],
+          "default": "thumbs"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Heading",
+          "default": "100% SATISFACTION GUARANTEED"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Description Text",
+          "default": "EVERY ORDER IS DESIGNED WITH YOUR HAPPINESS IN MIND. IF YOU'RE NOT 100% SATISFIED, OUR HASSLE-FREE RETURNS POLICY ENSURES YOUR PEACE OF MIND."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Features Guarantees Bar",
+      "blocks": [
+        { "type": "feature_item", "settings": { "icon_type": "thumbs" } },
+        { "type": "feature_item", "settings": { "icon_type": "phone" } },
+        { "type": "feature_item", "settings": { "icon_type": "truck" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

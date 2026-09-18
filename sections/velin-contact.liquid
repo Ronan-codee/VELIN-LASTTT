@@ -1,0 +1,284 @@
+{% comment %} Velin - Contact Us Page {% endcomment %}
+{% render 'header-color-override', style: section.settings.header_style %}
+{%- assign sec_id = section.id -%}
+
+<div id="velin-contact-{{ sec_id }}" class="velin-contact" style="
+  background: {{ section.settings.bg_color }};
+  padding: {{ section.settings.padding_top }}px {{ section.settings.padding_h }}px {{ section.settings.padding_bottom }}px;
+">
+  <div class="velin-contact__wrap" style="max-width: {{ section.settings.form_max_width }}px;">
+
+    <h1 class="velin-contact__heading" style="font-size: {{ section.settings.heading_size }}px; color: {{ section.settings.heading_color }};">
+      {{ section.settings.heading }}
+    </h1>
+
+    {% form 'contact', id: 'VelinContactForm', class: 'velin-contact__form' %}
+
+      <p class="velin-contact__success" data-velin-contact-success {% unless form.posted_successfully? %}style="display:none;"{% endunless %}>{{ section.settings.success_text }}</p>
+
+      <p class="velin-contact__error" data-velin-contact-error {% unless form.errors %}style="display:none;"{% endunless %}>
+        {%- if form.errors -%}{{ form.errors | default_errors }}{%- endif -%}
+      </p>
+
+      <div class="velin-contact__row" style="gap: {{ section.settings.column_gap }}px; margin-bottom: {{ section.settings.row_gap }}px;">
+        <div class="velin-contact__field">
+          <label for="ContactFormFirstName-{{ sec_id }}">{{ section.settings.first_name_label }}</label>
+          <input type="text" id="ContactFormFirstName-{{ sec_id }}" name="contact[{{ section.settings.first_name_label }}]" autocomplete="given-name">
+        </div>
+        <div class="velin-contact__field">
+          <label for="ContactFormLastName-{{ sec_id }}">{{ section.settings.last_name_label }}</label>
+          <input type="text" id="ContactFormLastName-{{ sec_id }}" name="contact[{{ section.settings.last_name_label }}]" autocomplete="family-name">
+        </div>
+      </div>
+
+      <div class="velin-contact__row" style="gap: {{ section.settings.column_gap }}px; margin-bottom: {{ section.settings.row_gap }}px;">
+        <div class="velin-contact__field">
+          <label for="ContactFormEmail-{{ sec_id }}">{{ section.settings.email_label }}</label>
+          <input type="email" id="ContactFormEmail-{{ sec_id }}" name="contact[email]" autocomplete="email" value="{{ form.email }}" required>
+        </div>
+        <div class="velin-contact__field">
+          <label for="ContactFormPhone-{{ sec_id }}">{{ section.settings.phone_label }}</label>
+          <input type="tel" id="ContactFormPhone-{{ sec_id }}" name="contact[phone]" autocomplete="tel" value="{{ form.phone }}">
+        </div>
+      </div>
+
+      <div class="velin-contact__field velin-contact__field--full" style="margin-bottom: {{ section.settings.row_gap }}px;">
+        <label for="ContactFormMessage-{{ sec_id }}">{{ section.settings.message_label }}</label>
+        <textarea id="ContactFormMessage-{{ sec_id }}" name="contact[body]" style="height: {{ section.settings.message_height }}px;">{{ form.body }}</textarea>
+      </div>
+
+      <button type="submit" class="velin-contact__submit" style="
+        height: {{ section.settings.button_height }}px;
+        font-size: {{ section.settings.button_size }}px;
+        background: {{ section.settings.button_bg }};
+        color: {{ section.settings.button_color }};
+      ">
+        {{ section.settings.button_text }}
+      </button>
+
+    {% endform %}
+
+  </div>
+</div>
+
+<style>
+  .velin-contact {
+    box-sizing: border-box;
+    font-family: 'Merriweather', serif;
+  }
+
+  .velin-contact__wrap {
+    margin: 0 auto;
+  }
+
+  .velin-contact__heading {
+    margin: 0 0 40px;
+    font-family: 'Lusitana', serif;
+    font-weight: 400;
+    line-height: 130%;
+  }
+
+  .velin-contact__row {
+    display: flex;
+  }
+
+  .velin-contact__field {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: {{ section.settings.field_label_gap }}px;
+  }
+
+  .velin-contact__field--full {
+    display: flex;
+    flex-direction: column;
+    gap: {{ section.settings.field_label_gap }}px;
+  }
+
+  .velin-contact__field label {
+    font-family: 'Merriweather', serif;
+    font-weight: 400;
+    font-size: {{ section.settings.label_size }}px;
+    line-height: 110%;
+    text-transform: capitalize;
+    color: #000000;
+  }
+
+  .velin-contact__field input,
+  .velin-contact__field textarea {
+    box-sizing: border-box;
+    width: 100%;
+    height: {{ section.settings.input_height }}px;
+    padding: 0 14px;
+    border: 0.5px solid {{ section.settings.input_border_color }};
+    border-radius: {{ section.settings.input_radius }}px;
+    background: #fff;
+    font-family: inherit;
+    font-size: 14px;
+    color: #1c1c1c;
+  }
+
+  .velin-contact__field textarea {
+    height: auto;
+    padding: 14px;
+    resize: vertical;
+  }
+
+  .velin-contact__submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    border: none;
+    border-radius: {{ section.settings.input_radius }}px;
+    text-transform: capitalize;
+    line-height: 110%;
+    cursor: pointer;
+  }
+
+  .velin-contact__success {
+    color: #1a7a3c;
+    margin: 0 0 20px;
+  }
+
+  .velin-contact__error {
+    color: #c0392b;
+    margin: 0 0 20px;
+  }
+
+  @media screen and (max-width: 700px) {
+    .velin-contact__row {
+      flex-direction: column;
+    }
+  }
+
+  .velin-contact__submit[disabled] {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+</style>
+
+<script>
+  (function () {
+    var form = document.getElementById('VelinContactForm');
+    if (!form) return;
+
+    var successEl = form.querySelector('[data-velin-contact-success]');
+    var errorEl = form.querySelector('[data-velin-contact-error]');
+    var submitBtn = form.querySelector('.velin-contact__submit');
+    var originalBtnText = submitBtn ? submitBtn.textContent.trim() : '';
+    var sendingText = {{ section.settings.sending_text | json }};
+    var hideTimer = null;
+
+    function hideMsg(el) {
+      if (el) el.style.display = 'none';
+    }
+
+    function showMsgTemporarily(el) {
+      if (!el) return;
+      el.style.display = '';
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(function () {
+        el.style.display = 'none';
+      }, 4000);
+    }
+
+    if (successEl && successEl.style.display !== 'none') showMsgTemporarily(successEl);
+    if (errorEl && errorEl.style.display !== 'none') showMsgTemporarily(errorEl);
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      clearTimeout(hideTimer);
+      hideMsg(successEl);
+      hideMsg(errorEl);
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = sendingText;
+      }
+
+      fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'text/html' }
+      })
+        .then(function (response) {
+          if (!response.ok) throw new Error('bad-response');
+          form.reset();
+          showMsgTemporarily(successEl);
+        })
+        .catch(function () {
+          if (errorEl) errorEl.textContent = {{ section.settings.error_text | json }};
+          showMsgTemporarily(errorEl);
+        })
+        .finally(function () {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
+          }
+        });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Velin Contact Form",
+  "settings": [
+    {
+      "type": "select",
+      "id": "header_style",
+      "label": "Header color (logo, text, icons) on this page",
+      "options": [
+        { "value": "auto", "label": "Automatic" },
+        { "value": "black", "label": "Black" },
+        { "value": "white", "label": "White" }
+      ],
+      "default": "auto"
+    },
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "padding_top", "label": "Padding top (px)", "min": 0, "max": 150, "step": 5, "default": 60 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom (px)", "min": 0, "max": 150, "step": 5, "default": 100 },
+    { "type": "range", "id": "padding_h", "label": "Padding left/right (px)", "min": 0, "max": 150, "step": 5, "default": 100 },
+    { "type": "range", "id": "form_max_width", "label": "Form max width (px)", "min": 400, "max": 1400, "step": 10, "default": 1240 },
+    { "type": "range", "id": "column_gap", "label": "Gap between fields in a row (px)", "min": 0, "max": 60, "step": 2, "default": 20 },
+    { "type": "range", "id": "row_gap", "label": "Gap between rows (px)", "min": 0, "max": 60, "step": 2, "default": 40 },
+    { "type": "range", "id": "field_label_gap", "label": "Gap between label and box (px)", "min": 0, "max": 30, "step": 1, "default": 10 },
+    { "type": "color", "id": "bg_color", "label": "Background color", "default": "#F2F2F2" },
+    { "type": "header", "content": "Heading" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Contact Us" },
+    { "type": "range", "id": "heading_size", "label": "Heading size (px)", "min": 20, "max": 60, "step": 1, "default": 42 },
+    { "type": "color", "id": "heading_color", "label": "Heading color", "default": "#000000" },
+    { "type": "header", "content": "Field labels & boxes" },
+    { "type": "text", "id": "first_name_label", "label": "First name label", "default": "First Name" },
+    { "type": "text", "id": "last_name_label", "label": "Last name label", "default": "Last Name" },
+    { "type": "text", "id": "email_label", "label": "Email label", "default": "Email Adress" },
+    { "type": "text", "id": "phone_label", "label": "Phone label", "default": "Phone Number" },
+    { "type": "text", "id": "message_label", "label": "Message label", "default": "Message" },
+    { "type": "range", "id": "label_size", "label": "Label text size (px)", "min": 10, "max": 24, "step": 1, "default": 16 },
+    { "type": "range", "id": "input_height", "label": "Input box height (px)", "min": 30, "max": 80, "step": 1, "default": 54 },
+    { "type": "range", "id": "input_radius", "label": "Box border radius (px)", "min": 0, "max": 30, "step": 1, "default": 8 },
+    { "type": "color", "id": "input_border_color", "label": "Box border color", "default": "#000000B2" },
+    { "type": "range", "id": "message_height", "label": "Message box height (px)", "min": 60, "max": 400, "step": 5, "default": 150 },
+    { "type": "header", "content": "Submit button" },
+    { "type": "text", "id": "button_text", "label": "Button text", "default": "Submit" },
+    { "type": "range", "id": "button_height", "label": "Button height (px)", "min": 30, "max": 80, "step": 1, "default": 54 },
+    { "type": "range", "id": "button_size", "label": "Button text size (px)", "min": 12, "max": 32, "step": 1, "default": 20 },
+    { "type": "color", "id": "button_bg", "label": "Button background", "default": "#957F68" },
+    { "type": "color", "id": "button_color", "label": "Button text color", "default": "#FFFFFF" },
+    { "type": "header", "content": "Messages" },
+    { "type": "text", "id": "success_text", "label": "Success message", "default": "Merci ! Votre message a bien été envoyé." },
+    { "type": "text", "id": "sending_text", "label": "Button text while sending", "default": "Envoi en cours..." },
+    { "type": "text", "id": "error_text", "label": "Error message", "default": "Une erreur est survenue. Veuillez réessayer." }
+  ],
+  "presets": [
+    { "name": "Velin Contact Form" }
+  ]
+}
+{% endschema %}

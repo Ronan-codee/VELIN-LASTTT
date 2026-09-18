@@ -1,0 +1,256 @@
+{% comment %} Velin - Comparison Table (Figma: 1107 container) {% endcomment %}
+
+<div class="velin-comp" style="
+  padding: {{ section.settings.padding_v }}px {{ section.settings.padding_h }}px;
+">
+
+  <div class="velin-comp__wrap">
+
+    {% if section.settings.heading != blank %}
+      <h2 class="velin-comp__heading" style="font-size: {{ section.settings.heading_size }}px;">
+        {{ section.settings.heading }}
+      </h2>
+    {% endif %}
+
+    {%- assign row_count = 0 -%}
+    {% for block in section.blocks %}{% if block.type == 'comparison_row' %}{% assign row_count = row_count | plus: 1 %}{% endif %}{% endfor %}
+
+    <div class="velin-comp__table" style="
+      grid-template-columns: {{ section.settings.col_label_width }}fr {{ section.settings.col_our_width }}fr {{ section.settings.col_others_width }}fr {{ section.settings.col_cheap_width }}fr;
+    ">
+
+      <div class="velin-comp__highlight-col" style="
+        background: {{ section.settings.highlight_bg }};
+        grid-column: 2 / 3;
+        grid-row: 2 / span {{ row_count }};
+      "></div>
+
+      {%- comment -%} Header row (grid-row: 1) {%- endcomment -%}
+      <div class="velin-comp__cell velin-comp__cell--label velin-comp__cell--head" style="font-size: {{ section.settings.header_size }}px; grid-column: 1; grid-row: 1;">{{ section.settings.col_label }}</div>
+      <div class="velin-comp__cell velin-comp__cell--center velin-comp__cell--head" style="grid-column: 2; grid-row: 1; align-self: stretch; padding: {{ section.settings.our_badge_inset }}px 8px 0;">
+        <span class="velin-comp__our-badge" style="background: {{ section.settings.our_header_bg }}; font-size: {{ section.settings.our_badge_font_size }}px;">{{ section.settings.col_our }}</span>
+      </div>
+      <div class="velin-comp__cell velin-comp__cell--center velin-comp__cell--head" style="font-size: {{ section.settings.header_size }}px; grid-column: 3; grid-row: 1;">{{ section.settings.col_others }}</div>
+      <div class="velin-comp__cell velin-comp__cell--center velin-comp__cell--head" style="font-size: {{ section.settings.header_size }}px; grid-column: 4; grid-row: 1;">{{ section.settings.col_cheap }}</div>
+
+      {%- comment -%} Data rows {%- endcomment -%}
+      {% for block in section.blocks %}
+        {% if block.type == 'comparison_row' %}
+          {%- assign this_row = forloop.index | plus: 1 -%}
+          <div class="velin-comp__cell velin-comp__cell--label velin-comp__cell--row" style="font-size: {{ section.settings.row_font_size }}px; grid-column: 1; grid-row: {{ this_row }};" {{ block.shopify_attributes }}>{{ block.settings.feature }}</div>
+          <div class="velin-comp__cell velin-comp__cell--center velin-comp__cell--row" style="grid-column: 2; grid-row: {{ this_row }};">
+            <span class="velin-comp__icon velin-comp__icon--check"><svg width="12" height="9" viewBox="0 0 12 9" fill="none"><path d="M1 4.5L4 7.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </div>
+          <div class="velin-comp__cell velin-comp__cell--center velin-comp__cell--row" style="grid-column: 3; grid-row: {{ this_row }};">
+            {% if block.settings.autres_status == 'check' %}
+              <span class="velin-comp__icon velin-comp__icon--check"><svg width="12" height="9" viewBox="0 0 12 9" fill="none"><path d="M1 4.5L4 7.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            {% else %}
+              <span class="velin-comp__icon velin-comp__icon--cross"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1 1L9 9M9 1L1 9" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></span>
+            {% endif %}
+          </div>
+          <div class="velin-comp__cell velin-comp__cell--center velin-comp__cell--row" style="grid-column: 4; grid-row: {{ this_row }};">
+            {% if block.settings.bas_gamme_status == 'check' %}
+              <span class="velin-comp__icon velin-comp__icon--check"><svg width="12" height="9" viewBox="0 0 12 9" fill="none"><path d="M1 4.5L4 7.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            {% else %}
+              <span class="velin-comp__icon velin-comp__icon--cross"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1 1L9 9M9 1L1 9" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></span>
+            {% endif %}
+          </div>
+        {% endif %}
+      {% endfor %}
+
+    </div>
+
+  </div>
+
+</div>
+
+<style>
+  .velin-comp {
+    box-sizing: border-box;
+    font-family: 'Merriweather', serif;
+  }
+
+  .velin-comp__wrap {
+    max-width: 1107px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 31px;
+  }
+
+  .velin-comp__heading {
+    margin: 0;
+    font-family: 'Lusitana', serif;
+    font-weight: 400;
+    line-height: 100%;
+    text-align: center;
+    text-transform: uppercase;
+    color: #000;
+  }
+
+  .velin-comp__table {
+    display: grid;
+    align-items: center;
+    position: relative;
+    column-gap: 4px;
+  }
+
+  .velin-comp__highlight-col {
+    border-radius: 0 0 8px 8px;
+    align-self: stretch;
+    margin: 0 8px;
+  }
+
+  .velin-comp__cell {
+    padding: {{ section.settings.row_padding }}px 8px;
+    position: relative;
+  }
+
+  .velin-comp__cell--label {
+    text-align: left;
+  }
+
+  .velin-comp__cell--center {
+    text-align: center;
+  }
+
+  .velin-comp__cell--head {
+    font-weight: 600;
+    text-transform: capitalize;
+    color: #000;
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+  }
+
+  .velin-comp__cell--row {
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+  }
+
+  .velin-comp__cell--label.velin-comp__cell--row {
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    text-transform: capitalize;
+    color: rgba(0,0,0,0.7);
+  }
+
+  .velin-comp__our-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    color: #fff;
+    font-weight: 600;
+    text-transform: capitalize;
+    padding: 10px 0;
+    border-radius: 10px 10px 0 0;
+    white-space: nowrap;
+    text-align: center;
+  }
+
+  .velin-comp__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+  }
+
+  .velin-comp__icon--check {
+    background: #000;
+  }
+
+  .velin-comp__icon--cross {
+    background: rgba(0,0,0,0.6);
+  }
+
+  @media screen and (max-width: 1100px) {
+    .velin-comp {
+      padding: 40px 20px !important;
+    }
+    .velin-comp__table {
+      grid-template-columns: 1.5fr 1fr 1fr 1fr !important;
+    }
+    .velin-comp__cell {
+      font-size: 12px !important;
+    }
+    .velin-comp__our-badge {
+      font-size: 12px !important;
+      padding: 4px 10px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Velin Comparison Table",
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "padding_v", "label": "Padding top/bottom (px)", "min": 0, "max": 150, "step": 5, "default": 80 },
+    { "type": "range", "id": "padding_h", "label": "Padding left/right (px)", "min": 0, "max": 150, "step": 5, "default": 100 },
+    { "type": "range", "id": "row_padding", "label": "Row vertical padding (px)", "min": 5, "max": 40, "step": 1, "default": 16 },
+    { "type": "header", "content": "Heading" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Questions Fréquentes" },
+    { "type": "range", "id": "heading_size", "label": "Heading size (px)", "min": 20, "max": 70, "step": 1, "default": 48 },
+    { "type": "header", "content": "Column headers" },
+    { "type": "text", "id": "col_label", "label": "Column 1 label", "default": "Caractéristiques" },
+    { "type": "text", "id": "col_our", "label": "Column 2 label (our brand)", "default": "Notre Sac" },
+    { "type": "text", "id": "col_others", "label": "Column 3 label", "default": "Autres" },
+    { "type": "text", "id": "col_cheap", "label": "Column 4 label", "default": "Sacs Bas De Gamme" },
+    { "type": "range", "id": "header_size", "label": "Header row text size (px)", "min": 12, "max": 32, "step": 1, "default": 24 },
+    { "type": "color", "id": "our_header_bg", "label": "\"Notre Sac\" badge background", "default": "#705744" },
+    { "type": "range", "id": "our_badge_inset", "label": "\"Notre Sac\" badge top gap (px)", "min": 0, "max": 40, "step": 1, "default": 10 },
+    { "type": "range", "id": "our_badge_font_size", "label": "\"Notre Sac\" text size (px)", "min": 10, "max": 40, "step": 1, "default": 15 },
+    { "type": "header", "content": "Column widths (ratio)" },
+    { "type": "range", "id": "col_label_width", "label": "Column 1 width ratio", "min": 1, "max": 5, "step": 0.1, "default": 2.5 },
+    { "type": "range", "id": "col_our_width", "label": "Column 2 width ratio", "min": 0.3, "max": 5, "step": 0.1, "default": 1.2 },
+    { "type": "range", "id": "col_others_width", "label": "Column 3 width ratio", "min": 1, "max": 5, "step": 0.1, "default": 1 },
+    { "type": "range", "id": "col_cheap_width", "label": "Column 4 width ratio", "min": 1, "max": 5, "step": 0.1, "default": 1.3 },
+    { "type": "header", "content": "Rows" },
+    { "type": "range", "id": "row_font_size", "label": "Row text size (px)", "min": 12, "max": 32, "step": 1, "default": 22 },
+    { "type": "header", "content": "Highlight column" },
+    { "type": "color", "id": "highlight_bg", "label": "Highlight background", "default": "#7057444D" }
+  ],
+  "blocks": [
+    {
+      "type": "comparison_row",
+      "name": "Comparison row",
+      "settings": [
+        { "type": "text", "id": "feature", "label": "Feature name", "default": "Cuir Premium" },
+        {
+          "type": "select",
+          "id": "autres_status",
+          "label": "\"Autres\" column status",
+          "options": [
+            { "value": "check", "label": "Checkmark" },
+            { "value": "cross", "label": "Cross" }
+          ],
+          "default": "cross"
+        },
+        {
+          "type": "select",
+          "id": "bas_gamme_status",
+          "label": "\"Sacs bas de gamme\" column status",
+          "options": [
+            { "value": "check", "label": "Checkmark" },
+            { "value": "cross", "label": "Cross" }
+          ],
+          "default": "cross"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Velin Comparison Table",
+      "blocks": [
+        { "type": "comparison_row", "settings": { "feature": "Cuir Premium", "autres_status": "check", "bas_gamme_status": "cross" } },
+        { "type": "comparison_row", "settings": { "feature": "Coutures Renforcées", "autres_status": "cross", "bas_gamme_status": "cross" } },
+        { "type": "comparison_row", "settings": { "feature": "Intérieur Spacieux", "autres_status": "cross", "bas_gamme_status": "cross" } },
+        { "type": "comparison_row", "settings": { "feature": "Lightweight Design", "autres_status": "cross", "bas_gamme_status": "cross" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,357 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+
+{%- capture section_style -%}
+  {%- if section.settings.custom_background != blank -%}background: {{ section.settings.custom_background }};{%- endif -%}
+  {%- if section.settings.section_padding > 0 -%}--iwt-padding: {{ section.settings.section_padding }}px;{%- endif -%}
+{%- endcapture -%}
+<section
+  class="image-with-text image-with-text--{{ section.settings.background }}{% if section.settings.image_position == 'left' %} image-with-text--reverse{% endif %}{% if section.settings.image_fit == 'custom' %} image-with-text--custom-media{% endif %}{% if section.settings.full_width %} image-with-text--full-width{% endif %}"
+  {% if section_style != blank %}style="{{ section_style }}"{% endif %}
+>
+  <div class="image-with-text__inner container" style="gap: {{ section.settings.column_gap | default: 56 }}px;">
+    {%- capture text_style -%}
+      {%- if section.settings.text_max_width > 0 -%}max-width: {{ section.settings.text_max_width }}px;{%- endif -%}
+      {%- if section.settings.text_padding > 0 -%}padding: {{ section.settings.text_padding }}px;{%- endif -%}
+      {%- if section.settings.text_gap > 0 -%}gap: {{ section.settings.text_gap }}px;{%- endif -%}
+    {%- endcapture -%}
+    <div
+      class="image-with-text__text{% if section.settings.text_gap > 0 %} image-with-text__text--stack{% endif %}"
+      {% if text_style != blank %}style="{{ text_style }}"{% endif %}
+    >
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="image-with-text__eyebrow">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2
+          class="image-with-text__heading{% if section.settings.heading_nowrap %} image-with-text__heading--nowrap{% endif %}"
+          style="line-height: {{ section.settings.heading_line_height | default: 150 }}%;"
+        >{{ section.settings.heading | escape | newline_to_br }}</h2>
+      {%- endif -%}
+      {%- if section.settings.price_tag_enabled and section.settings.price_before != blank and section.settings.price_after != blank -%}
+        <p class="price-tag">
+          <span class="price-tag__before">{{ section.settings.price_before }}</span>
+          <span class="price-tag__arrow" aria-hidden="true">&rarr;</span>
+          <span class="price-tag__after">{{ section.settings.price_after }}</span>
+        </p>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <p class="image-with-text__body">{{ section.settings.text | escape | newline_to_br }}</p>
+      {%- endif -%}
+      {%- if section.settings.button_label != blank -%}
+        <a href="{{ section.settings.button_link }}" class="button">{{ section.settings.button_label }}</a>
+      {%- endif -%}
+    </div>
+    {%- capture media_style -%}
+      {%- if section.settings.image_radius > 0 -%}border-radius: {{ section.settings.image_radius }}px;{%- endif -%}
+      {%- if section.settings.image_fit == 'custom' -%}
+        width: 100%; max-width: {{ section.settings.image_width | default: 505 }}px; aspect-ratio: {{ section.settings.image_width | default: 505 }} / {{ section.settings.image_height | default: 600 }};
+      {%- endif -%}
+    {%- endcapture -%}
+    <div
+      class="image-with-text__media image-with-text__media--{{ section.settings.image_fit }}{% if section.settings.image == blank %} image-with-text__media--placeholder{% endif %}"
+      {% if media_style != blank %}style="{{ media_style }}"{% endif %}
+    >
+      {%- if section.settings.image != blank -%}
+        <img
+          src="{{ section.settings.image | image_url: width: 1200 }}"
+          alt="{{ section.settings.image.alt | escape }}"
+          loading="lazy"
+        >
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{%- style -%}
+  .image-with-text {
+    border-top: 1px solid rgba(43, 36, 29, 0.08);
+  }
+
+  .image-with-text__eyebrow {
+    font-family: "Manrope", var(--font-body), sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-brown);
+    margin: 0 0 16px;
+    padding-bottom: 10px;
+    position: relative;
+    display: inline-block;
+  }
+
+  .image-with-text__eyebrow::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 28px;
+    height: 1px;
+    background: var(--color-brown);
+  }
+
+  .image-with-text__heading {
+    font-family: "Fraunces", var(--font-heading), serif;
+    font-optical-sizing: auto;
+    font-weight: 460;
+    font-size: 36px;
+    letter-spacing: -0.01em;
+    color: var(--color-dark);
+    margin-bottom: 18px;
+  }
+
+  .price-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin: 2px 0 20px;
+    padding: 9px 16px;
+    border: 1px solid rgba(43, 36, 29, 0.16);
+    border-radius: 999px;
+    font-family: "JetBrains Mono", monospace;
+  }
+
+  .price-tag__before {
+    font-size: 14px;
+    color: var(--color-brown);
+    text-decoration: line-through;
+    text-decoration-color: rgba(138, 113, 87, 0.6);
+  }
+
+  .price-tag__arrow {
+    font-size: 13px;
+    color: rgba(43, 36, 29, 0.4);
+  }
+
+  .price-tag__after {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--color-dark);
+    background: var(--color-gold);
+    padding: 2px 12px;
+    border-radius: 999px;
+  }
+
+  .image-with-text__body {
+    font-family: "Work Sans", var(--font-body), sans-serif;
+    font-weight: 400;
+    font-size: 17px;
+    line-height: 1.75;
+    letter-spacing: 0;
+    max-width: 46ch;
+  }
+
+  .image-with-text--custom-media .image-with-text__media--custom {
+    position: relative;
+    overflow: visible;
+  }
+
+  .image-with-text--custom-media .image-with-text__media--custom::after {
+    content: "";
+    position: absolute;
+    inset: 14px -14px -14px 14px;
+    border: 1px dashed rgba(217, 164, 65, 0.55);
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .image-with-text--reverse.image-with-text--custom-media .image-with-text__media--custom::after {
+    inset: 14px 14px -14px -14px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .image-with-text__media--custom img {
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .image-with-text__media--custom:hover img {
+      transform: scale(1.015);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .image-with-text__heading {
+      font-size: 28px;
+    }
+
+    .image-with-text__body {
+      font-size: 16px;
+      max-width: none;
+    }
+
+    .image-with-text--custom-media .image-with-text__media--custom::after,
+    .image-with-text--reverse.image-with-text--custom-media .image-with-text__media--custom::after {
+      inset: 10px -10px -10px 10px;
+    }
+  }
+{%- endstyle -%}
+
+{% schema %}
+{
+  "name": "Image with text",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image position",
+      "options": [
+        { "value": "right", "label": "Right" },
+        { "value": "left", "label": "Left" }
+      ],
+      "default": "right"
+    },
+    {
+      "type": "select",
+      "id": "image_fit",
+      "label": "Image display",
+      "options": [
+        { "value": "natural", "label": "Original size (no crop)" },
+        { "value": "crop", "label": "Crop to 4:3" },
+        { "value": "custom", "label": "Fixed size (set width/height below)" }
+      ],
+      "default": "natural"
+    },
+    {
+      "type": "number",
+      "id": "image_width",
+      "label": "Image width (px)",
+      "info": "Used only with 'Fixed size'.",
+      "default": 505
+    },
+    {
+      "type": "number",
+      "id": "image_height",
+      "label": "Image height (px)",
+      "info": "Used only with 'Fixed size'.",
+      "default": 600
+    },
+    {
+      "type": "select",
+      "id": "background",
+      "label": "Background",
+      "options": [
+        { "value": "white", "label": "White" },
+        { "value": "beige", "label": "Beige" }
+      ],
+      "default": "white"
+    },
+    {
+      "type": "color",
+      "id": "custom_background",
+      "label": "Custom background color",
+      "info": "Overrides the background choice above when set."
+    },
+    {
+      "type": "range",
+      "id": "image_radius",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Image corner radius",
+      "default": 0
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Full width",
+      "info": "Content stretches edge to edge instead of the centered 1240px column.",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "min": 0,
+      "max": 160,
+      "step": 10,
+      "unit": "px",
+      "label": "Section padding",
+      "info": "0 uses the standard spacing. Reduces automatically on mobile.",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Gap between image and text",
+      "default": 56
+    },
+    {
+      "type": "number",
+      "id": "text_max_width",
+      "label": "Text container width (px)",
+      "info": "0 = automatic.",
+      "default": 0
+    },
+    {
+      "type": "number",
+      "id": "text_padding",
+      "label": "Text container padding (px)",
+      "default": 0
+    },
+    {
+      "type": "number",
+      "id": "text_gap",
+      "label": "Gap between heading and text (px)",
+      "info": "0 = standard spacing.",
+      "default": 0
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow tag",
+      "info": "Small category label above the heading (e.g. MATIÈRE, PRIX, FABRICATION)."
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "info": "Line breaks here appear as line breaks on the page."
+    },
+    {
+      "type": "checkbox",
+      "id": "heading_nowrap",
+      "label": "Keep heading on one line",
+      "info": "On small screens the heading wraps normally so it never overflows.",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "heading_line_height",
+      "min": 100,
+      "max": 200,
+      "step": 10,
+      "unit": "%",
+      "label": "Heading line height",
+      "default": 150
+    },
+    {
+      "type": "checkbox",
+      "id": "price_tag_enabled",
+      "label": "Show price comparison tag",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "price_before",
+      "label": "Price tag — old price (struck through)"
+    },
+    {
+      "type": "text",
+      "id": "price_after",
+      "label": "Price tag — new price (highlighted)"
+    },
+    { "type": "textarea", "id": "text", "label": "Text" },
+    { "type": "text", "id": "button_label", "label": "Button label" },
+    { "type": "url", "id": "button_link", "label": "Button link" }
+  ],
+  "presets": [{ "name": "Image with text" }]
+}
+{% endschema %}

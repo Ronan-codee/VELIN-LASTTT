@@ -1,0 +1,518 @@
+{% comment %} Velin - Featured Products Section {% endcomment %}
+{%- liquid
+  assign fp_source_collection = section.settings.collection
+  if fp_source_collection == blank
+    assign fp_source_collection = collections['nos-produits']
+  endif
+  assign fp_collection_products = fp_source_collection.products
+-%}
+<div class="velin-featured-products" style="
+  background-color: {{ section.settings.bg_color }};
+  padding: {{ section.settings.section_padding }}px;
+">
+
+  {% if section.settings.heading != blank %}
+    <h2 class="velin-featured-products__heading" style="font-size: {{ section.settings.heading_size }}px;">
+      {{ section.settings.heading }}
+    </h2>
+  {% endif %}
+
+  <div class="velin-featured-products__grid" style="gap: {{ section.settings.card_gap }}px;">
+    {% if fp_collection_products != blank %}
+      {% comment %} Collection selected (or the "NOS PRODUITS" default): show every product in it automatically. {% endcomment %}
+      {% for product in fp_collection_products %}
+        {%- liquid
+          assign fp_variant = product.selected_or_first_available_variant
+          assign fp_discount = 0
+          if fp_variant.compare_at_price > fp_variant.price
+            assign fp_discount = fp_variant.compare_at_price | minus: fp_variant.price | times: 100.0 | divided_by: fp_variant.compare_at_price | round
+          endif
+        -%}
+        <div class="velin-product-card" style="width: {{ section.settings.card_width }}px;">
+
+          <div class="velin-product-card__image-wrap" style="width: {{ section.settings.card_width }}px; aspect-ratio: {{ section.settings.card_width }} / {{ section.settings.image_height }};">
+            {% if fp_discount > 0 %}
+              <span class="velin-product-card__badge">-{{ fp_discount }}%</span>
+            {% endif %}
+            {% if product.featured_image %}
+              <a href="{{ product.url }}">
+                <img src="{{ product.featured_image | image_url: width: 600 }}"
+                     alt="{{ product.featured_image.alt | escape }}"
+                     loading="lazy"
+                     class="velin-product-card__image velin-product-card__image--primary">
+                {% if product.images[1] %}
+                  <img src="{{ product.images[1] | image_url: width: 600 }}"
+                       alt="{{ product.images[1].alt | escape }}"
+                       loading="lazy"
+                       class="velin-product-card__image velin-product-card__image--secondary">
+                {% endif %}
+              </a>
+            {% else %}
+              <div class="velin-product-card__image velin-product-card__image--placeholder">
+                <span>Product select karein</span>
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="velin-product-card__info" style="width: {{ section.settings.card_width }}px;">
+            <div class="velin-product-card__top">
+              <a href="{{ product.url }}" class="velin-product-card__title" style="font-size: {{ section.settings.title_size }}px;">
+                {{ product.title }}
+              </a>
+            </div>
+
+            <div class="velin-product-card__price" style="font-size: {{ section.settings.price_size }}px;">
+              {% if fp_discount > 0 %}
+                <s class="velin-product-card__price-compare">{{ fp_variant.compare_at_price | money }}</s>
+              {% endif %}
+              {{ fp_variant.price | money }}
+            </div>
+          </div>
+
+        </div>
+      {% endfor %}
+    {% else %}
+      {% for block in section.blocks %}
+        {% assign product = block.settings.product %}
+        {%- liquid
+          assign fp_variant = product.selected_or_first_available_variant
+          assign fp_discount = 0
+          if fp_variant.compare_at_price > fp_variant.price
+            assign fp_discount = fp_variant.compare_at_price | minus: fp_variant.price | times: 100.0 | divided_by: fp_variant.compare_at_price | round
+          endif
+        -%}
+        <div class="velin-product-card" style="width: {{ section.settings.card_width }}px;" {{ block.shopify_attributes }}>
+
+          <div class="velin-product-card__image-wrap" style="width: {{ section.settings.card_width }}px; aspect-ratio: {{ section.settings.card_width }} / {{ section.settings.image_height }};">
+            {% if fp_discount > 0 %}
+              <span class="velin-product-card__badge">-{{ fp_discount }}%</span>
+            {% endif %}
+            {% if product != blank and product.featured_image %}
+              <a href="{{ product.url }}">
+                <img src="{{ product.featured_image | image_url: width: 600 }}"
+                     alt="{{ product.featured_image.alt | escape }}"
+                     loading="lazy"
+                     class="velin-product-card__image velin-product-card__image--primary">
+                {% if product.images[1] %}
+                  <img src="{{ product.images[1] | image_url: width: 600 }}"
+                       alt="{{ product.images[1].alt | escape }}"
+                       loading="lazy"
+                       class="velin-product-card__image velin-product-card__image--secondary">
+                {% endif %}
+              </a>
+            {% else %}
+              <div class="velin-product-card__image velin-product-card__image--placeholder">
+                <span>Product select karein</span>
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="velin-product-card__info" style="width: {{ section.settings.card_width }}px;">
+            <div class="velin-product-card__top">
+              <a href="{{ product.url }}" class="velin-product-card__title" style="font-size: {{ section.settings.title_size }}px;">
+                {{ product.title | default: "Product Title" }}
+              </a>
+            </div>
+
+            {% if block.settings.option_1_label != blank or block.settings.option_2_label != blank %}
+              <div class="velin-product-card__options" style="font-size: {{ section.settings.option_size }}px;">
+                {% if block.settings.option_1_label != blank %}
+                  <div class="velin-product-card__option">
+                    <span>{{ block.settings.option_1_label }}</span>
+                    {% if block.settings.option_1_has_dropdown %}
+                      <span class="velin-caret">&#9662;</span>
+                    {% endif %}
+                  </div>
+                {% endif %}
+
+                {% if block.settings.option_2_label != blank %}
+                  <div class="velin-product-card__option">
+                    <span>{{ block.settings.option_2_label }}</span>
+                    {% if block.settings.option_2_has_dropdown %}
+                      <span class="velin-caret">&#9662;</span>
+                    {% endif %}
+                  </div>
+                {% endif %}
+              </div>
+            {% endif %}
+
+            <div class="velin-product-card__price" style="font-size: {{ section.settings.price_size }}px;">
+              {% if product != blank %}
+                {% if fp_discount > 0 %}
+                  <s class="velin-product-card__price-compare">{{ fp_variant.compare_at_price | money }}</s>
+                {% endif %}
+                {{ fp_variant.price | money }}
+              {% else %}
+                €0,00
+              {% endif %}
+            </div>
+          </div>
+
+        </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+
+  {%- if section.settings.cta_text != blank -%}
+    <div class="velin-featured-products__cta-wrap">
+      <a href="{{ section.settings.cta_link | default: '/collections/nos-produits' }}" class="velin-featured-products__cta">{{ section.settings.cta_text }}</a>
+    </div>
+  {%- endif -%}
+</div>
+
+<style>
+  .velin-featured-products {
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+
+  .velin-featured-products__heading {
+    font-family: serif;
+    letter-spacing: 1px;
+    margin: 0 0 30px 0;
+    text-transform: uppercase;
+  }
+
+  .velin-featured-products__grid {
+    width: 100%;
+    max-width: 1240px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .velin-product-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .velin-product-card__image-wrap {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .velin-product-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+  }
+
+  .velin-product-card__image--secondary {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+
+  @media (hover: hover) {
+    .velin-product-card__image-wrap:hover .velin-product-card__image--secondary {
+      opacity: 1;
+    }
+  }
+
+  .velin-product-card__badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1;
+    background: #b3001b;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+
+  .velin-product-card__price-compare {
+    color: #999;
+    margin-right: 6px;
+    font-weight: 400;
+    text-decoration: line-through;
+  }
+
+  .velin-product-card__image--placeholder {
+    width: 100%;
+    height: 100%;
+    background: #ddd;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #777;
+    font-size: 13px;
+    text-align: center;
+  }
+
+  .velin-product-card__info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .velin-product-card__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .velin-product-card__title {
+    color: #1c1c1c;
+    text-decoration: none;
+    line-height: 1.3;
+  }
+
+  .velin-product-card__rating {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #1c1c1c;
+    white-space: nowrap;
+  }
+
+  .velin-star {
+    color: #1c1c1c;
+  }
+
+  .velin-product-card__rating .icon-star {
+    width: 12px;
+    height: 12px;
+  }
+
+  .velin-product-card__options {
+    display: flex;
+    gap: 16px;
+  }
+
+  .velin-product-card__option {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #555;
+  }
+
+  .velin-caret {
+    font-size: 11px;
+    color: #555;
+  }
+
+  .velin-product-card__price {
+    font-family: "Manrope", sans-serif;
+    font-weight: 400;
+    color: #000;
+  }
+
+  @media screen and (max-width: 999px) {
+    .velin-featured-products__grid {
+      justify-content: center;
+    }
+  }
+
+  .velin-featured-products__cta-wrap {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+  }
+
+  .velin-featured-products__cta {
+    display: inline-block;
+    padding: 14px 32px;
+    background: #674E35;
+    color: #ffffff;
+    text-decoration: none;
+    font-family: "Merriweather", serif;
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border-radius: 6px;
+    transition: opacity 0.2s ease;
+  }
+
+  .velin-featured-products__cta:hover {
+    opacity: 0.85;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Velin Featured Products",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Featured Products"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection (automatique)",
+      "info": "Laissez vide pour afficher automatiquement toute la collection \"NOS PRODUITS\". Quand une collection a des produits, tous s'affichent et les blocs \"Product\" ci-dessous sont ignorés."
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Bouton (texte)",
+      "info": "Laissez vide pour masquer le bouton.",
+      "default": "Voir toute la collection"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Bouton (lien)",
+      "info": "Laissez vide pour pointer vers /collections/nos-produits."
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading Size (px)",
+      "min": 14,
+      "max": 50,
+      "step": 1,
+      "default": 28
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#EDEDED"
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "label": "Section Padding (px)",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "card_gap",
+      "label": "Gap Between Cards (px)",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "card_width",
+      "label": "Card Width (px)",
+      "min": 150,
+      "max": 400,
+      "step": 5,
+      "default": 295
+    },
+    {
+      "type": "range",
+      "id": "image_height",
+      "label": "Image Height (px)",
+      "min": 100,
+      "max": 500,
+      "step": 5,
+      "default": 275
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title Size (px)",
+      "min": 10,
+      "max": 30,
+      "step": 1,
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "rating_size",
+      "label": "Rating Size (px)",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "option_size",
+      "label": "Options Text Size (px)",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "price_size",
+      "label": "Price Size (px)",
+      "min": 10,
+      "max": 30,
+      "step": 1,
+      "default": 14
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Select Product"
+        },
+        {
+          "type": "header",
+          "content": "Option 1"
+        },
+        {
+          "type": "text",
+          "id": "option_1_label",
+          "label": "Option 1 Label",
+          "default": "Bag"
+        },
+        {
+          "type": "checkbox",
+          "id": "option_1_has_dropdown",
+          "label": "Show dropdown arrow",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Option 2"
+        },
+        {
+          "type": "text",
+          "id": "option_2_label",
+          "label": "Option 2 Label",
+          "default": "Color"
+        },
+        {
+          "type": "checkbox",
+          "id": "option_2_has_dropdown",
+          "label": "Show dropdown arrow",
+          "default": true
+        }
+      ]
+    }
+  ],
+  "max_blocks": 5,
+  "presets": [
+    {
+      "name": "Velin Featured Products",
+      "blocks": [
+        { "type": "product" },
+        { "type": "product" },
+        { "type": "product" },
+        { "type": "product" }
+      ]
+    }
+  ]
+}
+{% endschema %}

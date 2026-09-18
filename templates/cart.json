@@ -1,0 +1,151 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-cart",
+      "settings": {
+        "header_style": "black",
+        "padding_top": 60,
+        "padding_bottom": 100,
+        "padding_h": 100,
+        "section_gap": 46,
+        "column_gap": 12,
+        "heading_text": "Votre Panier",
+        "heading_size": 42,
+        "continue_text": "Continuer Vos Achats",
+        "continue_size": 20,
+        "continue_link": "/collections/nos-produits",
+        "empty_text": "Votre panier est vide.",
+        "image_width": 204,
+        "image_height": 190,
+        "image_padding_v": 0,
+        "image_padding_h": 19,
+        "item_gap": 24,
+        "item_padding_v": 20,
+        "item_padding_h": 20,
+        "item_radius": 12,
+        "item_width": 803,
+        "item_height": 216,
+        "title_size": 22,
+        "variant_size": 16,
+        "price_size": 14,
+        "remove_color": "#c0392b",
+        "watermark_image": "shopify://shop_images/bfc4aa662b4918846d89749161d41644a6f15970.png",
+        "watermark_opacity": 0,
+        "watermark_blur": 0,
+        "watermark_width": 550,
+        "watermark_right": 15,
+        "summary_width": 381,
+        "summary_gap": 28,
+        "summary_sticky_top": 20,
+        "summary_height": 426,
+        "summary_border_width": 0.5,
+        "summary_border_style": "solid",
+        "summary_border_color": "#000000b3",
+        "summary_border_radius": 12,
+        "summary_padding": 20,
+        "summary_heading": "Récapitulatif de la commande",
+        "subtotal_label": "Sous-total",
+        "article_label": "articles",
+        "shipping_label": "Livraison",
+        "shipping_value": "Gratuite",
+        "total_label": "TOTAL",
+        "taxes_note": "Taxes incluses",
+        "checkout_text": "Finaliser ma commande",
+        "checkout_bg": "#674E35",
+        "checkout_color": "#ffffff"
+      }
+    },
+    "featured_products_AwGfVL": {
+      "type": "featured-products",
+      "blocks": {
+        "product_FEBLEB": {
+          "type": "product",
+          "settings": {
+            "product": "le-sac-hobo-croissant-cuir",
+            "option_1_label": "",
+            "option_1_has_dropdown": true,
+            "option_2_label": "",
+            "option_2_has_dropdown": true
+          }
+        },
+        "product_UzPyNB": {
+          "type": "product",
+          "settings": {
+            "product": "le-chevron-sac-cuir-lisse",
+            "option_1_label": "",
+            "option_1_has_dropdown": true,
+            "option_2_label": "",
+            "option_2_has_dropdown": true
+          }
+        },
+        "product_NkfNKT": {
+          "type": "product",
+          "settings": {
+            "product": "le-trapeze-sac-hobo-cuir",
+            "option_1_label": "",
+            "option_1_has_dropdown": true,
+            "option_2_label": "",
+            "option_2_has_dropdown": true
+          }
+        },
+        "product_m3cNV9": {
+          "type": "product",
+          "settings": {
+            "product": "le-tote-cabas-cuir",
+            "option_1_label": "",
+            "option_1_has_dropdown": true,
+            "option_2_label": "",
+            "option_2_has_dropdown": true
+          }
+        },
+        "product_leCroco1": {
+          "type": "product",
+          "settings": {
+            "product": "le-croco-portefeuille-cuir-verni",
+            "option_1_label": "",
+            "option_1_has_dropdown": true,
+            "option_2_label": "",
+            "option_2_has_dropdown": true
+          }
+        }
+      },
+      "block_order": [
+        "product_FEBLEB",
+        "product_UzPyNB",
+        "product_NkfNKT",
+        "product_m3cNV9",
+        "product_leCroco1"
+      ],
+      "name": "Velin Featured Products",
+      "settings": {
+        "heading": "Nos produits",
+        "collection": "nos-produits",
+        "cta_text": "Voir toute la collection",
+        "cta_link": "",
+        "heading_size": 28,
+        "bg_color": "#f4f1ec",
+        "section_padding": 50,
+        "card_gap": 20,
+        "card_width": 295,
+        "image_height": 275,
+        "title_size": 15,
+        "rating_size": 13,
+        "option_size": 13,
+        "price_size": 14
+      }
+    }
+  },
+  "order": [
+    "main",
+    "featured_products_AwGfVL"
+  ]
+}

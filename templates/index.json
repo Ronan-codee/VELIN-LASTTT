@@ -1,0 +1,403 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "blocks": {
+        "review_AhjqwD": {
+          "type": "review",
+          "disabled": true,
+          "settings": {
+            "stars": 5,
+            "text": "Le sac est magnifique ! Le cuir est de très belle qualité et les finitions sont impeccables. Il est encore plus beau en vrai !",
+            "author": "Emma .L"
+          }
+        },
+        "review_kWCknR": {
+          "type": "review",
+          "disabled": true,
+          "settings": {
+            "stars": 5,
+            "text": "Très satisfaite de mon achat. Livraison rapide, emballage soigné et le sac est élégant. Je reçois déjà plein de compliments.",
+            "author": "Camille .D"
+          }
+        },
+        "review_1": {
+          "type": "review",
+          "disabled": true,
+          "settings": {
+            "stars": 5,
+            "text": "J'avais un peu peur en commandant, mais je ne regrette absolument pas. Le cuir est souple, l'odeur du vrai cuir est bien présente et la qualité est au rendez-vous.",
+            "author": "Julie .M"
+          }
+        },
+        "review_2": {
+          "type": "review",
+          "disabled": true,
+          "settings": {
+            "stars": 5,
+            "text": "Excellent rapport qualité-prix. Le sac est robuste, pratique et très chic. Je commanderai de nouveau sans hésiter.",
+            "author": "Sarah .B"
+          }
+        },
+        "review_3": {
+          "type": "review",
+          "disabled": true,
+          "settings": {
+            "stars": 5,
+            "text": "La qualité est exceptionnelle, je suis vraiment satisfait de mon achat, je recommande vivement !",
+            "author": "THOMAS M."
+          }
+        },
+        "review_mRBb7X": {
+          "type": "review",
+          "disabled": true,
+          "settings": {
+            "stars": 5,
+            "text": "Je cherchais un sac en cuir véritable depuis longtemps et celui-ci est parfait. Les coutures sont propres et la couleur est exactement comme sur les photos.",
+            "author": "Clara .R"
+          }
+        },
+        "review_4": {
+          "type": "review",
+          "disabled": true,
+          "settings": {
+            "stars": 5,
+            "text": "Une très belle surprise ! Le sac est arrivé rapidement et il dépasse mes attentes. Il a l'air conçu pour durer des années.",
+            "author": "Léa .G"
+          }
+        }
+      },
+      "block_order": [
+        "review_AhjqwD",
+        "review_kWCknR",
+        "review_1",
+        "review_2",
+        "review_3",
+        "review_mRBb7X",
+        "review_4"
+      ],
+      "settings": {
+        "hero_image": "shopify://shop_images/hf_20260807_202318_fff0ae09-873e-4572-bbe5-b2030d5a68e2.png",
+        "subheading": "PLUS DE 3000 CLIENTS SATISFAITS",
+        "heading": "LE CUIR VÉRITABLE ENFIN ACCESSIBLE",
+        "heading_offset": 80,
+        "show_scroll": true,
+        "scroll_text": "DÉCOUVRIR LA COLLECTION",
+        "scroll_btn_link": "shopify://collections/nos-produits",
+        "scroll_btn_spacing": 78,
+        "scroll_btn_offset": 70,
+        "scroll_btn_width": 299,
+        "scroll_btn_height": 55,
+        "scroll_btn_padding_v": 14,
+        "scroll_btn_padding_h": 20,
+        "scroll_btn_radius": 8,
+        "scroll_btn_border_width": 1,
+        "scroll_btn_font_size": 16,
+        "scroll_btn_border_color": "#ffffff",
+        "scroll_btn_bg_color": "#ffffff",
+        "scroll_btn_bg_opacity": 12,
+        "scroll_btn_text_color": "#ffffff"
+      }
+    },
+    "features": {
+      "type": "features-bar",
+      "blocks": {
+        "f1": {
+          "type": "feature",
+          "settings": {
+            "icon": "pin",
+            "label": "CUIR AUTHENTIQUE"
+          }
+        },
+        "f2": {
+          "type": "feature",
+          "settings": {
+            "icon": "phone",
+            "label": "SERVICE CLIENT 7/7"
+          }
+        },
+        "f3": {
+          "type": "feature",
+          "settings": {
+            "icon": "truck",
+            "label": "Livraison offerte"
+          }
+        },
+        "f4": {
+          "type": "feature",
+          "settings": {
+            "icon": "thumbs_up",
+            "label": "PAIEMENT SÉCURISÉ"
+          }
+        }
+      },
+      "block_order": [
+        "f1",
+        "f2",
+        "f3",
+        "f4"
+      ],
+      "settings": {
+        "marquee_speed": 20,
+        "icon_text_gap": 4
+      }
+    },
+    "stories": {
+      "type": "video-stories",
+      "blocks": {
+        "s5": {
+          "type": "story",
+          "settings": {
+            "video_file": "shopify://files/videos/SAC TRAPÈZE UGC 1:8.mp4",
+            "video_url": "",
+            "name": "Maya",
+            "tag": "Influenceuse mode"
+          }
+        },
+        "s4": {
+          "type": "story",
+          "settings": {
+            "video_file": "shopify://files/videos/tote 2.mp4",
+            "video_url": "",
+            "name": "Julie",
+            "tag": "Influenceuse lifestyle"
+          }
+        },
+        "story_TPQFQX": {
+          "type": "story",
+          "settings": {
+            "video_file": "shopify://files/videos/UGC 1:5.mp4",
+            "video_url": "",
+            "name": "Anne",
+            "tag": "Passionnée de mode"
+          }
+        },
+        "story_JRrDhr": {
+          "type": "story",
+          "settings": {
+            "video_file": "shopify://files/videos/TRAP 1.mp4",
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/e78a74f4073f48268ad3788d88914cdb.mp4",
+            "name": "Alexa",
+            "tag": "Créatrice de contenu"
+          }
+        },
+        "story_HicwQR": {
+          "type": "story",
+          "settings": {
+            "video_file": "shopify://files/videos/hf_20260703_141635_ffa1bc51-b0ca-45d1-8345-b0481b13b09e.mp4",
+            "video_url": "",
+            "name": "Lola",
+            "tag": "Mannequin"
+          }
+        }
+      },
+      "block_order": [
+        "s5",
+        "s4",
+        "story_TPQFQX",
+        "story_JRrDhr",
+        "story_HicwQR"
+      ],
+      "settings": {
+        "title": "ELLES PORTENT VELIN AU QUOTIDIEN"
+      }
+    },
+    "collection_grid_h9Bcjq": {
+      "type": "collection-grid",
+      "blocks": {
+        "product_item_AnHUnQ": {
+          "type": "product_item",
+          "settings": {
+            "product": "le-chevron-sac-cuir-lisse",
+            "title": "Leadleader bag",
+            "price": "$2355"
+          }
+        },
+        "product_item_Ag4KbY": {
+          "type": "product_item",
+          "settings": {
+            "product": "le-trapeze-sac-hobo-cuir",
+            "image": "shopify://shop_images/Gemini_Generated_Image_6g0g276g0g276g0g_1_9967bf61-d35d-4a6f-b6a8-aad329912ee4.png",
+            "title": "Leadleader bag",
+            "price": "$2355"
+          }
+        },
+        "product_item_grcHi3": {
+          "type": "product_item",
+          "settings": {
+            "product": "le-sac-hobo-croissant-cuir",
+            "title": "Cross Body Bag",
+            "price": ""
+          }
+        },
+        "product_item_A7TYNp": {
+          "type": "product_item",
+          "settings": {
+            "product": "le-tote-cabas-cuir",
+            "title": "Leadleader bag",
+            "price": "$2355"
+          }
+        },
+        "product_item_leCroco1": {
+          "type": "product_item",
+          "settings": {
+            "product": "le-croco-portefeuille-cuir-verni",
+            "title": "Le Croco",
+            "price": ""
+          }
+        },
+        "product_item_leMedaille1": {
+          "type": "product_item",
+          "settings": {
+            "product": "le-medaille-sac-cuir-grain",
+            "title": "Le Médaille",
+            "price": ""
+          }
+        },
+        "product_item_leNoeud1": {
+          "type": "product_item",
+          "settings": {
+            "product": "le-noeud-sac-cuir-lisse",
+            "title": "Le Nœud",
+            "price": ""
+          }
+        },
+        "product_item_leTresse1": {
+          "type": "product_item",
+          "settings": {
+            "product": "le-tresse-sac-main-en-cuir",
+            "title": "Le Tressé",
+            "price": ""
+          }
+        }
+      },
+      "block_order": [
+        "product_item_AnHUnQ",
+        "product_item_Ag4KbY",
+        "product_item_grcHi3",
+        "product_item_A7TYNp",
+        "product_item_leCroco1",
+        "product_item_leMedaille1",
+        "product_item_leNoeud1",
+        "product_item_leTresse1"
+      ],
+      "name": "Custom Collection Grid",
+      "settings": {
+        "heading": "TOUTE LA COLLECTION",
+        "marquee_speed": 15,
+        "collection": "nos-produits"
+      }
+    },
+    "leather_story": {
+      "type": "image-with-text",
+      "settings": {
+        "image": "shopify://shop_images/hf_20260825_164230_5d960ffd-25f1-441d-8229-f1e6d5a7cb9a.png",
+        "image_position": "right",
+        "image_fit": "crop",
+        "image_width": 505,
+        "image_height": 600,
+        "background": "beige",
+        "custom_background": "",
+        "image_radius": 14,
+        "full_width": false,
+        "section_padding": 0,
+        "column_gap": 56,
+        "text_max_width": 0,
+        "text_padding": 0,
+        "text_gap": 0,
+        "eyebrow": "LA MATIÈRE",
+        "heading": "Le Cuir de Vachette Véritable, Notre Seul Choix",
+        "heading_nowrap": false,
+        "heading_line_height": 150,
+        "price_tag_enabled": false,
+        "price_before": "",
+        "price_after": "",
+        "text": "Chaque produit Velin est taillé dans du cuir de vachette véritable, une matière noble et résistante. Naturel, légèrement irrégulier, il se patine avec le temps au lieu de s'user — pour un produit qui vieillit mieux que le jour où vous l'avez reçu.",
+        "button_label": "",
+        "button_link": ""
+      }
+    },
+    "banner": {
+      "type": "video-section",
+      "settings": {
+        "video": "shopify://files/videos/0808(1).mp4",
+        "autoplay": true,
+        "loop": true,
+        "controls": false,
+        "heading": "LE LUXE DU CUIR, SANS SON PRIX.",
+        "heading_size": 42,
+        "text_color": "#ffffff",
+        "overlay_opacity": 30
+      }
+    },
+    "guarantee_cards_fnDd8r": {
+      "type": "guarantee-cards",
+      "blocks": {
+        "feature_item_9hje34": {
+          "type": "feature_item",
+          "settings": {
+            "icon_type": "thumbs",
+            "title": "CUIR PLEINE FLEUR VÉRITABLE",
+            "text": "Chaque sac est en cuir de vachette pleine fleur, la partie la plus résistante et la plus noble de la peau. Une matière qui se patine et dure des années."
+          }
+        },
+        "feature_item_8nrG96": {
+          "type": "feature_item",
+          "settings": {
+            "icon_type": "phone",
+            "title": "UN CONTACT DIRECT",
+            "text": "Une question avant ou après l'achat ? Écrivez-nous, on répond directement. Pas de service client anonyme."
+          }
+        },
+        "feature_item_hdM4Ew": {
+          "type": "feature_item",
+          "settings": {
+            "icon_type": "truck",
+            "title": "LIVRAISON EN FRANCE",
+            "text": "On livre dans toute la France métropolitaine. Un suivi vous est envoyé pour chaque commande"
+          }
+        }
+      },
+      "block_order": [
+        "feature_item_9hje34",
+        "feature_item_8nrG96",
+        "feature_item_hdM4Ew"
+      ],
+      "name": "Features Guarantees Bar",
+      "settings": {}
+    },
+    "17856834459ec5f5e2": {
+      "type": "_blocks",
+      "settings": {}
+    },
+    "1785685961d45ff726": {
+      "type": "_blocks",
+      "settings": {}
+    },
+    "1786284516cb85b199": {
+      "type": "_blocks",
+      "settings": {}
+    }
+  },
+  "order": [
+    "hero",
+    "features",
+    "stories",
+    "collection_grid_h9Bcjq",
+    "leather_story",
+    "banner",
+    "guarantee_cards_fnDd8r",
+    "17856834459ec5f5e2",
+    "1785685961d45ff726",
+    "1786284516cb85b199"
+  ]
+}

@@ -1,0 +1,120 @@
+{% render 'header-color-override', style: section.settings.header_style %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,340..600&family=Work+Sans:wght@400;500&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<div class="about-hero" style="
+  background-image: url('{{ section.settings.image | image_url: width: 1600 }}');
+  height: {{ section.settings.hero_height }}px;
+">
+  <div class="about-hero__overlay" style="background: rgba(0,0,0,{{ section.settings.overlay_opacity | divided_by: 100.0 }});"></div>
+  <div class="about-hero__content">
+    {%- if section.settings.label != blank -%}
+      <p class="about-hero__label">{{ section.settings.label }}</p>
+    {%- endif -%}
+    <h1 class="about-hero__heading">{{ section.settings.heading }}</h1>
+    {%- if section.settings.caption != blank -%}
+      <p class="about-hero__caption">{{ section.settings.caption }}</p>
+    {%- endif -%}
+  </div>
+</div>
+
+<style>
+  .about-hero {
+    position: relative;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+  }
+  .about-hero__overlay {
+    position: absolute;
+    inset: 0;
+  }
+  .about-hero__content {
+    position: relative;
+    z-index: 2;
+    color: #fff;
+    max-width: 560px;
+    padding-left: 80px;
+    padding-top: 110px;
+  }
+  .about-hero__label {
+    font-family: "JetBrains Mono", monospace;
+    letter-spacing: 0.14em;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    margin: 0 0 22px;
+    padding-bottom: 12px;
+    position: relative;
+    display: inline-block;
+  }
+  .about-hero__label::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 32px;
+    height: 1px;
+    background: var(--color-gold);
+  }
+  .about-hero__heading {
+    font-family: "Fraunces", var(--font-heading), serif;
+    font-optical-sizing: auto;
+    font-weight: 460;
+    font-size: clamp(32px, 4.4vw, 54px);
+    line-height: 1.16;
+    letter-spacing: -0.01em;
+    margin: 0 0 18px;
+  }
+  .about-hero__caption {
+    font-family: "Work Sans", var(--font-body), sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.7;
+    opacity: 0.92;
+    max-width: 440px;
+    margin: 0;
+  }
+  @media screen and (max-width: 749px) {
+    .about-hero__content { padding-left: 24px; padding-right: 24px; padding-top: 90px; }
+    .about-hero__heading { font-size: 28px; }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "About hero",
+  "settings": [
+    {
+      "type": "select",
+      "id": "header_style",
+      "label": "Header color (logo, text, icons) on this page",
+      "options": [
+        { "value": "auto", "label": "Automatic" },
+        { "value": "black", "label": "Black" },
+        { "value": "white", "label": "White" }
+      ],
+      "default": "auto"
+    },
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "range", "id": "hero_height", "label": "Hero Height (px)", "min": 200, "max": 700, "step": 10, "default": 480 },
+    { "type": "range", "id": "overlay_opacity", "label": "Overlay Opacity (%)", "min": 0, "max": 100, "step": 5, "default": 30 },
+    { "type": "text", "id": "label", "label": "Label (small text above heading)", "default": "NOTRE ENGAGEMENT" },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "DU CUIR DE VACHETTE. PAS DE LOGO À EXHIBER."
+    },
+    {
+      "type": "text",
+      "id": "caption",
+      "label": "Caption",
+      "default": "Un sac en cuir de vachette à 150€, pensé pour durer des années. Juste la matière et le savoir-faire, rien de plus."
+    }
+  ],
+  "presets": [{ "name": "About hero" }]
+}
+{% endschema %}

@@ -1,0 +1,605 @@
+{% doc %}
+  @prompt
+    Create a "Vous aimerez aussi" (You might also like) section for the product page that displays a grid of related products from the same collection. The section should show product images, titles, and prices, with a clean and elegant layout. The number of products displayed and the section title should be customizable from the theme editor settings.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+{%- assign related_marquee_duration = 100 | minus: block.settings.marquee_speed -%}
+
+{% style %}
+  .ai-related-products-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    padding: {{ block.settings.section_padding_top }}px 0 {{ block.settings.section_padding_bottom }}px;
+    background-color: {{ block.settings.background_color }};
+  }
+
+  .ai-related-products__container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.container_width }}px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .ai-related-products__header-{{ ai_gen_id }} {
+    text-align: {{ block.settings.title_alignment }};
+    margin-bottom: {{ block.settings.title_spacing }}px;
+  }
+
+  .ai-related-products__title-{{ ai_gen_id }} {
+    font-family: {{ block.settings.title_font.family }}, {{ block.settings.title_font.fallback_families }};
+    font-weight: {{ block.settings.title_font.weight }};
+    font-size: {{ block.settings.title_size }}px;
+    color: {{ block.settings.title_color }};
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  /* Marquee — infinite auto-scroll, full-bleed edge to edge, same mechanic as the homepage collection */
+  .ai-related-products__marquee-{{ ai_gen_id }} {
+    overflow: hidden;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+  }
+
+  .ai-related-products__track-{{ ai_gen_id }} {
+    display: flex;
+    width: max-content;
+    animation: ai-related-products-marquee-{{ ai_gen_id }} {{ related_marquee_duration }}s linear infinite;
+  }
+
+  .ai-related-products__marquee-{{ ai_gen_id }}:hover .ai-related-products__track-{{ ai_gen_id }} {
+    animation-play-state: paused;
+  }
+
+  @keyframes ai-related-products-marquee-{{ ai_gen_id }} {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  .ai-related-products__set-{{ ai_gen_id }} {
+    display: flex;
+    flex-shrink: 0;
+    gap: {{ block.settings.grid_gap }}px;
+    padding-right: {{ block.settings.grid_gap }}px;
+  }
+
+  .ai-related-products__item-{{ ai_gen_id }} {
+    width: {{ block.settings.card_width }}px;
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.3s ease;
+  }
+
+  .ai-related-products__item-{{ ai_gen_id }}:hover {
+    transform: translateY(-4px);
+  }
+
+  /* Image — same 15:14 ratio as the homepage "ALL COLLECTION" cards */
+  .ai-related-products__image-wrapper-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 15 / 14;
+    overflow: hidden;
+    background-color: {{ block.settings.image_background }};
+    border-radius: {{ block.settings.image_border_radius }}px;
+    margin-bottom: 12px;
+  }
+
+  .ai-related-products__image-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ai-related-products__badge-{{ ai_gen_id }} {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+    background: #b3001b;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+
+  .ai-related-products__image--secondary-{{ ai_gen_id }} {
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+
+  @media (hover: hover) {
+    .ai-related-products__item-{{ ai_gen_id }}:hover .ai-related-products__image--secondary-{{ ai_gen_id }} {
+      opacity: 1;
+    }
+  }
+
+  .ai-related-products__image-placeholder-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-related-products__image-placeholder-{{ ai_gen_id }} svg {
+    width: 60%;
+    height: 60%;
+    opacity: 0.3;
+  }
+
+  .ai-related-products__info-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .ai-related-products__product-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.product_title_size }}px;
+    color: {{ block.settings.product_title_color }};
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  .ai-related-products__title-row-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .ai-related-products__rating-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: {{ block.settings.product_title_color }};
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .ai-related-products__rating-{{ ai_gen_id }} .icon-star {
+    width: 12px;
+    height: 12px;
+  }
+
+  .ai-related-products__price-{{ ai_gen_id }} {
+    font-family: "Manrope", sans-serif;
+    font-size: {{ block.settings.price_size }}px;
+    color: #000;
+    font-weight: 400;
+  }
+
+  .ai-related-products__price--compare-{{ ai_gen_id }} {
+    color: #999;
+    text-decoration: line-through;
+    font-weight: 400;
+    margin-right: 6px;
+  }
+
+  .ai-related-products__price--sale-{{ ai_gen_id }} {
+    color: #000;
+  }
+
+  .ai-related-products__empty-{{ ai_gen_id }} {
+    text-align: center;
+    padding: 40px 20px;
+    color: #999;
+    font-style: italic;
+  }
+
+  .ai-related-products__cta-wrap-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: center;
+    margin-top: 36px;
+  }
+
+  .ai-related-products__cta-{{ ai_gen_id }} {
+    display: inline-block;
+    padding: 14px 32px;
+    background: #674E35;
+    color: #ffffff;
+    text-decoration: none;
+    font-family: "Merriweather", serif;
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border-radius: 6px;
+    transition: opacity 0.2s ease;
+  }
+
+  .ai-related-products__cta-{{ ai_gen_id }}:hover {
+    opacity: 0.85;
+  }
+
+  @media screen and (max-width: 989px) {
+    .ai-related-products__title-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.title_size }}px * 0.85);
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-related-products__item-{{ ai_gen_id }} {
+      width: 220px;
+    }
+
+    .ai-related-products-{{ ai_gen_id }} {
+      padding: {{ block.settings.section_padding_top | times: 0.7 }}px 0 {{ block.settings.section_padding_bottom | times: 0.7 }}px;
+    }
+
+    .ai-related-products__title-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.title_size }}px * 0.75);
+    }
+  }
+{% endstyle %}
+
+{%- liquid
+  assign related_source_collection = block.settings.collection
+  if related_source_collection == blank
+    assign related_source_collection = collections['nos-produits']
+  endif
+  if related_source_collection == blank and product.collections.size > 0
+    assign related_source_collection = product.collections.first
+  endif
+
+  assign related_products = blank
+  if related_source_collection != blank
+    assign related_products = related_source_collection.products
+  endif
+
+  assign related_products_count = 0
+  if related_products != blank
+    assign related_products_count = block.settings.products_count | at_most: related_products.size
+  endif
+-%}
+
+<div class="ai-related-products-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-related-products__container-{{ ai_gen_id }}">
+    {% if block.settings.section_title != blank %}
+      <div class="ai-related-products__header-{{ ai_gen_id }}">
+        <h2 class="ai-related-products__title-{{ ai_gen_id }}">{{ block.settings.section_title }}</h2>
+      </div>
+    {% endif %}
+
+    {% if related_products_count > 0 %}
+      <div class="ai-related-products__marquee-{{ ai_gen_id }}">
+        <div class="ai-related-products__track-{{ ai_gen_id }}">
+          {%- for i in (1..2) -%}
+            <div class="ai-related-products__set-{{ ai_gen_id }}" aria-hidden="{% if i == 1 %}false{% else %}true{% endif %}">
+              {% for related_product in related_products limit: related_products_count %}
+                {%- liquid
+                  assign related_variant = related_product.selected_or_first_available_variant
+                  assign related_discount = 0
+                  if related_variant.compare_at_price > related_variant.price
+                    assign related_discount = related_variant.compare_at_price | minus: related_variant.price | times: 100.0 | divided_by: related_variant.compare_at_price | round
+                  endif
+                -%}
+                <a
+                  href="{{ related_product.url }}"
+                  class="ai-related-products__item-{{ ai_gen_id }}"
+                  tabindex="{% if i == 1 %}0{% else %}-1{% endif %}"
+                >
+                  <div class="ai-related-products__image-wrapper-{{ ai_gen_id }}">
+                    {% if related_discount > 0 %}
+                      <span class="ai-related-products__badge-{{ ai_gen_id }}">-{{ related_discount }}%</span>
+                    {% endif %}
+                    {% if related_product.featured_image %}
+                      <img
+                        src="{{ related_product.featured_image | image_url: width: 600 }}"
+                        alt="{{ related_product.featured_image.alt | escape }}"
+                        class="ai-related-products__image-{{ ai_gen_id }}"
+                        loading="lazy"
+                        width="600"
+                        height="560"
+                      >
+                      {% if related_product.images[1] %}
+                        <img
+                          src="{{ related_product.images[1] | image_url: width: 600 }}"
+                          alt="{{ related_product.images[1].alt | escape }}"
+                          class="ai-related-products__image-{{ ai_gen_id }} ai-related-products__image--secondary-{{ ai_gen_id }}"
+                          loading="lazy"
+                          width="600"
+                          height="560"
+                        >
+                      {% endif %}
+                    {% else %}
+                      <div class="ai-related-products__image-placeholder-{{ ai_gen_id }}">
+                        {{ 'product-1' | placeholder_svg_tag }}
+                      </div>
+                    {% endif %}
+                  </div>
+
+                  <div class="ai-related-products__info-{{ ai_gen_id }}">
+                    <div class="ai-related-products__title-row-{{ ai_gen_id }}">
+                      <h3 class="ai-related-products__product-title-{{ ai_gen_id }}">
+                        {{ related_product.title }}
+                      </h3>
+                    </div>
+
+                    <div class="ai-related-products__price-{{ ai_gen_id }}">
+                      {% if related_discount > 0 %}
+                        <span class="ai-related-products__price--compare-{{ ai_gen_id }}">
+                          {{ related_variant.compare_at_price | money }}
+                        </span>
+                        <span class="ai-related-products__price--sale-{{ ai_gen_id }}">
+                          {{ related_variant.price | money }}
+                        </span>
+                      {% else %}
+                        {{ related_variant.price | money }}
+                      {% endif %}
+                    </div>
+                  </div>
+                </a>
+              {% endfor %}
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+    {% else %}
+      <div class="ai-related-products__empty-{{ ai_gen_id }}">
+        Aucun produit associé trouvé.
+      </div>
+    {% endif %}
+
+    {%- if block.settings.cta_text != blank -%}
+      <div class="ai-related-products__cta-wrap-{{ ai_gen_id }}">
+        <a href="{{ block.settings.cta_link | default: '/collections/nos-produits' }}" class="ai-related-products__cta-{{ ai_gen_id }}">{{ block.settings.cta_text }}</a>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Vous aimerez aussi",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section title",
+      "default": "Vous aimerez aussi"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection source",
+      "info": "Laissez vide pour afficher automatiquement toute la collection \"NOS PRODUITS\" (sacs + portefeuille)."
+    },
+    {
+      "type": "range",
+      "id": "products_count",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "label": "Number of products",
+      "default": 5
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Bouton (texte)",
+      "info": "Laissez vide pour masquer le bouton.",
+      "default": "Voir toute la collection"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Bouton (lien)",
+      "info": "Laissez vide pour pointer vers /collections/nos-produits."
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "unit": "px",
+      "label": "Container width",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "card_width",
+      "min": 200,
+      "max": 400,
+      "step": 10,
+      "unit": "px",
+      "label": "Card width",
+      "default": 300
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "label": "Gap between cards",
+      "default": 25
+    },
+    {
+      "type": "range",
+      "id": "marquee_speed",
+      "min": 10,
+      "max": 90,
+      "step": 5,
+      "label": "Scroll speed",
+      "info": "Higher = faster",
+      "default": 65
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "title_spacing",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "label": "Title spacing",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Title style"
+    },
+    {
+      "type": "font_picker",
+      "id": "title_font",
+      "label": "Title font",
+      "default": "playfair_display_n4"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Title size",
+      "default": 36
+    },
+    {
+      "type": "select",
+      "id": "title_alignment",
+      "label": "Title alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#241D16"
+    },
+    {
+      "type": "header",
+      "content": "Product card style"
+    },
+    {
+      "type": "range",
+      "id": "product_title_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Product title size",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "product_title_color",
+      "label": "Product title color",
+      "default": "#241D16"
+    },
+    {
+      "type": "range",
+      "id": "price_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Price size",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "price_color",
+      "label": "Price color",
+      "default": "#241D16"
+    },
+    {
+      "type": "color",
+      "id": "sale_price_color",
+      "label": "Sale price color",
+      "default": "#D9A441"
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "label": "Image border radius",
+      "default": 8
+    },
+    {
+      "type": "color",
+      "id": "image_background",
+      "label": "Image background",
+      "default": "#F4F1EC"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#FFFFFF"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Vous aimerez aussi"
+    }
+  ]
+}
+{% endschema %}

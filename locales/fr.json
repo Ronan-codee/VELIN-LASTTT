@@ -1,0 +1,61 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "general": {
+    "404": {
+      "title": "Page introuvable",
+      "subtext": "La page que vous recherchez n'existe pas."
+    },
+    "continue_shopping": "Continuer mes achats",
+    "search": {
+      "title": "Recherche",
+      "placeholder": "Rechercher sur notre boutique",
+      "submit": "Rechercher",
+      "no_results": "Aucun résultat trouvé pour \"{{ terms }}\""
+    },
+    "cart": {
+      "title": "Panier"
+    }
+  },
+  "collections": {
+    "general": {
+      "title": "Collections",
+      "no_matches": "Aucun produit trouvé dans cette collection."
+    },
+    "filtering": {
+      "filter_button": "Filtrer",
+      "apply": "Appliquer",
+      "clear_all": "Tout effacer"
+    },
+    "sorting": {
+      "title": "Trier"
+    }
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Ajouter au panier",
+      "sold_out": "Épuisé"
+    }
+  },
+  "cart": {
+    "general": {
+      "subtotal": "Sous-total",
+      "update": "Mettre à jour le panier",
+      "checkout": "Passer à la caisse",
+      "empty": "Votre panier est vide.",
+      "continue_shopping": "Continuer mes achats"
+    },
+    "label": {
+      "product": "Produit",
+      "quantity": "Quantité",
+      "total": "Total"
+    }
+  }
+}

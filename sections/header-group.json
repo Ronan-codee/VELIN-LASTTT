@@ -1,0 +1,56 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "header",
+  "name": "Header group",
+  "sections": {
+    "blocks_WRXHdq": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_938a584_fUwhDg": {
+          "type": "ai_gen_block_938a584",
+          "name": "Rotating announcement bar",
+          "settings": {
+            "message_1": "<p>1 sac acheté = 1 porte-monnaie en cuir offert</p>",
+            "message_2": "<p>30 jours pour changer d'avis</p>",
+            "message_3": "<p>Service client disponible 7j/7</p>",
+            "message_4": "<p>Livraison offerte</p>",
+            "rotation_interval": 2,
+            "background_color": "#674E35",
+            "text_color": "#F1EAE0",
+            "link_color": "#F1EAE0",
+            "font_size": 14,
+            "padding": 12
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_938a584_fUwhDg"
+      ],
+      "name": "Rotating announcement bar",
+      "settings": {}
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "logo": "shopify://shop_images/ChatGPT_Image_2_aout_2026_14_53_35.png",
+        "logo_width": 100,
+        "menu": "main-menu",
+        "nav_text_size": 16,
+        "icon_size": 22
+      }
+    }
+  },
+  "order": [
+    "blocks_WRXHdq",
+    "header"
+  ]
+}

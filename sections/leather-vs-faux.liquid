@@ -1,0 +1,303 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+
+<section class="leather-vs leather-vs--{{ section.settings.background }}">
+  <div class="leather-vs__inner container">
+    <div class="leather-vs__intro">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="leather-vs__eyebrow">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="leather-vs__heading">{{ section.settings.heading | escape | newline_to_br }}</h2>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <p class="leather-vs__body">{{ section.settings.text | escape | newline_to_br }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="leather-vs__grid">
+      <div class="leather-vs__card leather-vs__card--real">
+        {%- if section.settings.real_image != blank -%}
+          <div class="leather-vs__media">
+            <img
+              src="{{ section.settings.real_image | image_url: width: 700 }}"
+              alt="{{ section.settings.real_image.alt | default: section.settings.real_title | escape }}"
+              loading="lazy"
+            >
+          </div>
+        {%- endif -%}
+        <p class="leather-vs__tag leather-vs__tag--real">{{ section.settings.real_tag }}</p>
+        <h3 class="leather-vs__card-title">{{ section.settings.real_title }}</h3>
+        {%- if section.settings.real_points != blank -%}
+          <ul class="leather-vs__list leather-vs__list--real">
+            {%- assign real_points = section.settings.real_points | newline_to_br | split: '<br />' -%}
+            {%- for point in real_points -%}
+              {%- if point != blank -%}
+                <li>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span>{{ point }}</span>
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </div>
+
+      <div class="leather-vs__card leather-vs__card--fake">
+        {%- if section.settings.fake_image != blank -%}
+          <div class="leather-vs__media">
+            <img
+              src="{{ section.settings.fake_image | image_url: width: 700 }}"
+              alt="{{ section.settings.fake_image.alt | default: section.settings.fake_title | escape }}"
+              loading="lazy"
+            >
+          </div>
+        {%- endif -%}
+        <p class="leather-vs__tag leather-vs__tag--fake">{{ section.settings.fake_tag }}</p>
+        <h3 class="leather-vs__card-title">{{ section.settings.fake_title }}</h3>
+        {%- if section.settings.fake_points != blank -%}
+          <ul class="leather-vs__list leather-vs__list--fake">
+            {%- assign fake_points = section.settings.fake_points | newline_to_br | split: '<br />' -%}
+            {%- for point in fake_points -%}
+              {%- if point != blank -%}
+                <li>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+                  </svg>
+                  <span>{{ point }}</span>
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{%- style -%}
+  .leather-vs {
+    border-top: 1px solid rgba(43, 36, 29, 0.08);
+    padding: 72px 0;
+  }
+
+  .leather-vs--beige {
+    background: var(--color-beige, #F4F1EC);
+  }
+
+  .leather-vs__intro {
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto 48px;
+  }
+
+  .leather-vs__eyebrow {
+    font-family: "Manrope", var(--font-body), sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-brown);
+    margin: 0 0 16px;
+    padding-bottom: 10px;
+    position: relative;
+    display: inline-block;
+  }
+
+  .leather-vs__eyebrow::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 28px;
+    height: 1px;
+    background: var(--color-brown);
+    transform: translateX(-50%);
+  }
+
+  .leather-vs__heading {
+    font-family: "Fraunces", var(--font-heading), serif;
+    font-optical-sizing: auto;
+    font-weight: 460;
+    font-size: 36px;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    color: var(--color-dark);
+    margin: 0 0 16px;
+  }
+
+  .leather-vs__body {
+    font-family: "Work Sans", var(--font-body), sans-serif;
+    font-weight: 400;
+    font-size: 17px;
+    line-height: 1.7;
+    color: rgba(43, 36, 29, 0.75);
+    margin: 0;
+  }
+
+  .leather-vs__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+
+  .leather-vs__card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 28px;
+    box-sizing: border-box;
+    border: 1px solid rgba(43, 36, 29, 0.08);
+  }
+
+  .leather-vs__card--real {
+    border-color: rgba(84, 122, 79, 0.25);
+  }
+
+  .leather-vs__media {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+
+  .leather-vs__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .leather-vs__tag {
+    display: inline-block;
+    font-family: "Manrope", var(--font-body), sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 999px;
+    margin: 0 0 10px;
+  }
+
+  .leather-vs__tag--real {
+    background: rgba(84, 122, 79, 0.12);
+    color: #4A6B44;
+  }
+
+  .leather-vs__tag--fake {
+    background: rgba(179, 56, 40, 0.1);
+    color: #A13C2C;
+  }
+
+  .leather-vs__card-title {
+    font-family: "Fraunces", var(--font-heading), serif;
+    font-optical-sizing: auto;
+    font-weight: 460;
+    font-size: 21px;
+    color: var(--color-dark);
+    margin: 0 0 16px;
+  }
+
+  .leather-vs__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .leather-vs__list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-family: "Work Sans", var(--font-body), sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    color: rgba(43, 36, 29, 0.85);
+  }
+
+  .leather-vs__list li svg {
+    flex: 0 0 auto;
+    margin-top: 2px;
+  }
+
+  .leather-vs__list--real li svg {
+    color: #4A6B44;
+  }
+
+  .leather-vs__list--fake li svg {
+    color: #A13C2C;
+  }
+
+  @media (max-width: 768px) {
+    .leather-vs {
+      padding: 48px 0;
+    }
+
+    .leather-vs__heading {
+      font-size: 28px;
+    }
+
+    .leather-vs__grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .leather-vs__intro {
+      margin-bottom: 32px;
+    }
+  }
+{%- endstyle -%}
+
+{% schema %}
+{
+  "name": "Leather vs faux leather",
+  "settings": [
+    {
+      "type": "select",
+      "id": "background",
+      "label": "Background",
+      "options": [
+        { "value": "white", "label": "White" },
+        { "value": "beige", "label": "Beige" }
+      ],
+      "default": "beige"
+    },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "CUIR VÉRITABLE VS SIMILI CUIR" },
+    { "type": "textarea", "id": "heading", "label": "Heading", "default": "Pourquoi Choisir Du Cuir Véritable ?" },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Intro text",
+      "default": "En boutique, la différence ne se voit pas toujours. Après quelques mois d'usage, elle devient évidente."
+    },
+    { "type": "header", "content": "Cuir véritable" },
+    { "type": "image_picker", "id": "real_image", "label": "Image" },
+    { "type": "text", "id": "real_tag", "label": "Tag", "default": "Cuir véritable" },
+    { "type": "text", "id": "real_title", "label": "Title", "default": "Cuir De Vachette Véritable" },
+    {
+      "type": "textarea",
+      "id": "real_points",
+      "label": "Points (one per line)",
+      "default": "Se patine et s'embellit avec le temps\nRespire naturellement, ne colle pas et évite les mauvaises odeurs\nRésiste aux frottements et traverse les années\nSe nettoie, se répare et se restaure facilement"
+    },
+    { "type": "header", "content": "Simili cuir" },
+    { "type": "image_picker", "id": "fake_image", "label": "Image" },
+    { "type": "text", "id": "fake_tag", "label": "Tag", "default": "Simili cuir (PU)" },
+    { "type": "text", "id": "fake_title", "label": "Title", "default": "Simili Cuir / Cuir Synthétique" },
+    {
+      "type": "textarea",
+      "id": "fake_points",
+      "label": "Points (one per line)",
+      "default": "Craquelle et s'écaille après quelques mois\nNe respire pas : retient la chaleur et l'humidité\nPerd sa forme et son aspect avec l'usage\nIrréparable une fois abîmé — direction la poubelle"
+    }
+  ],
+  "presets": [{ "name": "Leather vs faux leather" }]
+}
+{% endschema %}

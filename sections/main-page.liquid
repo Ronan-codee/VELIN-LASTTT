@@ -1,0 +1,26 @@
+{% render 'header-color-override', style: section.settings.header_style %}
+<section class="page container">
+  <h1 class="page__title">{{ page.title }}</h1>
+  <div class="page__content rte">
+    {{ page.content }}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Page",
+  "settings": [
+    {
+      "type": "select",
+      "id": "header_style",
+      "label": "Header color (logo, text, icons) on this page",
+      "options": [
+        { "value": "auto", "label": "Automatic" },
+        { "value": "black", "label": "Black" },
+        { "value": "white", "label": "White" }
+      ],
+      "default": "auto"
+    }
+  ]
+}
+{% endschema %}

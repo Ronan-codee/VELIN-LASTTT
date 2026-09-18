@@ -1,0 +1,781 @@
+{% comment %} Velin - Cart Page {% endcomment %}
+
+{% render 'header-color-override', style: section.settings.header_style %}
+
+<div class="velin-cart" style="padding: {{ section.settings.padding_top }}px {{ section.settings.padding_h }}px {{ section.settings.padding_bottom }}px; gap: {{ section.settings.section_gap }}px;">
+
+  <div class="velin-cart__brand" style="margin-top: -{{ section.settings.padding_top | times: 0.7 | round }}px;">
+    <span class="velin-cart__brand-badge">+3000 Clients Satisfaits</span>
+    <p class="velin-cart__brand-trust">Livraison Gratuite&nbsp;&nbsp;·&nbsp;&nbsp;Retours Sous 30 Jours</p>
+  </div>
+
+  <div class="velin-cart__top">
+    <h1 class="velin-cart__heading" style="font-size: {{ section.settings.heading_size }}px;">{{ section.settings.heading_text }}</h1>
+    <a href="{{ section.settings.continue_link | default: '/collections/all' }}" class="velin-cart__continue" style="font-size: {{ section.settings.continue_size }}px;">
+      {{ section.settings.continue_text }}
+      <span class="velin-cart__arrow">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 8L8 2M8 2H3M8 2V7" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+    </a>
+  </div>
+
+  {% if cart.item_count == 0 %}
+    <div class="velin-cart__empty">
+      <p>{{ section.settings.empty_text }}</p>
+      <a href="{{ section.settings.continue_link | default: '/collections/all' }}" class="velin-cart__empty-btn">{{ section.settings.continue_text }}</a>
+    </div>
+  {% else %}
+
+    <div class="velin-cart__body" data-cart-body style="gap: {{ section.settings.column_gap }}px;">
+
+      <div class="velin-cart__items" data-cart-items>
+        {% for item in cart.items %}
+          {%- assign vc_is_gift = false -%}
+          {%- if item.final_price == 0 -%}{%- assign vc_is_gift = true -%}{%- endif -%}
+          <div class="velin-cart__item" style="
+            width: {{ section.settings.item_width }}px;
+            height: {{ section.settings.item_height }}px;
+            gap: {{ section.settings.item_gap }}px;
+            padding: {{ section.settings.item_padding_v }}px {{ section.settings.item_padding_h }}px;
+            border-radius: {{ section.settings.item_radius }}px;
+          " data-cart-line="{{ forloop.index }}" data-variant-id="{{ item.variant_id }}" data-line-price="{{ item.final_price }}">
+
+            {% if section.settings.watermark_image != blank %}
+              <div class="velin-cart__watermark" style="background-image: url('{{ section.settings.watermark_image | image_url: width: 800 }}'); opacity: {{ section.settings.watermark_opacity | divided_by: 100.0 }}; filter: blur({{ section.settings.watermark_blur }}px);"></div>
+            {% endif %}
+
+            <div class="velin-cart__item-image" style="
+              width: {{ section.settings.image_width }}px;
+              height: {{ section.settings.image_height }}px;
+              padding: {{ section.settings.image_padding_v }}px {{ section.settings.image_padding_h }}px;
+            ">
+              <img src="{{ item.image | image_url: width: 400 }}" alt="{{ item.title | escape }}">
+            </div>
+
+            <div class="velin-cart__item-info">
+              <div class="velin-cart__item-head">
+                <div>
+                  <p class="velin-cart__item-title" style="font-size: {{ section.settings.title_size }}px;">{{ item.product.title }}</p>
+                  {%- liquid
+                    assign bag_color_text = ''
+                    if item.variant.title != 'Default Title'
+                      assign bag_color_text = item.variant.title
+                    elsif item.product.metafields.shopify['color-pattern'].value != blank
+                      assign color_names = ''
+                      for color_ref in item.product.metafields.shopify['color-pattern'].value
+                        assign color_names = color_names | append: color_ref.label | append: ', '
+                      endfor
+                      assign bag_color_text = color_names | remove_last: ', '
+                    elsif item.product.metafields.custom.bag_color.value != blank
+                      assign bag_color_text = item.product.metafields.custom.bag_color.value
+                    endif
+                  -%}
+                  {% if bag_color_text != blank %}
+                    <p class="velin-cart__item-variant" style="font-size: {{ section.settings.variant_size }}px;">{{ bag_color_text }}</p>
+                  {% endif %}
+                </div>
+                <button type="button" class="velin-cart__remove" data-cart-remove aria-label="Supprimer">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M3 6h18" stroke="{{ section.settings.remove_color }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke="{{ section.settings.remove_color }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M10 11v6" stroke="{{ section.settings.remove_color }}" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M14 11v6" stroke="{{ section.settings.remove_color }}" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                </button>
+              </div>
+
+              <div class="velin-cart__item-foot">
+                {% if vc_is_gift %}
+                  <p class="velin-cart__item-price" style="font-size: {{ section.settings.price_size }}px;">Offert</p>
+                  <span class="velin-cart__gift-label">Cadeau offert · Qté {{ item.quantity }}</span>
+                {% else %}
+                  <p class="velin-cart__item-price" style="font-size: {{ section.settings.price_size }}px;" data-line-price-display>{{ item.final_price | money }}</p>
+
+                  <div class="velin-cart__qty">
+                    <button type="button" class="velin-cart__qty-btn" data-cart-decrease aria-label="Diminuer">
+                      <span class="velin-cart__minus"></span>
+                    </button>
+                    <span class="velin-cart__qty-value" data-cart-qty-value>{{ item.quantity | prepend: '0' | slice: -2, 2 }}</span>
+                    <button type="button" class="velin-cart__qty-btn" data-cart-increase aria-label="Augmenter">
+                      <span class="velin-cart__plus"></span>
+                    </button>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+
+          </div>
+        {% endfor %}
+
+        {%- assign vc_wallet = all_products['le-croco-portefeuille-cuir-verni'] -%}
+        {%- assign vc_wallet_in_cart = false -%}
+        {%- for item in cart.items -%}
+          {%- if item.product_id == vc_wallet.id -%}{%- assign vc_wallet_in_cart = true -%}{%- endif -%}
+        {%- endfor -%}
+        {%- if vc_wallet != blank and vc_wallet_in_cart == false -%}
+          <div class="velin-cart__upsell-line" data-cart-upsell-line data-variant-id="{{ vc_wallet.variants.first.id }}">
+            <img src="{{ vc_wallet.featured_image | image_url: width: 96 }}" alt="{{ vc_wallet.title | escape }}" class="velin-cart__upsell-line-thumb" loading="lazy">
+            <span class="velin-cart__upsell-line-text">Portefeuille cuir — <strong>29,00&nbsp;€</strong> au lieu de {{ vc_wallet.price | money }}</span>
+            <button type="button" class="velin-cart__upsell-line-add" data-cart-upsell-line-add aria-label="Ajouter le portefeuille au panier">+</button>
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="velin-cart__summary" style="width: {{ section.settings.summary_width }}px; border: {{ section.settings.summary_border_width }}px {{ section.settings.summary_border_style }} {{ section.settings.summary_border_color }}; border-radius: {{ section.settings.summary_border_radius }}px; padding: {{ section.settings.summary_padding }}px; gap: {{ section.settings.summary_gap }}px;">
+        <h2 class="velin-cart__summary-title">{{ section.settings.summary_heading }}</h2>
+
+        <div class="velin-cart__summary-row">
+          <span data-cart-item-count-label>{{ section.settings.subtotal_label }} ({{ cart.item_count }} {{ section.settings.article_label }})</span>
+          <span data-cart-subtotal>{{ cart.original_total_price | money }}</span>
+        </div>
+
+        {% for discount in cart.cart_level_discount_applications %}
+          <div class="velin-cart__summary-row">
+            <span>{{ discount.title }}</span>
+            <span>-{{ discount.total_allocated_amount | money }}</span>
+          </div>
+        {% endfor %}
+
+        <div class="velin-cart__summary-row">
+          <span>{{ section.settings.shipping_label }}</span>
+          <span class="velin-cart__shipping-value">{{ section.settings.shipping_value }}</span>
+        </div>
+
+        <div class="velin-cart__divider"></div>
+
+        <div class="velin-cart__summary-total-block">
+          <div class="velin-cart__summary-row velin-cart__summary-row--total">
+            <span>{{ section.settings.total_label }}</span>
+            <span data-cart-total>{{ cart.total_price | money }}</span>
+          </div>
+          <p class="velin-cart__taxes-note">{{ section.settings.taxes_note }}</p>
+        </div>
+
+        <form action="/cart" method="post">
+          <button type="submit" name="checkout" class="velin-cart__checkout-btn" style="background: {{ section.settings.checkout_bg }}; color: {{ section.settings.checkout_color }};">
+            <span>{{ section.settings.checkout_text }}</span>
+          </button>
+        </form>
+      </div>
+
+    </div>
+
+  {% endif %}
+
+</div>
+
+<style>
+  .velin-cart {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    font-family: 'Merriweather', serif;
+    max-width: 1640px;
+    margin: 0 auto;
+  }
+
+  .velin-cart__brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    text-align: center;
+  }
+
+  .velin-cart__brand-badge {
+    display: inline-block;
+    padding: 8px 20px;
+    border-radius: 999px;
+    background: {{ section.settings.checkout_bg }};
+    color: #fff;
+    font-family: 'Merriweather', serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+
+  .velin-cart__brand-trust {
+    margin: 0;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(0, 0, 0, 0.55);
+  }
+
+  .velin-cart__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .velin-cart__heading {
+    margin: 0;
+    font-family: 'Lusitana', serif;
+    font-weight: 400;
+    line-height: 100%;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: #000;
+  }
+
+  .velin-cart__continue {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: underline;
+    text-transform: uppercase;
+    color: rgba(0,0,0,0.7);
+  }
+
+  .velin-cart__arrow {
+    display: inline-flex;
+    width: 24px;
+    height: 24px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .velin-cart__empty {
+    text-align: center;
+    padding: 80px 0;
+  }
+
+  .velin-cart__empty-btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 14px 28px;
+    background: #705744;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 6px;
+    text-transform: uppercase;
+  }
+
+  .velin-cart__body {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .velin-cart__items {
+    flex: 1 1 823px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .velin-cart__item {
+    position: relative;
+    display: flex;
+    box-sizing: border-box;
+    background: #FFFFFF;
+    box-shadow: 0px 1px 4.2px 0px rgba(0,0,0,0.25);
+    overflow: hidden;
+  }
+
+  .velin-cart__watermark {
+    position: absolute;
+    top: 0;
+    right: {{ section.settings.watermark_right }}px;
+    width: {{ section.settings.watermark_width }}px;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .velin-cart__item-image {
+    position: relative;
+    z-index: 1;
+    flex: 0 0 auto;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .velin-cart__item-image img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  .velin-cart__item-info {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .velin-cart__item-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .velin-cart__item-title {
+    margin: 0;
+    text-transform: uppercase;
+    color: #4B4B4B;
+  }
+
+  .velin-cart__item-variant {
+    margin: 4px 0 0;
+    font-family: 'Jost', sans-serif;
+    color: #4B4B4B;
+  }
+
+  .velin-cart__remove {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    flex: 0 0 24px;
+  }
+
+  .velin-cart__item-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 12px;
+  }
+
+  .velin-cart__item-price {
+    margin: 0;
+    font-family: "Manrope", sans-serif;
+    font-weight: 400;
+    text-transform: uppercase;
+    color: #000;
+  }
+
+  .velin-cart__qty {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 16px 20px;
+    border-radius: 8px;
+    border: 0.5px solid rgba(17,17,17,0.7);
+    background: rgba(255,255,255,0.14);
+  }
+
+  .velin-cart__qty-btn {
+    width: 18px;
+    height: 18px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    padding: 0;
+  }
+
+  .velin-cart__minus {
+    position: absolute;
+    top: 8px;
+    left: 3px;
+    width: 12px;
+    height: 0;
+    border-top: 1.5px solid #111;
+  }
+
+  .velin-cart__plus {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 12px;
+    height: 12px;
+  }
+
+  .velin-cart__plus::before,
+  .velin-cart__plus::after {
+    content: '';
+    position: absolute;
+    background: #111;
+  }
+
+  .velin-cart__plus::before {
+    width: 12px;
+    height: 1.5px;
+    top: 5px;
+    left: 0;
+  }
+
+  .velin-cart__plus::after {
+    width: 1.5px;
+    height: 12px;
+    top: 0;
+    left: 5px;
+  }
+
+  .velin-cart__qty-value {
+    min-width: 17px;
+    text-align: center;
+    color: #111;
+  }
+
+  .velin-cart__gift-label {
+    font-family: 'Merriweather', serif;
+    font-size: 14px;
+    text-transform: uppercase;
+    color: #4B4B4B;
+  }
+
+  .velin-cart__upsell-line {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+    padding: 12px 14px;
+    background: #f8f5f0;
+    border-radius: 10px;
+  }
+
+  .velin-cart__upsell-line-thumb {
+    flex: 0 0 auto;
+    width: 48px;
+    height: 48px;
+    border-radius: 6px;
+    object-fit: cover;
+    background: #fff;
+  }
+
+  .velin-cart__upsell-line-text {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-family: 'Merriweather', serif;
+    font-size: 13px;
+    line-height: 1.4;
+    color: rgba(0, 0, 0, 0.75);
+  }
+
+  .velin-cart__upsell-line-text strong {
+    color: #705744;
+  }
+
+  .velin-cart__upsell-line-add {
+    flex: 0 0 auto;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.18);
+    background: #fff;
+    color: #705744;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .velin-cart__upsell-line-add:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .velin-cart__summary {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: {{ section.settings.summary_sticky_top }}px;
+    min-height: {{ section.settings.summary_height }}px;
+    box-sizing: border-box;
+    font-family: 'Merriweather', serif;
+  }
+
+  .velin-cart__summary-title {
+    margin: 0;
+    font-family: 'Merriweather', serif;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 120%;
+    letter-spacing: 0;
+    font-variant: small-caps;
+    color: #000000;
+  }
+
+  .velin-cart__summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    font-family: 'Merriweather', serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 120%;
+    letter-spacing: 0;
+    color: #000000;
+  }
+
+  .velin-cart__summary-row--total {
+    font-weight: 400;
+    font-size: 20px;
+    text-transform: uppercase;
+    color: #000000;
+  }
+
+  .velin-cart__summary-total-block {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .velin-cart__divider {
+    width: 100%;
+    height: 0;
+    border-top: 0.5px solid #000000;
+  }
+
+  .velin-cart__taxes-note {
+    margin: 0;
+    font-family: 'Merriweather', serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 120%;
+    letter-spacing: 0;
+    color: #4B4B4B;
+  }
+
+  .velin-cart__checkout-btn {
+    width: 100%;
+    height: 58px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-sizing: border-box;
+    border: none;
+    cursor: pointer;
+  }
+
+  .velin-cart__checkout-btn span {
+    font-family: 'Merriweather', serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 110%;
+    letter-spacing: 0;
+    text-align: center;
+    text-transform: uppercase;
+    color: #FFFFFF;
+  }
+
+  @media screen and (max-width: 1100px) {
+    .velin-cart {
+      padding: 40px 20px !important;
+    }
+    .velin-cart__body {
+      flex-direction: column;
+    }
+    .velin-cart__items,
+    .velin-cart__summary {
+      width: 100% !important;
+      flex: 1 1 auto;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    if (!document.querySelector("[data-cart-items]")) return;
+
+    function formatMoney(cents) {
+      return (cents / 100).toLocaleString("fr-FR", {
+        style: "currency",
+        currency: (window.Shopify && Shopify.currency ? Shopify.currency.active : "EUR")
+      });
+    }
+
+    function updateSummary(cart) {
+      var totalLabelWrap = document.querySelector("[data-cart-item-count-label]");
+      if (totalLabelWrap) {
+        totalLabelWrap.textContent = totalLabelWrap.textContent.replace(/\(\d+ /, "(" + cart.item_count + " ");
+      }
+      var subtotalEl = document.querySelector("[data-cart-subtotal]");
+      var totalEl = document.querySelector("[data-cart-total]");
+      if (subtotalEl) subtotalEl.textContent = formatMoney(cart.original_total_price ? cart.original_total_price : cart.total_price);
+      if (totalEl) totalEl.textContent = formatMoney(cart.total_price);
+      if (cart.item_count === 0) {
+        window.location.reload();
+      }
+    }
+
+    function changeLine(line, quantity) {
+      fetch("/cart/change.js", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ line: line, quantity: quantity })
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (cart) {
+          updateSummary(cart);
+        });
+    }
+
+    // Re-fetches just the items + upsell-line markup via the Section Rendering
+    // API and swaps it in, so adding the wallet never reloads the page.
+    function refreshItems(cart) {
+      return fetch(window.location.pathname + "?section_id=main-cart", { cache: "no-store" })
+        .then(function (res) { return res.text(); })
+        .then(function (html) {
+          var tmp = document.createElement("div");
+          tmp.innerHTML = html;
+          var fresh = tmp.querySelector("[data-cart-body]");
+          var current = document.querySelector("[data-cart-body]");
+          if (fresh && current) {
+            current.replaceWith(fresh);
+            bindRows();
+          }
+          if (cart) updateSummary(cart);
+        });
+    }
+
+    function bindRows() {
+      var container = document.querySelector("[data-cart-items]");
+      if (!container) return;
+
+      container.querySelectorAll("[data-cart-line]").forEach(function (row) {
+        var line = parseInt(row.getAttribute("data-cart-line"), 10);
+        var qtyEl = row.querySelector("[data-cart-qty-value]");
+        var priceEl = row.querySelector("[data-line-price-display]");
+        var unitPrice = parseFloat(row.getAttribute("data-line-price"));
+        var increaseBtn = row.querySelector("[data-cart-increase]");
+        var decreaseBtn = row.querySelector("[data-cart-decrease]");
+
+        // Gift lines (free with a bag offer) have no quantity controls, only a remove button.
+        if (qtyEl && priceEl && increaseBtn && decreaseBtn) {
+          var qty = parseInt(qtyEl.textContent, 10);
+
+          function updateLinePrice() {
+            priceEl.textContent = formatMoney(unitPrice * qty);
+          }
+
+          increaseBtn.addEventListener("click", function () {
+            qty += 1;
+            qtyEl.textContent = String(qty).padStart(2, "0");
+            updateLinePrice();
+            changeLine(line, qty);
+          });
+
+          decreaseBtn.addEventListener("click", function () {
+            if (qty <= 1) return;
+            qty -= 1;
+            qtyEl.textContent = String(qty).padStart(2, "0");
+            updateLinePrice();
+            changeLine(line, qty);
+          });
+        }
+
+        row.querySelector("[data-cart-remove]").addEventListener("click", function () {
+          changeLine(line, 0);
+          row.remove();
+        });
+      });
+
+      var upsellLine = container.querySelector("[data-cart-upsell-line]");
+      if (upsellLine) {
+        var upsellAddBtn = upsellLine.querySelector("[data-cart-upsell-line-add]");
+        upsellAddBtn.addEventListener("click", function () {
+          upsellAddBtn.disabled = true;
+          fetch("/cart/add.js", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ items: [{ id: upsellLine.getAttribute("data-variant-id"), quantity: 1 }] }),
+          })
+            .then(function (res) { return res.json(); })
+            .then(function () { return fetch("/cart.js"); })
+            .then(function (res) { return res.json(); })
+            .then(function (cart) { return refreshItems(cart); })
+            .catch(function () { upsellAddBtn.disabled = false; });
+        });
+      }
+    }
+
+    bindRows();
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Velin Cart",
+  "settings": [
+    {
+      "type": "select",
+      "id": "header_style",
+      "label": "Header color (logo, text, icons) on this page",
+      "options": [
+        { "value": "auto", "label": "Automatic" },
+        { "value": "black", "label": "Black" },
+        { "value": "white", "label": "White" }
+      ],
+      "default": "auto"
+    },
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "padding_top", "label": "Padding top (px)", "min": 0, "max": 150, "step": 5, "default": 60 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom (px)", "min": 0, "max": 150, "step": 5, "default": 100 },
+    { "type": "range", "id": "padding_h", "label": "Padding left/right (px)", "min": 0, "max": 150, "step": 5, "default": 100 },
+    { "type": "range", "id": "section_gap", "label": "Gap top to items (px)", "min": 0, "max": 80, "step": 2, "default": 40 },
+    { "type": "range", "id": "column_gap", "label": "Gap items to summary (px)", "min": 0, "max": 80, "step": 2, "default": 40 },
+    { "type": "header", "content": "Heading" },
+    { "type": "text", "id": "heading_text", "label": "Heading", "default": "Votre Panier" },
+    { "type": "range", "id": "heading_size", "label": "Heading size (px)", "min": 20, "max": 60, "step": 1, "default": 42 },
+    { "type": "text", "id": "continue_text", "label": "Continue shopping text", "default": "Continuer Vos Achats" },
+    { "type": "range", "id": "continue_size", "label": "Continue text size (px)", "min": 12, "max": 26, "step": 1, "default": 20 },
+    { "type": "url", "id": "continue_link", "label": "Continue shopping link" },
+    { "type": "header", "content": "Empty cart" },
+    { "type": "text", "id": "empty_text", "label": "Empty cart text", "default": "Votre panier est vide." },
+    { "type": "header", "content": "Item card" },
+    { "type": "range", "id": "image_width", "label": "Image box width (px)", "min": 100, "max": 300, "step": 2, "default": 190 },
+    { "type": "range", "id": "image_height", "label": "Image box height (px)", "min": 100, "max": 300, "step": 2, "default": 190 },
+    { "type": "range", "id": "image_padding_v", "label": "Image inner padding top/bottom (px)", "min": 0, "max": 40, "step": 1, "default": 11 },
+    { "type": "range", "id": "image_padding_h", "label": "Image inner padding left/right (px)", "min": 0, "max": 60, "step": 1, "default": 35 },
+    { "type": "range", "id": "item_gap", "label": "Gap image to text (px)", "min": 0, "max": 60, "step": 1, "default": 20 },
+    { "type": "range", "id": "item_padding_v", "label": "Card padding top/bottom (px)", "min": 0, "max": 60, "step": 1, "default": 20 },
+    { "type": "range", "id": "item_padding_h", "label": "Card padding left/right (px)", "min": 0, "max": 60, "step": 1, "default": 20 },
+    { "type": "range", "id": "item_radius", "label": "Card corner radius (px)", "min": 0, "max": 40, "step": 1, "default": 12 },
+    { "type": "range", "id": "item_width", "label": "Card width (px)", "min": 623, "max": 1023, "step": 4, "default": 823 },
+    { "type": "range", "id": "item_height", "label": "Card height (px)", "min": 132, "max": 332, "step": 4, "default": 232 },
+    { "type": "range", "id": "title_size", "label": "Title size (px)", "min": 12, "max": 32, "step": 1, "default": 22 },
+    { "type": "range", "id": "variant_size", "label": "Variant text size (px)", "min": 10, "max": 24, "step": 1, "default": 16 },
+    { "type": "range", "id": "price_size", "label": "Price size (px)", "min": 14, "max": 40, "step": 1, "default": 28 },
+    { "type": "color", "id": "remove_color", "label": "Remove (trash) icon color", "default": "#C0392B" },
+    { "type": "header", "content": "Background watermark" },
+    { "type": "image_picker", "id": "watermark_image", "label": "Watermark logo image" },
+    { "type": "range", "id": "watermark_opacity", "label": "Watermark opacity (%)", "min": 0, "max": 100, "step": 1, "default": 8 },
+    { "type": "range", "id": "watermark_blur", "label": "Watermark blur (px)", "min": 0, "max": 20, "step": 1, "default": 2 },
+    { "type": "range", "id": "watermark_width", "label": "Watermark width (px)", "min": 100, "max": 800, "step": 10, "default": 400 },
+    { "type": "range", "id": "watermark_right", "label": "Watermark right offset (px)", "min": -100, "max": 200, "step": 5, "default": 0 },
+    { "type": "header", "content": "Summary box" },
+    { "type": "range", "id": "summary_width", "label": "Summary width (px)", "min": 281, "max": 481, "step": 2, "default": 381 },
+    { "type": "range", "id": "summary_gap", "label": "Gap between rows inside summary (px)", "min": 0, "max": 40, "step": 2, "default": 28 },
+    { "type": "range", "id": "summary_sticky_top", "label": "Summary sticky distance from top when scrolling (px)", "min": 0, "max": 200, "step": 2, "default": 20 },
+    { "type": "range", "id": "summary_height", "label": "Summary minimum height (px)", "min": 326, "max": 526, "step": 2, "default": 426 },
+    { "type": "range", "id": "summary_border_width", "label": "Border width (px)", "min": 0, "max": 5, "step": 0.5, "default": 0.5 },
+    { "type": "select", "id": "summary_border_style", "label": "Border style", "options": [
+      { "value": "solid", "label": "Solid" },
+      { "value": "dashed", "label": "Dashed" },
+      { "value": "dotted", "label": "Dotted" }
+    ], "default": "solid" },
+    { "type": "color", "id": "summary_border_color", "label": "Border color", "default": "#000000B2" },
+    { "type": "range", "id": "summary_border_radius", "label": "Border radius (px)", "min": 0, "max": 30, "step": 1, "default": 12 },
+    { "type": "range", "id": "summary_padding", "label": "Inner padding (px)", "min": 0, "max": 50, "step": 2, "default": 20 },
+    { "type": "text", "id": "summary_heading", "label": "Summary heading", "default": "Récapitulatif de la commande" },
+    { "type": "text", "id": "subtotal_label", "label": "Subtotal label", "default": "Sous-total" },
+    { "type": "text", "id": "article_label", "label": "\"articles\" word", "default": "articles" },
+    { "type": "text", "id": "shipping_label", "label": "Shipping label", "default": "Livraison" },
+    { "type": "text", "id": "shipping_value", "label": "Shipping value", "default": "Free" },
+    { "type": "text", "id": "total_label", "label": "Total label", "default": "TOTAL" },
+    { "type": "text", "id": "taxes_note", "label": "Taxes note", "default": "Taxes incluses" },
+    { "type": "header", "content": "Checkout button" },
+    { "type": "text", "id": "checkout_text", "label": "Button text", "default": "Passer À La Caisse" },
+    { "type": "color", "id": "checkout_bg", "label": "Button background", "default": "#111111" },
+    { "type": "color", "id": "checkout_color", "label": "Button text color", "default": "#FFFFFF" }
+  ]
+}
+{% endschema %}

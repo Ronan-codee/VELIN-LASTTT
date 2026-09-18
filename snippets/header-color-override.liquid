@@ -1,0 +1,16 @@
+{%- comment -%}
+  Usage: {% render 'header-color-override', style: section.settings.header_style %}
+  style must be 'black', 'white', or 'auto' (does nothing when 'auto').
+  The logo mark is a CSS mask painted with currentColor, so setting the
+  header's color here recolors the logo and nav together.
+{%- endcomment -%}
+{%- if style == 'black' or style == 'white' -%}
+  <script>
+    (function () {
+      var header = document.querySelector('.site-header');
+      if (!header) return;
+      var isWhite = {{ style | json }} === 'white';
+      header.style.color = isWhite ? '#ffffff' : '#241D16';
+    })();
+  </script>
+{%- endif -%}

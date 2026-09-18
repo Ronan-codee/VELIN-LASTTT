@@ -1,0 +1,453 @@
+{% comment %}
+  VELIN — Premium Fully Dynamic Custom Footer Section
+{% endcomment %}
+
+{%- assign sec_id = section.id -%}
+
+<style>
+  #velin-footer-{{ sec_id }} {
+    background-color: {{ section.settings.bg_color }};
+    color: {{ section.settings.text_color }};
+    padding: 50px 0 50px 0;
+    font-family: var(--font-body-family), sans-serif;
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  #velin-footer-{{ sec_id }} .footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 30px;
+  }
+
+  /* --- Column 1: Brand Info & Buttons --- */
+  #velin-footer-{{ sec_id }} .footer-brand-col {
+    flex: 1 1 300px;
+    max-width: 320px;
+  }
+
+  #velin-footer-{{ sec_id }} .footer-logo-img {
+    max-height: {{ section.settings.logo_height }}px;
+    width: auto;
+    display: block;
+    margin-bottom: 20px;
+    transform: translateY({{ section.settings.logo_offset }}px);
+  }
+
+  #velin-footer-{{ sec_id }} .footer-about-text {
+    font-size: 13px;
+    line-height: 1.7;
+    opacity: 0.85;
+    margin-bottom: 25px;
+    letter-spacing: 0.3px;
+    transform: translateY({{ section.settings.about_text_offset }}px);
+  }
+
+  #velin-footer-{{ sec_id }} .footer-buttons-group {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    transform: translateY({{ section.settings.buttons_offset }}px);
+  }
+
+  #velin-footer-{{ sec_id }} .btn-filled {
+    background-color: {{ section.settings.btn_bg_color }};
+    color: #ffffff;
+    padding: 10px 24px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    transition: opacity 0.3s;
+    border: 1px solid transparent;
+  }
+
+  #velin-footer-{{ sec_id }} .btn-outlined {
+    background-color: transparent;
+    color: {{ section.settings.text_color }};
+    padding: 10px 24px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    border: 1px solid {{ section.settings.text_color }};
+    transition: background 0.3s, color 0.3s;
+  }
+
+  #velin-footer-{{ sec_id }} .btn-filled:hover,
+  #velin-footer-{{ sec_id }} .btn-outlined:hover {
+    opacity: 0.9;
+  }
+
+  /* --- Columns 2, 3, 4: Menus & Navigation --- */
+  #velin-footer-{{ sec_id }} .footer-menu-col {
+    flex: 1 1 150px;
+  }
+
+  #velin-footer-{{ sec_id }} .footer-heading {
+    font-family: var(--font-heading-family), serif;
+    font-size: 15px;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin: 0 0 25px 0;
+    letter-spacing: 1px;
+    color: {{ section.settings.text_color }};
+  }
+
+  #velin-footer-{{ sec_id }} .footer-links-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  #velin-footer-{{ sec_id }} .footer-links-list li {
+    margin-bottom: 14px;
+  }
+
+  #velin-footer-{{ sec_id }} .footer-links-list a {
+    color: {{ section.settings.text_color }};
+    text-decoration: none;
+    font-size: 13px;
+    opacity: 0.85;
+    transition: opacity 0.2s;
+  }
+
+  #velin-footer-{{ sec_id }} .footer-links-list a:hover {
+    opacity: 1;
+  }
+
+  /* --- Column 5: Contact Layout --- */
+  #velin-footer-{{ sec_id }} .footer-contact-col {
+    flex: 1 1 220px;
+    max-width: 260px;
+  }
+
+  #velin-footer-{{ sec_id }} .contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 18px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  #velin-footer-{{ sec_id }} .contact-item svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    fill: none;
+    stroke: {{ section.settings.text_color }};
+    stroke-width: 1.5;
+  }
+
+  #velin-footer-{{ sec_id }} .contact-text {
+    opacity: 0.85;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  #velin-footer-{{ sec_id }} a.contact-text:hover {
+    text-decoration: underline;
+  }
+
+  #velin-footer-{{ sec_id }} .footer-email-wrap {
+    position: relative;
+    display: inline-block;
+  }
+
+  #velin-footer-{{ sec_id }} .footer-email-copied {
+    position: absolute;
+    left: 0;
+    bottom: 100%;
+    margin-bottom: 6px;
+    background: #000;
+    color: #fff;
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+
+  #velin-footer-{{ sec_id }} .footer-email-copied.is-visible {
+    opacity: 1;
+  }
+
+  /* --- Mobile Responsive Rules --- */
+  @media (max-width: 768px) {
+    #velin-footer-{{ sec_id }} .footer-container {
+      flex-direction: column;
+      gap: 40px;
+    }
+    #velin-footer-{{ sec_id }} .footer-brand-col,
+    #velin-footer-{{ sec_id }} .footer-contact-col {
+      max-width: 100%;
+    }
+    #velin-footer-{{ sec_id }} .footer-heading {
+      margin-bottom: 15px;
+    }
+  }
+</style>
+
+<footer id="velin-footer-{{ sec_id }}">
+  <div class="footer-container">
+    
+    <!-- Column 1: Logo, Text & Action Buttons -->
+    <div class="footer-brand-col">
+      {%- if section.settings.logo_image != blank -%}
+        <img src="{{ section.settings.logo_image | image_url: width: 1200 }}" alt="Footer Logo" class="footer-logo-img" loading="lazy">
+      {%- else -%}
+        <h2 style="margin: 0 0 20px 0; font-size: 24px; font-weight: 700;">{{ shop.name }}</h2>
+      {%- endif -%}
+      
+      <p class="footer-about-text">{{ section.settings.about_text }}</p>
+      
+      <div class="footer-buttons-group">
+        {%- if section.settings.btn1_text != blank -%}
+          <a href="{{ section.settings.btn1_link }}" class="btn-filled">{{ section.settings.btn1_text }}</a>
+        {%- endif -%}
+        {%- if section.settings.btn2_text != blank -%}
+          <a href="{{ section.settings.btn2_link }}" class="btn-outlined">{{ section.settings.btn2_text }}</a>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <!-- Columns 2, 3, 4: Dynamic Link lists -->
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'link_menu' -%}
+        <div class="footer-menu-col" {{ block.shopify_attributes }}>
+          <h3 class="footer-heading">{{ block.settings.heading }}</h3>
+          <ul class="footer-links-list">
+            {%- for link in linklists[block.settings.menu].links -%}
+              <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+
+    <!-- Column 5: Contact Info -->
+    <div class="footer-contact-col">
+      <h3 class="footer-heading">{{ section.settings.contact_heading }}</h3>
+      
+      {%- if section.settings.phone_text != blank -%}
+        <div class="contact-item">
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span class="contact-text">{{ section.settings.phone_text }}</span>
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.email_text != blank -%}
+        <div class="contact-item">
+          <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polygon points="22,6 12,13 2,6"/></svg>
+          <span class="footer-email-wrap">
+            <a href="mailto:{{ section.settings.email_text }}" class="contact-text" data-footer-email-link data-email="{{ section.settings.email_text }}">{{ section.settings.email_text }}</a>
+            <span class="footer-email-copied" data-footer-email-copied>{{ section.settings.email_copied_text | default: 'Adresse copiée !' }}</span>
+          </span>
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.address_text != blank -%}
+        <div class="contact-item">
+          <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span class="contact-text">{{ section.settings.address_text }}</span>
+        </div>
+      {%- endif -%}
+    </div>
+
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var link = document.querySelector('[data-footer-email-link]');
+    if (!link) return;
+    var copiedEl = document.querySelector('[data-footer-email-copied]');
+
+    link.addEventListener('click', function () {
+      var email = link.getAttribute('data-email');
+      if (navigator.clipboard && email) {
+        navigator.clipboard.writeText(email).then(function () {
+          if (copiedEl) {
+            copiedEl.classList.add('is-visible');
+            setTimeout(function () {
+              copiedEl.classList.remove('is-visible');
+            }, 2500);
+          }
+        }).catch(function () {});
+      }
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Custom Premium Footer",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#634e40"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Upload Logo"
+    },
+    {
+      "type": "range",
+      "id": "logo_height",
+      "min": 40,
+      "max": 180,
+      "step": 5,
+      "unit": "px",
+      "label": "Logo Display Height",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "logo_offset",
+      "min": -100,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Move logo up/down",
+      "info": "Negative = up, positive = down",
+      "default": 0
+    },
+    {
+      "type": "textarea",
+      "id": "about_text",
+      "label": "About Brand Text",
+      "default": "Velin is a modern luxury brand redefining elegance through craftsmanship, minimalism, and timeless design."
+    },
+    {
+      "type": "range",
+      "id": "about_text_offset",
+      "min": -100,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Move about text up/down",
+      "info": "Negative = up, positive = down",
+      "default": 0
+    },
+    {
+      "type": "text",
+      "id": "btn1_text",
+      "label": "Button 1 Text",
+      "default": "SHOP NOW"
+    },
+    {
+      "type": "url",
+      "id": "btn1_link",
+      "label": "Button 1 Link"
+    },
+    {
+      "type": "text",
+      "id": "btn2_text",
+      "label": "Button 2 Text",
+      "default": "REGISTER"
+    },
+    {
+      "type": "url",
+      "id": "btn2_link",
+      "label": "Button 2 Link"
+    },
+    {
+      "type": "color",
+      "id": "btn_bg_color",
+      "label": "Filled Button Color",
+      "default": "#e6600c"
+    },
+    {
+      "type": "range",
+      "id": "buttons_offset",
+      "min": -100,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Move buttons up/down",
+      "info": "Negative = up, positive = down",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Contact Details"
+    },
+    {
+      "type": "text",
+      "id": "contact_heading",
+      "label": "Contact Column Heading",
+      "default": "CONTACT"
+    },
+    {
+      "type": "text",
+      "id": "phone_text",
+      "label": "Phone Number",
+      "default": "+62 859 9999 9999"
+    },
+    {
+      "type": "text",
+      "id": "email_text",
+      "label": "Email Address",
+      "default": "support@velinfr.com"
+    },
+    {
+      "type": "text",
+      "id": "email_copied_text",
+      "label": "Tooltip text after clicking email",
+      "default": "Adresse copiée !"
+    },
+    {
+      "type": "textarea",
+      "id": "address_text",
+      "label": "Physical Address",
+      "default": "Lorem ipsum street Block B Number 08, Jakarta, Indonesia, 12345"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "link_menu",
+      "name": "Navigation Menu",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Menu Heading",
+          "default": "COLLECTIONS"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Select Menu"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Premium Footer"
+    }
+  ]
+}
+{% endschema %}

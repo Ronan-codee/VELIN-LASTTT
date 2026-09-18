@@ -1,0 +1,344 @@
+{% comment %} Velin - Formulaire de rétractation (legal withdrawal notice form) {% endcomment %}
+{% render 'header-color-override', style: section.settings.header_style %}
+{%- assign sec_id = section.id -%}
+
+<div id="velin-withdrawal-{{ sec_id }}" class="velin-withdrawal" style="
+  background: {{ section.settings.bg_color }};
+  padding: {{ section.settings.padding_top }}px {{ section.settings.padding_h }}px {{ section.settings.padding_bottom }}px;
+">
+  <div class="velin-withdrawal__wrap" style="max-width: {{ section.settings.form_max_width }}px;">
+
+    <h1 class="velin-withdrawal__heading" style="font-size: {{ section.settings.heading_size }}px; color: {{ section.settings.heading_color }};">
+      {{ section.settings.heading }}
+    </h1>
+
+    {%- if section.settings.intro_text != blank -%}
+      <div class="velin-withdrawal__intro rte">{{ section.settings.intro_text }}</div>
+    {%- endif -%}
+
+    {%- if section.settings.attention_text != blank -%}
+      <p class="velin-withdrawal__attention">{{ section.settings.attention_text }}</p>
+    {%- endif -%}
+
+    {%- if section.settings.notify_text != blank -%}
+      <p class="velin-withdrawal__notify">{{ section.settings.notify_text }}</p>
+    {%- endif -%}
+
+    {% form 'contact', id: 'VelinWithdrawalForm', class: 'velin-withdrawal__form' %}
+
+      <input type="hidden" name="contact[body]" data-velin-withdrawal-body value="{{ form.body }}">
+
+      <p class="velin-withdrawal__success" data-velin-withdrawal-success {% unless form.posted_successfully? %}style="display:none;"{% endunless %}>{{ section.settings.success_text }}</p>
+
+      <p class="velin-withdrawal__error" data-velin-withdrawal-error {% unless form.errors %}style="display:none;"{% endunless %}>
+        {%- if form.errors -%}{{ form.errors | default_errors }}{%- endif -%}
+      </p>
+
+      <div class="velin-withdrawal__field" style="margin-bottom: {{ section.settings.row_gap }}px;">
+        <label for="WithdrawalFormOrderDate-{{ sec_id }}">{{ section.settings.order_date_label }} <span class="velin-withdrawal__required">*</span></label>
+        <input type="date" id="WithdrawalFormOrderDate-{{ sec_id }}" data-velin-withdrawal-orderdate required>
+      </div>
+
+      <div class="velin-withdrawal__field" style="margin-bottom: {{ section.settings.row_gap }}px;">
+        <label for="WithdrawalFormOrder-{{ sec_id }}">{{ section.settings.order_label }} <span class="velin-withdrawal__required">*</span></label>
+        <input type="text" id="WithdrawalFormOrder-{{ sec_id }}" placeholder="{{ section.settings.order_placeholder }}" data-velin-withdrawal-order required>
+      </div>
+
+      <div class="velin-withdrawal__field" style="margin-bottom: {{ section.settings.row_gap }}px;">
+        <label for="WithdrawalFormName-{{ sec_id }}">{{ section.settings.name_label }} <span class="velin-withdrawal__required">*</span></label>
+        <input type="text" id="WithdrawalFormName-{{ sec_id }}" name="contact[name]" autocomplete="name" value="{{ form.name }}" data-velin-withdrawal-name required>
+      </div>
+
+      <div class="velin-withdrawal__field" style="margin-bottom: {{ section.settings.row_gap }}px;">
+        <label for="WithdrawalFormEmail-{{ sec_id }}">{{ section.settings.email_label }} <span class="velin-withdrawal__required">*</span></label>
+        <input type="email" id="WithdrawalFormEmail-{{ sec_id }}" name="contact[email]" autocomplete="email" value="{{ form.email }}" data-velin-withdrawal-email required>
+      </div>
+
+      <div class="velin-withdrawal__field" style="margin-bottom: {{ section.settings.row_gap }}px;">
+        <label for="WithdrawalFormAddress-{{ sec_id }}">{{ section.settings.address_label }} <span class="velin-withdrawal__required">*</span></label>
+        <input type="text" id="WithdrawalFormAddress-{{ sec_id }}" data-velin-withdrawal-address required>
+      </div>
+
+      <div class="velin-withdrawal__field" style="margin-bottom: {{ section.settings.row_gap }}px;">
+        <label for="WithdrawalFormReason-{{ sec_id }}">{{ section.settings.reason_label }}</label>
+        <textarea id="WithdrawalFormReason-{{ sec_id }}" placeholder="{{ section.settings.reason_placeholder }}" style="height: {{ section.settings.message_height }}px;" data-velin-withdrawal-reason></textarea>
+      </div>
+
+      <div class="velin-withdrawal__field" style="margin-bottom: {{ section.settings.row_gap }}px;">
+        <label for="WithdrawalFormSignature-{{ sec_id }}">{{ section.settings.signature_label }} <span class="velin-withdrawal__required">*</span></label>
+        <input type="text" id="WithdrawalFormSignature-{{ sec_id }}" placeholder="{{ section.settings.signature_placeholder }}" data-velin-withdrawal-signature required>
+        <p class="velin-withdrawal__signature-hint">{{ section.settings.signature_hint }}</p>
+      </div>
+
+      <button type="submit" class="velin-withdrawal__submit" style="
+        height: {{ section.settings.button_height }}px;
+        font-size: {{ section.settings.button_size }}px;
+        background: {{ section.settings.button_bg }};
+        color: {{ section.settings.button_color }};
+      ">
+        {{ section.settings.button_text }}
+      </button>
+
+      {%- if form.posted_successfully? -%}
+        <script>
+          (function () {
+            var saved = sessionStorage.getItem('velinWithdrawalData');
+            if (!saved) return;
+            sessionStorage.removeItem('velinWithdrawalData');
+            var data = JSON.parse(saved);
+            if (!data.email) return;
+            fetch('https://a.klaviyo.com/client/events/?company_id=SSbiN6', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+              body: JSON.stringify({
+                data: {
+                  type: 'event',
+                  attributes: {
+                    properties: {
+                      'Nom': data.name || '',
+                      'Adresse': data.address || '',
+                      'Commande du': data.orderDate || '',
+                      'Numéro de commande': data.order || '',
+                      'Raison': data.reason || '',
+                      'Signature': data.signature || ''
+                    },
+                    metric: {
+                      data: { type: 'metric', attributes: { name: 'Formulaire de Rétractation Soumis' } }
+                    },
+                    profile: {
+                      data: {
+                        type: 'profile',
+                        attributes: { email: data.email, first_name: data.name || '' }
+                      }
+                    }
+                  }
+                }
+              })
+            }).then(function (res) {
+              return res.text().then(function (text) {
+                console.log('Klaviyo withdrawal event status:', res.status, text);
+              });
+            }).catch(function (err) {
+              console.error('Klaviyo withdrawal event failed', err);
+            });
+          })();
+        </script>
+      {%- endif -%}
+
+    {% endform %}
+
+  </div>
+</div>
+
+<style>
+  .velin-withdrawal {
+    box-sizing: border-box;
+    font-family: 'Merriweather', serif;
+  }
+
+  .velin-withdrawal__wrap {
+    margin: 0 auto;
+  }
+
+  .velin-withdrawal__heading {
+    margin: 0 0 16px;
+    font-family: 'Lusitana', serif;
+    font-weight: 400;
+    line-height: 130%;
+  }
+
+  .velin-withdrawal__intro {
+    margin: 0 0 20px;
+    color: #4a4a4a;
+    line-height: 1.6;
+  }
+
+  .velin-withdrawal__attention,
+  .velin-withdrawal__notify {
+    margin: 0 0 20px;
+    line-height: 1.6;
+  }
+
+  .velin-withdrawal__field {
+    display: flex;
+    flex-direction: column;
+    gap: {{ section.settings.field_label_gap }}px;
+  }
+
+  .velin-withdrawal__field label {
+    font-family: 'Merriweather', serif;
+    font-weight: 400;
+    font-size: {{ section.settings.label_size }}px;
+    line-height: 110%;
+    color: #000000;
+  }
+
+  .velin-withdrawal__required {
+    color: #c0392b;
+  }
+
+  .velin-withdrawal__field input,
+  .velin-withdrawal__field textarea {
+    box-sizing: border-box;
+    width: 100%;
+    height: {{ section.settings.input_height }}px;
+    padding: 0 14px;
+    border: 0.5px solid {{ section.settings.input_border_color }};
+    border-radius: {{ section.settings.input_radius }}px;
+    background: #fff;
+    font-family: inherit;
+    font-size: 14px;
+    color: #1c1c1c;
+  }
+
+  .velin-withdrawal__field textarea {
+    height: auto;
+    padding: 14px;
+    resize: vertical;
+  }
+
+  .velin-withdrawal__signature-hint {
+    margin: 4px 0 0;
+    font-size: 12px;
+    color: #777;
+    font-style: italic;
+  }
+
+  .velin-withdrawal__submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    border: none;
+    border-radius: {{ section.settings.input_radius }}px;
+    text-transform: capitalize;
+    line-height: 110%;
+    cursor: pointer;
+  }
+
+  .velin-withdrawal__submit[disabled] {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .velin-withdrawal__success {
+    color: #1a7a3c;
+    margin: 0 0 20px;
+  }
+
+  .velin-withdrawal__error {
+    color: #c0392b;
+    margin: 0 0 20px;
+  }
+</style>
+
+<script>
+  (function () {
+    var form = document.getElementById('VelinWithdrawalForm');
+    if (!form) return;
+
+    var successEl = form.querySelector('[data-velin-withdrawal-success]');
+    if (successEl && successEl.style.display !== 'none') {
+      setTimeout(function () { successEl.style.display = 'none'; }, 4000);
+    }
+
+    var bodyField = form.querySelector('[data-velin-withdrawal-body]');
+    var orderField = form.querySelector('[data-velin-withdrawal-order]');
+    var orderDateField = form.querySelector('[data-velin-withdrawal-orderdate]');
+    var nameField = form.querySelector('[data-velin-withdrawal-name]');
+    var addressField = form.querySelector('[data-velin-withdrawal-address]');
+    var reasonField = form.querySelector('[data-velin-withdrawal-reason]');
+    var signatureField = form.querySelector('[data-velin-withdrawal-signature]');
+    var emailField = form.querySelector('[data-velin-withdrawal-email]');
+
+    function syncBody() {
+      if (!bodyField) return;
+      bodyField.value = 'Commande du : ' + (orderDateField ? orderDateField.value : '') +
+        '\nNuméro de commande : ' + (orderField ? orderField.value : '') +
+        '\nAdresse : ' + (addressField ? addressField.value : '') +
+        '\nRaison : ' + (reasonField ? reasonField.value : '') +
+        '\nSignature : ' + (signatureField ? signatureField.value : '');
+    }
+
+    function saveForKlaviyo() {
+      if (!emailField || !emailField.value) return;
+      sessionStorage.setItem('velinWithdrawalData', JSON.stringify({
+        name: nameField ? nameField.value : '',
+        email: emailField.value,
+        address: addressField ? addressField.value : '',
+        order: orderField ? orderField.value : '',
+        orderDate: orderDateField ? orderDateField.value : '',
+        reason: reasonField ? reasonField.value : '',
+        signature: signatureField ? signatureField.value : ''
+      }));
+    }
+
+    form.addEventListener('submit', function () {
+      syncBody();
+      saveForKlaviyo();
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Velin Withdrawal Form",
+  "settings": [
+    {
+      "type": "select",
+      "id": "header_style",
+      "label": "Header color (logo, text, icons) on this page",
+      "options": [
+        { "value": "auto", "label": "Automatic" },
+        { "value": "black", "label": "Black" },
+        { "value": "white", "label": "White" }
+      ],
+      "default": "auto"
+    },
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "padding_top", "label": "Padding top (px)", "min": 0, "max": 150, "step": 5, "default": 60 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom (px)", "min": 0, "max": 150, "step": 5, "default": 100 },
+    { "type": "range", "id": "padding_h", "label": "Padding left/right (px)", "min": 0, "max": 150, "step": 5, "default": 100 },
+    { "type": "range", "id": "form_max_width", "label": "Form max width (px)", "min": 400, "max": 1000, "step": 10, "default": 640 },
+    { "type": "range", "id": "row_gap", "label": "Gap between fields (px)", "min": 0, "max": 60, "step": 2, "default": 28 },
+    { "type": "range", "id": "field_label_gap", "label": "Gap between label and box (px)", "min": 0, "max": 30, "step": 1, "default": 10 },
+    { "type": "color", "id": "bg_color", "label": "Background color", "default": "#FFFFFF" },
+    { "type": "header", "content": "Heading & legal text" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Formulaire de rétractation" },
+    { "type": "range", "id": "heading_size", "label": "Heading size (px)", "min": 20, "max": 60, "step": 1, "default": 36 },
+    { "type": "color", "id": "heading_color", "label": "Heading color", "default": "#000000" },
+    { "type": "richtext", "id": "intro_text", "label": "Intro text", "default": "<p>Le présent formulaire doit être complété et renvoyé uniquement si vous souhaitez vous rétracter de la commande passée sur notre Site, sauf exclusions ou limites à l'exercice du droit de rétractation suivant les Conditions Générales de Vente applicables.</p>" },
+    { "type": "text", "id": "attention_text", "label": "Attention line", "default": "A l'attention de Chaigneau Ronan :" },
+    { "type": "text", "id": "notify_text", "label": "Notification line", "default": "Je notifie par la présente la rétractation du contrat portant sur le bien ci-dessous :" },
+    { "type": "header", "content": "Field labels" },
+    { "type": "text", "id": "order_date_label", "label": "Order date field label", "default": "Commande du" },
+    { "type": "text", "id": "order_label", "label": "Order number field label", "default": "Numéro de la commande" },
+    { "type": "text", "id": "order_placeholder", "label": "Order number placeholder", "default": "ex. #1001 ou 1001" },
+    { "type": "text", "id": "name_label", "label": "Name field label", "default": "Nom du Client" },
+    { "type": "text", "id": "email_label", "label": "Email field label", "default": "E-mail" },
+    { "type": "text", "id": "address_label", "label": "Address field label", "default": "Adresse du Client" },
+    { "type": "text", "id": "reason_label", "label": "Reason field label", "default": "Raison" },
+    { "type": "text", "id": "reason_placeholder", "label": "Reason placeholder", "default": "Raison du retour (facultatif)..." },
+    { "type": "text", "id": "signature_label", "label": "Signature field label", "default": "Signature" },
+    { "type": "text", "id": "signature_placeholder", "label": "Signature placeholder", "default": "Tapez votre nom complet" },
+    { "type": "text", "id": "signature_hint", "label": "Signature hint text", "default": "En tapant votre nom, vous signez électroniquement cette déclaration de rétractation." },
+    { "type": "range", "id": "label_size", "label": "Label text size (px)", "min": 10, "max": 24, "step": 1, "default": 16 },
+    { "type": "range", "id": "input_height", "label": "Input box height (px)", "min": 30, "max": 80, "step": 1, "default": 54 },
+    { "type": "range", "id": "input_radius", "label": "Box border radius (px)", "min": 0, "max": 30, "step": 1, "default": 8 },
+    { "type": "color", "id": "input_border_color", "label": "Box border color", "default": "#00000033" },
+    { "type": "range", "id": "message_height", "label": "Reason box height (px)", "min": 60, "max": 400, "step": 5, "default": 120 },
+    { "type": "header", "content": "Submit button" },
+    { "type": "text", "id": "button_text", "label": "Button text", "default": "Envoyer la notification" },
+    { "type": "range", "id": "button_height", "label": "Button height (px)", "min": 30, "max": 80, "step": 1, "default": 54 },
+    { "type": "range", "id": "button_size", "label": "Button text size (px)", "min": 12, "max": 32, "step": 1, "default": 20 },
+    { "type": "color", "id": "button_bg", "label": "Button background", "default": "#957F68" },
+    { "type": "color", "id": "button_color", "label": "Button text color", "default": "#FFFFFF" },
+    { "type": "header", "content": "Messages" },
+    { "type": "text", "id": "success_text", "label": "Success message", "default": "Merci ! Une fois ce formulaire envoyé, vous recevrez automatiquement un courriel contenant l'adresse de retour complète et les conditions précises de réexpédition de votre colis." },
+    { "type": "text", "id": "error_text", "label": "Error message", "default": "Une erreur est survenue. Veuillez réessayer." }
+  ],
+  "presets": [
+    { "name": "Velin Withdrawal Form" }
+  ]
+}
+{% endschema %}

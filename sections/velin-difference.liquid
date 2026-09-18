@@ -1,0 +1,248 @@
+{% comment %} Velin - Difference Section (Figma: 1439 container, 505 image / text right) {% endcomment %}
+
+<div class="velin-diff" style="
+  padding: {{ section.settings.padding_v }}px {{ section.settings.padding_h }}px;
+  gap: {{ section.settings.column_gap }}px;
+">
+
+  <div class="velin-diff__image">
+    {% if section.settings.image != blank %}
+      <img src="{{ section.settings.image | image_url: width: 1000 }}" alt="{{ section.settings.heading | escape }}" loading="lazy">
+    {% endif %}
+  </div>
+
+  <div class="velin-diff__text" style="gap: {{ section.settings.text_gap }}px;">
+
+    {% if section.settings.heading != blank %}
+      <h2 class="velin-diff__heading" style="font-size: {{ section.settings.heading_size }}px;">
+        {{ section.settings.heading }}
+      </h2>
+    {% endif %}
+
+    <div class="velin-diff__features" style="gap: {{ section.settings.feature_gap }}px;">
+      {% for block in section.blocks %}
+        {% if block.type == 'diff_feature' %}
+          <div class="velin-diff__feature" {{ block.shopify_attributes }}>
+            <span class="velin-diff__icon-box">
+              {% case block.settings.icon_type %}
+                {% when 'shield' %}
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V5l8-3z" stroke="#000" stroke-width="2" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                {% when 'star' %}
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2l3 7 7 .5-5.5 4.5 2 7-6.5-4-6.5 4 2-7L2 9.5 9 9l3-7z" stroke="#000" stroke-width="2" stroke-linejoin="round"/></svg>
+                {% when 'bag' %}
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="4" y="8" width="16" height="12" rx="2" stroke="#000" stroke-width="2"/><path d="M8 8V6a4 4 0 0 1 8 0v2" stroke="#000" stroke-width="2"/></svg>
+              {% endcase %}
+            </span>
+            <div class="velin-diff__feature-text">
+              <p class="velin-diff__feature-title">{{ block.settings.title }}</p>
+              <p class="velin-diff__feature-sub">{{ block.settings.subtext }}</p>
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    {% if section.settings.button_text != blank %}
+      <a href="{{ section.settings.button_link }}" class="velin-diff__btn">
+        {{ section.settings.button_text }}
+      </a>
+    {% endif %}
+
+  </div>
+
+</div>
+
+<style>
+  .velin-diff {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 1639px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    font-family: 'Merriweather', serif;
+  }
+
+  .velin-diff__image {
+    flex: 1 1 505px;
+    max-width: 505px;
+  }
+
+  .velin-diff__image img {
+    width: 100%;
+    height: 600px;
+    object-fit: cover;
+    border-radius: 14px;
+    display: block;
+  }
+
+  .velin-diff__text {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 450px;
+    max-width: 450px;
+  }
+
+  .velin-diff__heading {
+    margin: 0;
+    font-family: 'Lusitana', serif;
+    font-weight: 400;
+    line-height: 100%;
+    text-transform: capitalize;
+    color: #000;
+  }
+
+  .velin-diff__features {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .velin-diff__feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+  }
+
+  .velin-diff__icon-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 47px;
+    flex: 0 0 50px;
+    border: 1px solid rgba(0,0,0,0.15);
+    border-radius: 10px;
+    box-sizing: border-box;
+  }
+
+  .velin-diff__feature-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .velin-diff__feature-title {
+    margin: 0;
+    font-weight: {{ section.settings.title_weight }};
+    font-size: 16px;
+    text-transform: capitalize;
+    color: #000;
+  }
+
+  .velin-diff__feature-sub {
+    margin: 0;
+    font-weight: {{ section.settings.subtext_weight }};
+    font-size: 14px;
+    text-transform: capitalize;
+    color: rgba(0,0,0,0.7);
+  }
+
+  .velin-diff__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    padding: 14px 20px;
+    border-radius: 8px;
+    background: #705744;
+    color: #FFFFFF;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 140%;
+    letter-spacing: 0.1em;
+    text-align: center;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+
+  @media screen and (max-width: 1100px) {
+    .velin-diff {
+      flex-direction: column;
+      padding: 40px 20px !important;
+      gap: 32px !important;
+    }
+    .velin-diff__image,
+    .velin-diff__text {
+      max-width: 100%;
+      flex: 1 1 auto;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Velin Difference",
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "padding_v", "label": "Padding top/bottom (px)", "min": 0, "max": 150, "step": 5, "default": 100 },
+    { "type": "range", "id": "padding_h", "label": "Padding left/right (px)", "min": 0, "max": 150, "step": 5, "default": 100 },
+    { "type": "range", "id": "column_gap", "label": "Gap image/text (px)", "min": 0, "max": 80, "step": 2, "default": 40 },
+    { "type": "range", "id": "text_gap", "label": "Gap inside text column (px)", "min": 0, "max": 60, "step": 1, "default": 28 },
+    { "type": "range", "id": "feature_gap", "label": "Gap between features (px)", "min": 0, "max": 40, "step": 1, "default": 20 },
+{
+  "type": "select",
+  "id": "title_weight",
+  "label": "Feature title weight",
+  "options": [
+    { "value": "400", "label": "Regular" },
+    { "value": "500", "label": "Medium" },
+    { "value": "600", "label": "Semi Bold" },
+    { "value": "700", "label": "Bold" }
+  ],
+  "default": "600"
+},
+{
+  "type": "select",
+  "id": "subtext_weight",
+  "label": "Feature subtext weight",
+  "options": [
+    { "value": "400", "label": "Regular" },
+    { "value": "500", "label": "Medium" },
+    { "value": "600", "label": "Semi Bold" },
+    { "value": "700", "label": "Bold" }
+  ],
+  "default": "400"
+},
+    { "type": "header", "content": "Heading" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "La Différence Est Évidente" },
+    { "type": "range", "id": "heading_size", "label": "Heading size (px)", "min": 20, "max": 60, "step": 1, "default": 40 },
+    { "type": "header", "content": "Image" },
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "header", "content": "Button" },
+    { "type": "text", "id": "button_text", "label": "Button text", "default": "Profiter De L'offre" },
+    { "type": "url", "id": "button_link", "label": "Button link" }
+  ],
+  "blocks": [
+    {
+      "type": "diff_feature",
+      "name": "Feature item",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon_type",
+          "label": "Icon",
+          "options": [
+            { "value": "shield", "label": "Shield (quality)" },
+            { "value": "star", "label": "Star (approved)" },
+            { "value": "bag", "label": "Bag (elegant)" }
+          ],
+          "default": "shield"
+        },
+        { "type": "text", "id": "title", "label": "Title", "default": "Premium Quality Materials" },
+        { "type": "text", "id": "subtext", "label": "Subtext", "default": "Gros plan sur le sac en cuir : coutures + texture du cuir?" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Velin Difference",
+      "blocks": [
+        { "type": "diff_feature", "settings": { "icon_type": "shield", "title": "Premium Quality Materials", "subtext": "Gros plan sur le sac en cuir : coutures + texture du cuir?" } },
+        { "type": "diff_feature", "settings": { "icon_type": "star", "title": "Approuvé Par Plus De 50 000 Clients", "subtext": "Femme portant le sac ?" } },
+        { "type": "diff_feature", "settings": { "icon_type": "bag", "title": "Élégant Et Conçu Pour Durer", "subtext": "Photo lifestyle avec le sac ?" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

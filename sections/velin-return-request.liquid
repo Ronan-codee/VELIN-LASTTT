@@ -1,0 +1,307 @@
+{% comment %} Velin - Return / Right of Withdrawal Request Form {% endcomment %}
+{% render 'header-color-override', style: section.settings.header_style %}
+{%- assign sec_id = section.id -%}
+
+<div id="velin-return-{{ sec_id }}" class="velin-return" style="
+  background: {{ section.settings.bg_color }};
+  padding: {{ section.settings.padding_top }}px {{ section.settings.padding_h }}px {{ section.settings.padding_bottom }}px;
+">
+  <div class="velin-return__wrap" style="max-width: {{ section.settings.form_max_width }}px;">
+
+    <h1 class="velin-return__heading" style="font-size: {{ section.settings.heading_size }}px; color: {{ section.settings.heading_color }};">
+      {{ section.settings.heading }}
+    </h1>
+    {%- if section.settings.intro_text != blank -%}
+      <p class="velin-return__intro">{{ section.settings.intro_text }}</p>
+    {%- endif -%}
+
+    {% form 'contact', id: 'VelinReturnForm', class: 'velin-return__form' %}
+
+      <input type="hidden" name="contact[body]" data-velin-return-body value="{{ form.body }}">
+
+      <p class="velin-return__success" data-velin-return-success {% unless form.posted_successfully? %}style="display:none;"{% endunless %}>{{ section.settings.success_text }}</p>
+
+      <p class="velin-return__error" data-velin-return-error {% unless form.errors %}style="display:none;"{% endunless %}>
+        {%- if form.errors -%}{{ form.errors | default_errors }}{%- endif -%}
+      </p>
+
+      <div class="velin-return__field" style="margin-bottom: {{ section.settings.row_gap }}px;">
+        <label for="ReturnFormFirstName-{{ sec_id }}">{{ section.settings.first_name_label }} <span class="velin-return__required">*</span></label>
+        <input type="text" id="ReturnFormFirstName-{{ sec_id }}" name="contact[Prénom]" autocomplete="given-name" data-velin-return-firstname required>
+      </div>
+
+      <div class="velin-return__field" style="margin-bottom: {{ section.settings.row_gap }}px;">
+        <label for="ReturnFormName-{{ sec_id }}">{{ section.settings.name_label }} <span class="velin-return__required">*</span></label>
+        <input type="text" id="ReturnFormName-{{ sec_id }}" name="contact[name]" autocomplete="family-name" value="{{ form.name }}" data-velin-return-name required>
+      </div>
+
+      <div class="velin-return__field" style="margin-bottom: {{ section.settings.row_gap }}px;">
+        <label for="ReturnFormEmail-{{ sec_id }}">{{ section.settings.email_label }} <span class="velin-return__required">*</span></label>
+        <input type="email" id="ReturnFormEmail-{{ sec_id }}" name="contact[email]" autocomplete="email" value="{{ form.email }}" data-velin-return-email required>
+      </div>
+
+      <div class="velin-return__field" style="margin-bottom: {{ section.settings.row_gap }}px;">
+        <label for="ReturnFormAddress-{{ sec_id }}">{{ section.settings.address_label }} <span class="velin-return__required">*</span></label>
+        <input type="text" id="ReturnFormAddress-{{ sec_id }}" name="contact[Adresse]" autocomplete="street-address" data-velin-return-address required>
+      </div>
+
+      <div class="velin-return__field" style="margin-bottom: {{ section.settings.row_gap }}px;">
+        <label for="ReturnFormOrder-{{ sec_id }}">{{ section.settings.order_label }} <span class="velin-return__required">*</span></label>
+        <input type="text" id="ReturnFormOrder-{{ sec_id }}" placeholder="{{ section.settings.order_placeholder }}" data-velin-return-order required>
+      </div>
+
+      <div class="velin-return__field" style="margin-bottom: {{ section.settings.row_gap }}px;">
+        <label for="ReturnFormArticles-{{ sec_id }}">{{ section.settings.articles_label }}</label>
+        <textarea id="ReturnFormArticles-{{ sec_id }}" placeholder="{{ section.settings.articles_placeholder }}" style="height: {{ section.settings.message_height }}px;" data-velin-return-articles></textarea>
+      </div>
+
+      <button type="submit" class="velin-return__submit" style="
+        height: {{ section.settings.button_height }}px;
+        font-size: {{ section.settings.button_size }}px;
+        background: {{ section.settings.button_bg }};
+        color: {{ section.settings.button_color }};
+      ">
+        {{ section.settings.button_text }}
+      </button>
+
+      {%- if form.posted_successfully? -%}
+        <script>
+          (function () {
+            var saved = sessionStorage.getItem('velinReturnData');
+            if (!saved) return;
+            sessionStorage.removeItem('velinReturnData');
+            var data = JSON.parse(saved);
+            if (!data.email) return;
+            fetch('https://a.klaviyo.com/client/events/?company_id=SSbiN6', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+              body: JSON.stringify({
+                data: {
+                  type: 'event',
+                  attributes: {
+                    properties: {
+                      'Prénom': data.firstName || '',
+                      'Nom': data.name || '',
+                      'Adresse': data.address || '',
+                      'Numéro de commande': data.order || '',
+                      'Articles': data.articles || ''
+                    },
+                    metric: {
+                      data: { type: 'metric', attributes: { name: 'Return Requested' } }
+                    },
+                    profile: {
+                      data: {
+                        type: 'profile',
+                        attributes: { email: data.email, first_name: data.firstName || '', last_name: data.name || '' }
+                      }
+                    }
+                  }
+                }
+              })
+            }).then(function (res) {
+              return res.text().then(function (text) {
+                console.log('Klaviyo return event status:', res.status, text);
+              });
+            }).catch(function (err) {
+              console.error('Klaviyo return event failed', err);
+            });
+          })();
+        </script>
+      {%- endif -%}
+
+    {% endform %}
+
+  </div>
+</div>
+
+<style>
+  .velin-return {
+    box-sizing: border-box;
+    font-family: 'Merriweather', serif;
+  }
+
+  .velin-return__wrap {
+    margin: 0 auto;
+  }
+
+  .velin-return__heading {
+    margin: 0 0 16px;
+    font-family: 'Lusitana', serif;
+    font-weight: 400;
+    line-height: 130%;
+  }
+
+  .velin-return__intro {
+    margin: 0 0 40px;
+    color: #4a4a4a;
+    line-height: 1.6;
+  }
+
+  .velin-return__field {
+    display: flex;
+    flex-direction: column;
+    gap: {{ section.settings.field_label_gap }}px;
+  }
+
+  .velin-return__field label {
+    font-family: 'Merriweather', serif;
+    font-weight: 400;
+    font-size: {{ section.settings.label_size }}px;
+    line-height: 110%;
+    color: #000000;
+  }
+
+  .velin-return__required {
+    color: #c0392b;
+  }
+
+  .velin-return__field input,
+  .velin-return__field textarea {
+    box-sizing: border-box;
+    width: 100%;
+    height: {{ section.settings.input_height }}px;
+    padding: 0 14px;
+    border: 0.5px solid {{ section.settings.input_border_color }};
+    border-radius: {{ section.settings.input_radius }}px;
+    background: #fff;
+    font-family: inherit;
+    font-size: 14px;
+    color: #1c1c1c;
+  }
+
+  .velin-return__field textarea {
+    height: auto;
+    padding: 14px;
+    resize: vertical;
+  }
+
+  .velin-return__submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    border: none;
+    border-radius: {{ section.settings.input_radius }}px;
+    text-transform: capitalize;
+    line-height: 110%;
+    cursor: pointer;
+  }
+
+  .velin-return__submit[disabled] {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .velin-return__success {
+    color: #1a7a3c;
+    margin: 0 0 20px;
+  }
+
+  .velin-return__error {
+    color: #c0392b;
+    margin: 0 0 20px;
+  }
+</style>
+
+<script>
+  (function () {
+    var form = document.getElementById('VelinReturnForm');
+    if (!form) return;
+
+    var successEl = form.querySelector('[data-velin-return-success]');
+    if (successEl && successEl.style.display !== 'none') {
+      setTimeout(function () { successEl.style.display = 'none'; }, 4000);
+    }
+
+    var bodyField = form.querySelector('[data-velin-return-body]');
+    var orderField = form.querySelector('[data-velin-return-order]');
+    var articlesField = form.querySelector('[data-velin-return-articles]');
+    var firstNameField = form.querySelector('[data-velin-return-firstname]');
+    var nameField = form.querySelector('[data-velin-return-name]');
+    var addressField = form.querySelector('[data-velin-return-address]');
+    var emailField = form.querySelector('[data-velin-return-email]');
+
+    function syncBody() {
+      if (!bodyField) return;
+      bodyField.value = 'Adresse : ' + (addressField ? addressField.value : '') +
+        '\nNuméro de commande : ' + (orderField ? orderField.value : '') +
+        '\nArticles : ' + (articlesField ? articlesField.value : '');
+    }
+
+    function saveForKlaviyo() {
+      if (!emailField || !emailField.value) return;
+      sessionStorage.setItem('velinReturnData', JSON.stringify({
+        firstName: firstNameField ? firstNameField.value : '',
+        name: nameField ? nameField.value : '',
+        email: emailField.value,
+        address: addressField ? addressField.value : '',
+        order: orderField ? orderField.value : '',
+        articles: articlesField ? articlesField.value : ''
+      }));
+    }
+
+    form.addEventListener('submit', function () {
+      syncBody();
+      saveForKlaviyo();
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Velin Return Form",
+  "settings": [
+    {
+      "type": "select",
+      "id": "header_style",
+      "label": "Header color (logo, text, icons) on this page",
+      "options": [
+        { "value": "auto", "label": "Automatic" },
+        { "value": "black", "label": "Black" },
+        { "value": "white", "label": "White" }
+      ],
+      "default": "auto"
+    },
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "padding_top", "label": "Padding top (px)", "min": 0, "max": 150, "step": 5, "default": 60 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom (px)", "min": 0, "max": 150, "step": 5, "default": 100 },
+    { "type": "range", "id": "padding_h", "label": "Padding left/right (px)", "min": 0, "max": 150, "step": 5, "default": 100 },
+    { "type": "range", "id": "form_max_width", "label": "Form max width (px)", "min": 400, "max": 1000, "step": 10, "default": 640 },
+    { "type": "range", "id": "row_gap", "label": "Gap between fields (px)", "min": 0, "max": 60, "step": 2, "default": 28 },
+    { "type": "range", "id": "field_label_gap", "label": "Gap between label and box (px)", "min": 0, "max": 30, "step": 1, "default": 10 },
+    { "type": "color", "id": "bg_color", "label": "Background color", "default": "#FFFFFF" },
+    { "type": "header", "content": "Heading" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Droit de rétractation" },
+    { "type": "range", "id": "heading_size", "label": "Heading size (px)", "min": 20, "max": 60, "step": 1, "default": 36 },
+    { "type": "color", "id": "heading_color", "label": "Heading color", "default": "#000000" },
+    { "type": "textarea", "id": "intro_text", "label": "Intro text", "default": "Vous disposez de 14 jours pour changer d'avis. Remplissez ce formulaire pour lancer votre demande de retour, nous vous répondrons par e-mail sous peu." },
+    { "type": "header", "content": "Field labels" },
+    { "type": "text", "id": "first_name_label", "label": "First name field label", "default": "Prénom" },
+    { "type": "text", "id": "name_label", "label": "Name field label", "default": "Nom" },
+    { "type": "text", "id": "email_label", "label": "Email field label", "default": "E-mail" },
+    { "type": "text", "id": "address_label", "label": "Address field label", "default": "Adresse" },
+    { "type": "text", "id": "order_label", "label": "Order number field label", "default": "Numéro de commande" },
+    { "type": "text", "id": "order_placeholder", "label": "Order number placeholder", "default": "ex. #1001 ou 1001" },
+    { "type": "text", "id": "articles_label", "label": "Articles field label", "default": "Articles" },
+    { "type": "text", "id": "articles_placeholder", "label": "Articles placeholder", "default": "Veuillez décrire les articles que vous souhaitez retourner..." },
+    { "type": "range", "id": "label_size", "label": "Label text size (px)", "min": 10, "max": 24, "step": 1, "default": 16 },
+    { "type": "range", "id": "input_height", "label": "Input box height (px)", "min": 30, "max": 80, "step": 1, "default": 54 },
+    { "type": "range", "id": "input_radius", "label": "Box border radius (px)", "min": 0, "max": 30, "step": 1, "default": 8 },
+    { "type": "color", "id": "input_border_color", "label": "Box border color", "default": "#00000033" },
+    { "type": "range", "id": "message_height", "label": "Articles box height (px)", "min": 60, "max": 400, "step": 5, "default": 150 },
+    { "type": "header", "content": "Submit button" },
+    { "type": "text", "id": "button_text", "label": "Button text", "default": "Envoyer la demande" },
+    { "type": "range", "id": "button_height", "label": "Button height (px)", "min": 30, "max": 80, "step": 1, "default": 54 },
+    { "type": "range", "id": "button_size", "label": "Button text size (px)", "min": 12, "max": 32, "step": 1, "default": 20 },
+    { "type": "color", "id": "button_bg", "label": "Button background", "default": "#957F68" },
+    { "type": "color", "id": "button_color", "label": "Button text color", "default": "#FFFFFF" },
+    { "type": "header", "content": "Messages" },
+    { "type": "text", "id": "success_text", "label": "Success message", "default": "Merci ! Votre demande de retour a bien été envoyée." },
+    { "type": "text", "id": "sending_text", "label": "Button text while sending", "default": "Envoi en cours..." },
+    { "type": "text", "id": "error_text", "label": "Error message", "default": "Une erreur est survenue. Veuillez réessayer." }
+  ],
+  "presets": [
+    { "name": "Velin Return Form" }
+  ]
+}
+{% endschema %}

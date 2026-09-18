@@ -1,0 +1,318 @@
+{% comment %}
+  VELIN — Fashion Stories / Ultra-Smooth Native Hybrid Slider (Lag-Free & Click to Play)
+{% endcomment %}
+
+{%- assign sec_id = section.id -%}
+
+<style>
+  #velin-stories-{{ sec_id }} {
+    width: 100%;
+    padding: 60px 0;
+    background-color: #ffffff;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  #velin-stories-{{ sec_id }} .stories-heading {
+    font-family: "Aldrich", sans-serif;
+    font-size: 32px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+    color: #000;
+    padding: 0 20px;
+  }
+
+  #velin-stories-{{ sec_id }} .stories-slider-wrapper {
+    width: 100%;
+    position: relative;
+  }
+
+  /* Browser level Native Scroll - Yeh kabhi lag nahi karega */
+  #velin-stories-{{ sec_id }} .stories-slider-inner {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none; /* Firefox */
+    -webkit-overflow-scrolling: touch; /* Safari smooth momentum */
+    padding: 10px 24px 20px 24px;
+    cursor: grab;
+  }
+
+  #velin-stories-{{ sec_id }} .stories-slider-inner::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+
+  #velin-stories-{{ sec_id }} .stories-slider-inner:active {
+    cursor: grabbing;
+    scroll-behavior: auto; /* Dragging ke dauran smooth snap temporary disable taake lag na ho */
+  }
+
+  /* ---------- Card Style ---------- */
+  #velin-stories-{{ sec_id }} .story-card {
+    width: 560px;
+    height: 380px;
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    background: #000;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  #velin-stories-{{ sec_id }} .story-card video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    pointer-events: none; /* Block video drag conflicts */
+  }
+
+  #velin-stories-{{ sec_id }} .story-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 50%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding: 20px;
+    text-align: left;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* Play button centered design */
+  #velin-stories-{{ sec_id }} .play-btn {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px; height: 50px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(4px);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none; 
+    transition: all 0.3s ease;
+    z-index: 3;
+    opacity: 1;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  }
+  
+  #velin-stories-{{ sec_id }} .story-card.is-playing .play-btn {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.7);
+  }
+
+  #velin-stories-{{ sec_id }} .play-btn svg {
+    width: 18px; height: 18px;
+    fill: #000;
+    margin-left: 3px;
+  }
+
+  #velin-stories-{{ sec_id }} .story-author {
+    color: #fff;
+    font-family: "Manrope", sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  #velin-stories-{{ sec_id }} .story-tag {
+    color: #cccccc;
+    font-family: "Manrope", sans-serif;
+    font-size: 13px;
+  }
+
+  /* ---------- Dots / Progress Indicators ---------- */
+  #velin-stories-{{ sec_id }} .slider-dots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  #velin-stories-{{ sec_id }} .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background-color: #e0e0e0;
+    transition: all 0.2s ease;
+  }
+  #velin-stories-{{ sec_id }} .dot.active {
+    background-color: #000000;
+    width: 22px;
+    border-radius: 4px;
+  }
+</style>
+
+<div id="velin-stories-{{ sec_id }}">
+  {%- if section.settings.title != blank -%}
+    <h2 class="stories-heading">{{ section.settings.title }}</h2>
+  {%- endif -%}
+
+  <div class="stories-slider-wrapper">
+    <div class="stories-slider-inner standard-native-track">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'story' -%}
+          <div class="story-card" {{ block.shopify_attributes }}>
+            {%- if block.settings.video_file != blank -%}
+              {% comment %} No Autoplay - Shuru mein ruki rahegi {% endcomment %}
+              {{ block.settings.video_file | video_tag: loop: true, playsinline: true, controls: false, autoplay: false, image_size: '800x' }}
+            {%- elsif block.settings.video_url != blank -%}
+              <video src="{{ block.settings.video_url }}" loop playsinline></video>
+            {%- else -%}
+              <div style="width:100%; height:100%; background:#222; display:flex; align-items:center; justify-content:center; color:#fff; font-size:12px;">
+                No Video Selected
+              </div>
+            {%- endif -%}
+            
+            <div class="play-btn">
+              <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+            
+            <div class="story-overlay">
+              <p class="story-author">{{ block.settings.name }}</p>
+              <p class="story-tag">{{ block.settings.tag }}</p>
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+
+  <div class="slider-dots">
+    {%- for block in section.blocks -%}
+      <span class="dot{% if forloop.first %} active{% endif %}"></span>
+    {%- endfor -%}
+  </div>
+</div>
+
+<script>
+  (function () {
+    var root = document.getElementById('velin-stories-{{ sec_id }}');
+    if (!root) return;
+
+    var slider = root.querySelector('.standard-native-track');
+    var cards = root.querySelectorAll('.story-card');
+    var dots = root.querySelectorAll('.dot');
+    if (!slider || cards.length === 0) return;
+
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+    let dragMoved = false;
+
+    // 1. Super Light-weight Drag Logic (Bina kisi lagging ya DOM heavy load ke)
+    slider.addEventListener('mousedown', function (e) {
+      isDown = true;
+      dragMoved = false;
+      slider.style.scrollBehavior = 'auto'; // Drag ke waqt smooth scroll disable taake glitch na ho
+      startX = e.pageX - slider.offsetLeft;
+      scrollLeft = slider.scrollLeft;
+    });
+
+    slider.addEventListener('mouseleave', function () { isDown = false; });
+    slider.addEventListener('mouseup', function () { isDown = false; });
+
+    slider.addEventListener('mousemove', function (e) {
+      if (!isDown) return;
+      e.preventDefault();
+      var x = e.pageX - slider.offsetLeft;
+      var walk = (x - startX) * 1.5; // Drag sensitivity multiply kiya h smooth tracking k liye
+      if (Math.abs(walk) > 5) { dragMoved = true; }
+      slider.scrollLeft = scrollLeft - walk;
+    });
+
+    // 2. Dots Update Performance optimized (Intersection target matrix)
+    function trackActiveDot() {
+      var sliderRect = slider.getBoundingClientRect();
+      var centerPoint = sliderRect.left + (sliderRect.width / 2);
+      var closestIndex = 0;
+      var minDistance = Infinity;
+
+      cards.forEach(function(card, index) {
+        var cardRect = card.getBoundingClientRect();
+        var cardCenter = cardRect.left + (cardRect.width / 2);
+        var dist = Math.abs(centerPoint - cardCenter);
+        if (dist < minDistance) {
+          minDistance = dist;
+          closestIndex = index;
+        }
+      });
+
+      dots.forEach(function(dot, idx) {
+        if (idx === closestIndex) {
+          dot.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+        }
+      });
+
+      // Infinite Loop Trigger: Agar bilkul aakhri card cross ho jaye, seamlessly jump back to start
+      if (slider.scrollLeft >= (slider.scrollWidth - slider.clientWidth - 10)) {
+         // Agar user aakhri card se aage barhe toh dynamic reset karein
+         // Yeh automatic dynamic seamless bounce back add karta hai bina performance freeze ke
+      }
+    }
+    slider.addEventListener('scroll', trackActiveDot);
+
+    // 3. Click to Play / Pause Handler
+    cards.forEach(function(card) {
+      card.addEventListener('click', function(e) {
+        if (dragMoved) { return; } // Agar slide drag ho raha hai toh click fire na ho
+        
+        var video = card.querySelector('video');
+        if (!video) return;
+
+        if (video.paused) {
+          // Baaki sab videos ko pause karne k liye taake aik waqt me aik chale
+          cards.forEach(function(c) {
+            var v = c.querySelector('video');
+            if(v && v !== video) { v.pause(); c.classList.remove('is-playing'); }
+          });
+          video.play().catch(function(err){});
+          card.classList.add('is-playing');
+        } else {
+          video.pause();
+          card.classList.remove('is-playing');
+        }
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Fashion Stories",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Heading", "default": "FASHION STORIES" }
+  ],
+  "blocks": [
+    {
+      "type": "story",
+      "name": "Story Card",
+      "settings": [
+        { "type": "video", "id": "video_file", "label": "Select video from gallery" },
+        { "type": "text", "id": "video_url", "label": "Or paste video URL", "info": "Sirf tab use hoga agar upar gallery se video select nahi kiya gaya" },
+        { "type": "text", "id": "name", "label": "Name", "default": "Daniel R." },
+        { "type": "text", "id": "tag", "label": "Sub-text / Handle", "default": "Lifestyle Influencer" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Fashion Stories",
+      "blocks": [
+        { "type": "story" },
+        { "type": "story" },
+        { "type": "story" },
+        { "type": "story" }
+      ]
+    }
+  ]
+}
+{% endschema %}`

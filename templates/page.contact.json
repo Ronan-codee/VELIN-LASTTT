@@ -1,0 +1,53 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {}
+    },
+    "velin_contact": {
+      "type": "velin-contact",
+      "name": "Velin Contact Form",
+      "settings": {
+        "header_style": "black",
+        "padding_top": 60,
+        "padding_bottom": 100,
+        "padding_h": 100,
+        "form_max_width": 1240,
+        "column_gap": 22,
+        "row_gap": 40,
+        "field_label_gap": 10,
+        "bg_color": "#F7F8F8",
+        "heading": "Contactez-nous",
+        "heading_size": 42,
+        "heading_color": "#000000",
+        "first_name_label": "Prénom",
+        "last_name_label": "Nom de famille",
+        "email_label": "Adresse e-mail",
+        "phone_label": "Numéro de téléphone",
+        "message_label": "Message",
+        "label_size": 16,
+        "input_height": 54,
+        "input_radius": 8,
+        "input_border_color": "#000000B2",
+        "message_height": 150,
+        "button_text": "Envoyer",
+        "button_height": 54,
+        "button_size": 20,
+        "button_bg": "#957F68",
+        "button_color": "#FFFFFF",
+        "success_text": "Merci ! Votre message a bien été envoyé."
+      }
+    }
+  },
+  "order": ["main", "velin_contact"]
+}

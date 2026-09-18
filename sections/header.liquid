@@ -1,0 +1,146 @@
+<header class="site-header{% if template.name == 'index' %} site-header--transparent{% endif %}">
+  <div class="site-header__inner container">
+    <details class="site-header__drawer">
+      <summary aria-label="Menu">{% render 'icon-menu' %}</summary>
+      <nav class="site-header__drawer-nav">
+        <ul>
+          {%- for link in section.settings.menu.links -%}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    </details>
+
+    {%- liquid
+      assign header_logo = section.settings.logo | default: settings.logo
+      assign header_logo_width = section.settings.logo_width | default: settings.logo_width
+      assign header_logo_height = header_logo_width | divided_by: header_logo.aspect_ratio | default: header_logo_width
+      assign header_logo_width_2x = header_logo_width | times: 2
+      assign header_logo_width_3x = header_logo_width | times: 3
+    -%}
+    <a href="{{ routes.root_url }}" class="site-header__logo">
+      {%- if header_logo != blank -%}
+        <span
+          class="site-header__logo-mark"
+          role="img"
+          aria-label="{{ shop.name | escape }}"
+          style="width: {{ header_logo_width }}px; height: {{ header_logo_height }}px; -webkit-mask-image: url('{{ header_logo | image_url: width: header_logo_width_3x }}'); mask-image: url('{{ header_logo | image_url: width: header_logo_width_3x }}');"
+        ></span>
+      {%- else -%}
+        <span class="site-header__logo-text">{{ shop.name }}</span>
+      {%- endif -%}
+    </a>
+
+    <nav class="site-header__nav" role="navigation" style="--velin-nav-text-size: {{ section.settings.nav_text_size }}px;">
+      <ul class="site-header__menu">
+        {%- for link in section.settings.menu.links -%}
+          <li class="site-header__item{% if link.links.size > 0 %} has-children{% endif %}">
+            <a href="{{ link.url }}" class="site-header__link{% if link.current %} is-active{% endif %}">
+              {{ link.title }}
+              {%- if link.links.size > 0 %} {% render 'icon-caret' %}{% endif -%}
+            </a>
+            {%- if link.links.size > 0 -%}
+              <ul class="site-header__submenu">
+                {%- for child in link.links -%}
+                  <li><a href="{{ child.url }}">{{ child.title }}</a></li>
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </nav>
+
+    <div class="site-header__actions" style="--velin-icon-size: {{ section.settings.icon_size }}px;">
+      <a href="{{ routes.search_url }}" class="site-header__action" aria-label="{{ 'general.search.title' | t }}">
+        {% render 'icon-search' %}
+      </a>
+      {%- if customer -%}
+        <a href="{{ routes.account_url }}" class="site-header__action" aria-label="Account">
+          {% render 'icon-user' %}
+        </a>
+      {%- else -%}
+        <a href="{{ routes.account_login_url }}" class="site-header__action" aria-label="Account">
+          {% render 'icon-user' %}
+        </a>
+      {%- endif -%}
+      <a
+        href="{{ routes.cart_url }}"
+        class="site-header__action site-header__cart"
+        aria-label="{{ 'general.cart.title' | t }}"
+        {% unless template.name == 'cart' %}data-cart-drawer-toggle{% endunless %}
+      >
+        {% render 'icon-cart' %}
+        <span class="site-header__cart-count{% if cart.item_count == 0 %} is-empty{% endif %}" data-cart-count>{{ cart.item_count }}</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header__actions svg {
+    width: var(--velin-icon-size, 20px);
+    height: var(--velin-icon-size, 20px);
+  }
+
+  .site-header__logo-mark {
+    display: inline-block;
+    background-color: currentColor;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-position: center;
+    mask-position: center;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo",
+      "info": "Falls back to the logo in Theme settings, then the store name."
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "min": 60,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "label": "Logo width",
+      "default": 120
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "range",
+      "id": "nav_text_size",
+      "min": 10,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Menu text size",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "min": 12,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Search/account/cart icon size",
+      "default": 20
+    }
+  ]
+}
+{% endschema %}

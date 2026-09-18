@@ -1,0 +1,315 @@
+{%- comment -%}
+  About page narrative — hand-built for this page only, not a reusable block.
+  Copy is hardcoded on purpose; only the photos are merchant-editable, since
+  those are getting replaced. Keeps the About page out of the generic
+  repeated image+text block pattern.
+{%- endcomment -%}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,340..600&family=Work+Sans:wght@400;500&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+{%- assign sec_id = section.id -%}
+
+<article id="velin-about-{{ sec_id }}" class="velin-about">
+
+  <p class="velin-about__lead">
+    Un sac de créateur affiché 500&nbsp;€ coûte souvent quelques dizaines d'euros de matière
+    et de fabrication. Le reste finance la marque, la boutique et la publicité. Nous vendons en
+    direct, sans boutique ni intermédiaire, et sans logo à exhiber.
+  </p>
+
+  <div class="velin-about__spread">
+    {%- if section.settings.matiere_image != blank -%}
+      <div class="velin-about__spread-media">
+        <img
+          src="{{ section.settings.matiere_image | image_url: width: 900 }}"
+          alt="{{ section.settings.matiere_image.alt | escape }}"
+          loading="lazy"
+        >
+      </div>
+    {%- endif -%}
+    <div class="velin-about__spread-text">
+      <p class="velin-about__label">Matière</p>
+      <h2 class="velin-about__heading">Nous choisissons chaque peau à la main.</h2>
+      <p>
+        Nous n'achetons pas en grande quantité. Chaque peau de vachette, grainée ou lisse, est
+        choisie à la main pour son grain et sa souplesse. Un grain irrégulier ne s'imite pas&nbsp;:
+        c'est la preuve d'un cuir naturel.
+      </p>
+    </div>
+  </div>
+
+  {%- if section.settings.fabrication_image != blank -%}
+    <figure class="velin-about__full">
+      <img
+        src="{{ section.settings.fabrication_image | image_url: width: 1800 }}"
+        alt="{{ section.settings.fabrication_image.alt | escape }}"
+        loading="lazy"
+      >
+      <figcaption>
+        <p class="velin-about__label velin-about__label--light">Fabrication</p>
+        <p class="velin-about__caption">Cousu point par point, pas collé.</p>
+      </figcaption>
+    </figure>
+  {%- endif -%}
+
+  <div class="velin-about__spread velin-about__spread--reverse">
+    {%- if section.settings.durabilite_image != blank -%}
+      <div class="velin-about__spread-media">
+        <img
+          src="{{ section.settings.durabilite_image | image_url: width: 900 }}"
+          alt="{{ section.settings.durabilite_image.alt | escape }}"
+          loading="lazy"
+        >
+      </div>
+    {%- endif -%}
+    <div class="velin-about__spread-text velin-about__spread-text--stacked">
+      <div>
+        <p class="velin-about__label">Durabilité</p>
+        <p>
+          Regardez la tranche du cuir&nbsp;: pleine, dense, sans plastique apparent. C'est la preuve,
+          à l'œil nu, d'un cuir de vachette de qualité. Anses renforcées, quincaillerie solide,
+          coutures redoublées&nbsp;: un sac Velin se porte tous les jours, pendant des années, pas
+          une saison.
+        </p>
+      </div>
+      <div>
+        <p class="velin-about__label">Confiance</p>
+        <p>
+          Nos photos ne sont pas retouchées pour cacher les détails du cuir. Si la matière ou la
+          fabrication ne vous convainc pas, vous avez 30 jours pour changer d'avis. Notre équipe
+          répond en moins de 24&nbsp;h ouvrées, par e-mail ou WhatsApp.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="velin-about__close">
+    <h2 class="velin-about__close-heading">Le sac. Pas le monogramme.</h2>
+    <p class="velin-about__close-sub">Un sac. Pas une tendance.</p>
+    <p class="velin-about__close-text">
+      Pas de monogramme, pas de logo à exhiber. Nos sacs se remarquent par la qualité du cuir, pas
+      par une lettre brodée — et nous ne sortons pas une nouvelle collection chaque mois. Un choix
+      pensé pour durer, pas pour suivre une tendance.
+    </p>
+    <a href="{{ section.settings.button_link | default: '/collections/nos-produits' }}" class="velin-about__button">
+      {{ section.settings.button_text }}
+    </a>
+  </div>
+
+</article>
+
+<style>
+  .velin-about {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 80px 24px;
+    color: var(--color-dark, #2B241D);
+  }
+
+  .velin-about__lead {
+    max-width: 640px;
+    margin: 0 auto 96px;
+    font-family: "Fraunces", var(--font-heading), serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-size: clamp(22px, 2.6vw, 28px);
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  .velin-about__spread {
+    display: grid;
+    grid-template-columns: 5fr 6fr;
+    gap: 64px;
+    align-items: center;
+    margin-bottom: 96px;
+  }
+
+  .velin-about__spread--reverse {
+    grid-template-columns: 6fr 5fr;
+  }
+
+  .velin-about__spread--reverse .velin-about__spread-media {
+    order: 2;
+  }
+
+  .velin-about__spread-media img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 4px;
+  }
+
+  .velin-about__spread-text p {
+    font-family: "Work Sans", var(--font-body), sans-serif;
+    font-size: 17px;
+    line-height: 1.75;
+    color: #4d453c;
+    margin: 0;
+    max-width: 46ch;
+  }
+
+  .velin-about__spread-text--stacked {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .velin-about__label {
+    font-family: "Work Sans", var(--font-body), sans-serif;
+    font-style: italic;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    color: var(--color-brown, #8A7157);
+    margin: 0 0 10px;
+  }
+
+  .velin-about__label--light {
+    color: rgba(255, 255, 255, 0.75);
+  }
+
+  .velin-about__heading {
+    font-family: "Fraunces", var(--font-heading), serif;
+    font-optical-sizing: auto;
+    font-weight: 460;
+    font-size: 30px;
+    line-height: 1.25;
+    margin: 0 0 16px;
+  }
+
+  .velin-about__full {
+    position: relative;
+    width: 100vw;
+    margin: 0 calc(50% - 50vw) 96px;
+    line-height: 0;
+  }
+
+  .velin-about__full img {
+    width: 100%;
+    height: clamp(320px, 46vw, 560px);
+    object-fit: cover;
+    display: block;
+  }
+
+  .velin-about__full figcaption {
+    position: absolute;
+    left: 32px;
+    bottom: 28px;
+    line-height: 1.4;
+  }
+
+  .velin-about__caption {
+    font-family: "Fraunces", var(--font-heading), serif;
+    font-weight: 440;
+    font-size: 22px;
+    color: #fff;
+    margin: 0;
+    max-width: 360px;
+  }
+
+  .velin-about__close {
+    max-width: 560px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .velin-about__close-heading {
+    font-family: "Fraunces", var(--font-heading), serif;
+    font-optical-sizing: auto;
+    font-weight: 460;
+    font-size: clamp(30px, 4vw, 42px);
+    margin: 0 0 8px;
+  }
+
+  .velin-about__close-sub {
+    font-family: "Work Sans", var(--font-body), sans-serif;
+    font-style: italic;
+    font-size: 15px;
+    color: var(--color-brown, #8A7157);
+    margin: 0 0 24px;
+  }
+
+  .velin-about__close-text {
+    font-family: "Work Sans", var(--font-body), sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    color: #4d453c;
+    margin: 0 0 32px;
+  }
+
+  .velin-about__button {
+    display: inline-block;
+    font-family: "Work Sans", var(--font-body), sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--color-dark, #2B241D);
+    border: 1px solid var(--color-dark, #2B241D);
+    padding: 14px 32px;
+    border-radius: 2px;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  .velin-about__button:hover {
+    background: var(--color-dark, #2B241D);
+    color: #fff;
+  }
+
+  @media screen and (max-width: 900px) {
+    .velin-about {
+      padding: 56px 20px;
+    }
+
+    .velin-about__lead {
+      margin-bottom: 64px;
+    }
+
+    .velin-about__spread,
+    .velin-about__spread--reverse {
+      grid-template-columns: 1fr;
+      gap: 24px;
+      margin-bottom: 64px;
+    }
+
+    .velin-about__spread--reverse .velin-about__spread-media {
+      order: 0;
+    }
+
+    .velin-about__spread-text p,
+    .velin-about__spread-text--stacked {
+      max-width: none;
+    }
+
+    .velin-about__full {
+      margin-bottom: 64px;
+    }
+
+    .velin-about__full figcaption {
+      left: 20px;
+      right: 20px;
+      bottom: 20px;
+    }
+
+    .velin-about__caption {
+      font-size: 18px;
+      max-width: none;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "About story",
+  "settings": [
+    { "type": "image_picker", "id": "matiere_image", "label": "Matière — photo" },
+    { "type": "image_picker", "id": "fabrication_image", "label": "Fabrication — photo pleine largeur" },
+    { "type": "image_picker", "id": "durabilite_image", "label": "Durabilité — photo" },
+    { "type": "text", "id": "button_text", "label": "Bouton — texte", "default": "Voir la collection" },
+    { "type": "url", "id": "button_link", "label": "Bouton — lien" }
+  ],
+  "presets": [{ "name": "About story" }]
+}
+{% endschema %}

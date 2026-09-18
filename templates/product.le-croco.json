@@ -1,0 +1,563 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "disabled": true,
+      "settings": {}
+    },
+    "velin_product_6TkNPb": {
+      "type": "velin-product",
+      "blocks": {
+        "faq_item_HRV4nB": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Comment ce portefeuille est-il fabriqué ?",
+            "answer": "Ce portefeuille est confectionné en cuir de vachette verni, au grain façon croco, soigneusement sélectionné. Chaque pièce est découpée avec précision, puis assemblée et cousue avec des finitions soignées afin de garantir un accessoire élégant, robuste et conçu pour durer."
+          }
+        },
+        "faq_item_UJDGze": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Peut-il contenir tous mes essentiels du quotidien ?",
+            "answer": "Oui. Ce portefeuille est pensé pour accueillir facilement vos indispensables : 7 emplacements cartes, une fenêtre transparente pour la pièce d'identité, 2 compartiments billets et une poche zippée pour la monnaie. Tout l'essentiel du quotidien tient dedans, sans épaissir votre poche ou votre sac."
+          }
+        },
+        "faq_item_w9bAAh": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Expédition et  livraison",
+            "answer": "Nous préparons votre commande avec soin sous 24 à 48 heures. La livraison est ensuite assurée sous 7 à 12 jours ouvrés selon votre lieu de résidence. Un numéro de suivi vous est envoyé dès l'expédition afin que vous puissiez suivre votre colis."
+          }
+        },
+        "faq_item_K8cMnb": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Retours et  remboursements",
+            "answer": "Vous disposez d'un délai de 30 jours après la réception de votre commande pour exercer votre droit de rétractation. Le produit doit être retourné dans son état d'origine, non utilisé et dans son emballage d'origine. Une fois le retour reçu et vérifié, le remboursement est effectué selon le mode de paiement utilisé lors de l'achat."
+          }
+        },
+        "chip_9FexCF": {
+          "type": "chip",
+          "settings": {
+            "text": "Cuir  de vachette"
+          }
+        },
+        "chip_KQYBrR": {
+          "type": "chip",
+          "settings": {
+            "text": "Doublure cuir"
+          }
+        },
+        "chip_WMxMAF": {
+          "type": "chip",
+          "settings": {
+            "text": "Conçu Pour Durer"
+          }
+        },
+        "chip_BjzDHJ": {
+          "type": "chip",
+          "settings": {
+            "text": "Coutures renforcées"
+          }
+        },
+        "offer_UpdcTA": {
+          "type": "offer",
+          "settings": {
+            "title": "1 Sac",
+            "quantity": 1,
+            "price_text": "",
+            "sub_label": "Prix Régulier",
+            "sub_price": "",
+            "perks": "",
+            "show_variant_picker": true,
+            "preselected": true
+          }
+        },
+        "video_thumb_i8MxFX": {
+          "type": "video_thumb",
+          "settings": {
+            "video": "shopify://files/videos/1:4.mp4"
+          }
+        },
+        "video_thumb_HLiKtA": {
+          "type": "video_thumb",
+          "settings": {
+            "video": "shopify://files/videos/UGC 2:4.mp4"
+          }
+        },
+        "video_thumb_q9Y3c4": {
+          "type": "video_thumb",
+          "settings": {
+            "video": "shopify://files/videos/SAC TRAPÈZE UGC 1:6.mp4"
+          }
+        },
+        "video_thumb_bwJmew": {
+          "type": "video_thumb",
+          "settings": {
+            "video": "shopify://files/videos/UGC 1:5.mp4"
+          }
+        }
+      },
+      "block_order": [
+        "faq_item_HRV4nB",
+        "faq_item_UJDGze",
+        "faq_item_w9bAAh",
+        "faq_item_K8cMnb",
+        "chip_9FexCF",
+        "chip_KQYBrR",
+        "chip_WMxMAF",
+        "chip_BjzDHJ",
+        "offer_UpdcTA",
+        "video_thumb_i8MxFX",
+        "video_thumb_HLiKtA",
+        "video_thumb_q9Y3c4",
+        "video_thumb_bwJmew"
+      ],
+      "name": "Velin Product Page",
+      "settings": {
+        "header_style": "black",
+        "bg_color": "#ffffff",
+        "padding_v": 80,
+        "padding_h": 100,
+        "column_gap": 122,
+        "media_width": 680,
+        "image_height": 460,
+        "image_bg": "#ffffff",
+        "media_gap": 22,
+        "thumbs_height": 105,
+        "thumbs_gap": 16,
+        "info_width": 480,
+        "info_gap": 14,
+        "badge_text": "CUIR VÉRITABLE DE VACHETTE",
+        "badge_bg": "#f8f8f8",
+        "badge_size": 18,
+        "avatar_1": "shopify://shop_images/205fa380cb4171bfc62248112a13bb04baf89faf.png",
+        "avatar_2": "shopify://shop_images/009f0c7ee71a0da4c4fdb6d630319003f4d3fdca.png",
+        "avatar_3": "shopify://shop_images/d8211dcff55f756bd70813bac90496ccffc9dbf3.png",
+        "social_text": "KIM  et plus de 3000 clients nous ont fait confiance",
+        "title_size": 32,
+        "compare_color": "#999999",
+        "compare_text": "€23 200,00",
+        "launch_offer_text": "Offre Promo Rentrée · Valable jusqu'au 18 septembre",
+        "launch_offer_bg": "#705744",
+        "launch_offer_color": "#ffffff",
+        "show_installments": true,
+        "installment_count": 3,
+        "payment_icon_size": 27,
+        "chip_bg": "#f7f7f7",
+        "chip_size": 14,
+        "chip_gap": 16,
+        "color_label": "Couleur",
+        "color_option_name": "couleur",
+        "color_map": "Noir:#000000\nBrun:#AA8870\nVert:#026465\nBleu:#00475D\nRouge:#B3001B\nBeige:#D8C7B2\nBlanc:#FFFFFF\nGris:#8E8E8E\nRose:#E8B4C4\nMarron:#6B4A2F\nMarron clair:#A9876B\nCamel:#C19A6B\nTaupe:#8B7E74\nTaupe clair:#B0A69B\nGrège:#B7AC9C\nBlack:#000000\nBrown:#6B4A2F\nStone Grey:#C4BFB5\nStone Gray:#C4BFB5\nGray:#8E8E8E\nSilver:#C4BFB5\nIvoire:#F3EEE3\nBleu Glacier:#C6D2DC\nMarron Camel:#A9713E\nBeige Crème:#EFE3D0\nMarron Chocolat:#3B2216\nJaune Doré:#D4A017\nBlanc Cassé:#F2ECDF\nVert Citron:#C9D94A",
+        "show_free_shipping": true,
+        "free_shipping_text": "Livraison gratuite",
+        "atc_text": "AJOUTER AU PANIER",
+        "atc_bg": "#705744",
+        "atc_color": "#ffffff",
+        "show_stock": false,
+        "stock_title": "Stock Limité",
+        "stock_sub": "Forte Demande, Quantités Limitées",
+        "sold_percent": 89,
+        "sold_label": "Vendus",
+        "stock_bar_color": "#705744",
+        "countdown_label": "Fin Dans",
+        "countdown_hours": 47,
+        "guarantee_image": "shopify://shop_images/0d0928f4c4c145b72f310058bf32366dfaa4cab6.png",
+        "guarantee_heading": "Satisfait Ou Remboursé sous 30 jours",
+        "guarantee_text": "Achetez en toute confiance. Si cet article en cuir ne répond pas à vos attentes en matière de qualité, de fabrication ou de durabilité, vous pouvez nous le retourner sous 30 jours après la livraison.",
+        "approved_heading": "Approuvé Par 3000+ Passionnés",
+        "video_card_width": 160,
+        "video_card_height": 250,
+        "video_gap": 16,
+        "show_description_faq": true,
+        "description_faq_label": "Description"
+      }
+    },
+    "1788307491eff7b841": {
+      "type": "apps",
+      "blocks": {
+        "ag_product_reviews_app_carousel_review_list_RPhcwd": {
+          "type": "shopify://apps/ag-product-reviews/blocks/app-carousel-review-list/c4e1e9ca-4d46-4e76-bc39-7e42417cb327",
+          "settings": {
+            "air_carouselreviews_carouselHeading": "See what our customers said"
+          }
+        }
+      },
+      "block_order": [
+        "ag_product_reviews_app_carousel_review_list_RPhcwd"
+      ],
+      "settings": {}
+    },
+    "leather_story": {
+      "type": "image-with-text",
+      "settings": {
+        "image": "shopify://shop_images/hf_20260825_164230_5d960ffd-25f1-441d-8229-f1e6d5a7cb9a.png",
+        "image_position": "right",
+        "image_fit": "crop",
+        "image_width": 505,
+        "image_height": 600,
+        "background": "beige",
+        "custom_background": "",
+        "image_radius": 14,
+        "full_width": false,
+        "section_padding": 0,
+        "column_gap": 56,
+        "text_max_width": 0,
+        "text_padding": 0,
+        "text_gap": 0,
+        "eyebrow": "LA MATIÈRE",
+        "heading": "Le Cuir de Vachette Véritable, Notre Seul Choix",
+        "heading_nowrap": false,
+        "heading_line_height": 150,
+        "price_tag_enabled": false,
+        "price_before": "",
+        "price_after": "",
+        "text": "Chaque produit Velin est taillé dans du cuir de vachette véritable, une matière noble et résistante. Naturel, légèrement irrégulier, il se patine avec le temps au lieu de s'user — pour un produit qui vieillit mieux que le jour où vous l'avez reçu.",
+        "button_label": "",
+        "button_link": ""
+      }
+    },
+    "leather_vs_faux": {
+      "type": "leather-vs-faux",
+      "settings": {
+        "background": "beige",
+        "eyebrow": "CUIR VÉRITABLE VS SIMILI CUIR",
+        "heading": "Pourquoi Choisir Du Cuir Véritable ?",
+        "text": "En boutique, la différence ne se voit pas toujours. Après quelques mois d'usage, elle devient évidente.",
+        "real_image": "shopify://shop_images/cuir-veritable-macro.png",
+        "real_tag": "Cuir véritable",
+        "real_title": "Cuir De Vachette Véritable",
+        "real_points": "Se patine et s'embellit avec le temps\nRespire naturellement, ne colle pas et évite les mauvaises odeurs\nRésiste aux frottements et traverse les années\nSe nettoie, se répare et se restaure facilement",
+        "fake_image": "shopify://shop_images/simili-cuir-macro.png",
+        "fake_tag": "Simili cuir (PU)",
+        "fake_title": "Simili Cuir / Cuir Synthétique",
+        "fake_points": "Craquelle et s'écaille après quelques mois\nNe respire pas : retient la chaleur et l'humidité\nPerd sa forme et son aspect avec l'usage\nIrréparable une fois abîmé — direction la poubelle"
+      }
+    },
+    "velin_testimonials_QP6kLi": {
+      "type": "velin-testimonials",
+      "blocks": {
+        "review_bYCJb8": {
+          "type": "review",
+          "settings": {
+            "image": "shopify://shop_images/1b26061b9b4fd3d7607fa795351d66dfd671a09b.png",
+            "name": "Gigi K.",
+            "rating": 5,
+            "verified_text": "Achat vérifié",
+            "review_text": "Ce sac est exactement ce que je cherchais. Il est élégant, léger et offre beaucoup d'espace pour mes essentiels du quotidien. Le cuir est très agréable au toucher.",
+            "readmore_text": "Lire la suite"
+          }
+        },
+        "review_EtbTFF": {
+          "type": "review",
+          "settings": {
+            "image": "shopify://shop_images/98adc165424061b14f80455c1138d4938db85986.png",
+            "name": "Valeri B.",
+            "rating": 5,
+            "verified_text": "Achat vérifié",
+            "review_text": "Le savoir-faire est remarquable ! J'utilise ce sac tous les jours depuis des semaines et il a toujours l'air neuf. Il est durable et confortable à porter.",
+            "readmore_text": "Lire la suite"
+          }
+        },
+        "review_nMU466": {
+          "type": "review",
+          "settings": {
+            "image": "shopify://shop_images/9aec9cf3b0a291f339ad01049c33c036a1c72a6c.png",
+            "name": "Anaïs .K",
+            "rating": 5,
+            "verified_text": "Achat vérifié",
+            "review_text": "Commande reçue dans les délais. Le cuir est authentique et l'intérieur est bien pensé pour ranger toutes mes affaires.",
+            "readmore_text": "Lire la suite"
+          }
+        },
+        "review_cPabRR": {
+          "type": "review",
+          "settings": {
+            "image": "shopify://shop_images/le-croco-portefeuille-avis-amandine.png",
+            "name": "Amandine .W",
+            "rating": 5,
+            "verified_text": "Achat vérifié",
+            "review_text": "Une très belle découverte. Le portemonnaie est chic, solide et correspond parfaitement à la description. Je rachèterai sans hésiter.",
+            "readmore_text": "Lire la suite"
+          }
+        }
+      },
+      "block_order": [
+        "review_bYCJb8",
+        "review_EtbTFF",
+        "review_nMU466",
+        "review_cPabRR"
+      ],
+      "disabled": true,
+      "name": "Velin Testimonials",
+      "settings": {
+        "bg_color": "#f7f7f7",
+        "padding_v": 100,
+        "padding_h": 100,
+        "row_gap": 48,
+        "heading": "Adoré par 3000+",
+        "heading_size": 48,
+        "card_width": 295,
+        "image_height": 250,
+        "card_gap": 18
+      }
+    },
+    "velin_story_BeENJY": {
+      "type": "velin-story",
+      "blocks": {
+        "feature_item_4AWPj9": {
+          "type": "feature_item",
+          "settings": {
+            "icon_type": "check",
+            "text": "Cuir Premium"
+          }
+        },
+        "feature_item_Rk7Ckj": {
+          "type": "feature_item",
+          "settings": {
+            "icon_type": "bag",
+            "text": "Design Spacieux"
+          }
+        }
+      },
+      "block_order": [
+        "feature_item_4AWPj9",
+        "feature_item_Rk7Ckj"
+      ],
+      "disabled": true,
+      "name": "Velin Brand Story",
+      "settings": {
+        "padding_v": 100,
+        "padding_h": 100,
+        "column_gap": 30,
+        "text_gap": 30,
+        "heading_before": "Le",
+        "heading_highlight": "Sac Iconique",
+        "heading_after": "Sac-Off",
+        "heading_size": 40,
+        "highlight_bg": "#cab8ab",
+        "highlight_text_color": "#ffffff",
+        "body_text": "Nos sacs en cuir premium sont plébiscités pour leur design intemporel, leur savoir-faire exceptionnel et leur fonctionnalité au quotidien. Élégants, durables, ils subliment chaque occasion.",
+        "body_size": 27,
+        "feature_gap": 28,
+        "image": "shopify://shop_images/e87f04326870667d7691d648dd96ffc8d2437544.png",
+        "image_height": 600,
+        "image_radius": 14
+      }
+    },
+    "velin_comparison_FbDEbz": {
+      "type": "velin-comparison",
+      "blocks": {
+        "comparison_row_RVYpY3": {
+          "type": "comparison_row",
+          "settings": {
+            "feature": "Cuir Premium",
+            "autres_status": "cross",
+            "bas_gamme_status": "cross"
+          }
+        },
+        "comparison_row_ACkg49": {
+          "type": "comparison_row",
+          "settings": {
+            "feature": "Coutures Renforcées",
+            "autres_status": "check",
+            "bas_gamme_status": "cross"
+          }
+        },
+        "comparison_row_Bjyfak": {
+          "type": "comparison_row",
+          "settings": {
+            "feature": "Intérieur Spacieux",
+            "autres_status": "check",
+            "bas_gamme_status": "cross"
+          }
+        },
+        "comparison_row_NQFKYp": {
+          "type": "comparison_row",
+          "settings": {
+            "feature": "Qualité prix",
+            "autres_status": "cross",
+            "bas_gamme_status": "cross"
+          }
+        }
+      },
+      "block_order": [
+        "comparison_row_RVYpY3",
+        "comparison_row_ACkg49",
+        "comparison_row_Bjyfak",
+        "comparison_row_NQFKYp"
+      ],
+      "disabled": true,
+      "name": "Velin Comparison Table",
+      "settings": {
+        "padding_v": 80,
+        "padding_h": 35,
+        "row_padding": 20,
+        "heading": "",
+        "heading_size": 42,
+        "col_label": "Caractéristiques",
+        "col_our": "Notre Sac",
+        "col_others": "Autres",
+        "col_cheap": "Fast fashion",
+        "header_size": 24,
+        "our_header_bg": "#705744",
+        "our_badge_inset": 5,
+        "our_badge_font_size": 20,
+        "col_label_width": 2,
+        "col_our_width": 0.8,
+        "col_others_width": 1.3,
+        "col_cheap_width": 1.5,
+        "row_font_size": 21,
+        "highlight_bg": "#7057444d"
+      }
+    },
+    "velin_reviews_cards_EE7gLb": {
+      "type": "velin-reviews-cards",
+      "blocks": {
+        "review_card_7GfNef": {
+          "type": "review_card",
+          "settings": {
+            "image": "shopify://shop_images/image4_3.png",
+            "name": "Gigi K",
+            "rating": 5,
+            "verified_text": "Achat Vérifié",
+            "review_text": "Je suis absolument amoureux/amoureuse de ce sac ! La qualité est exceptionnelle, les coutures sont parfaites et il est encore plus beau en vrai.",
+            "readmore_text": "Lire la suite"
+          }
+        },
+        "review_card_N3YBA4": {
+          "type": "review_card",
+          "settings": {
+            "image": "shopify://shop_images/10b5ca2ed01eda1f091fa792d591dfa5398b20ec.png",
+            "name": "Danique M.",
+            "rating": 5,
+            "verified_text": "Achat Vérifié",
+            "review_text": "Je suis absolument amoureux/amoureuse de ce sac ! La qualité est exceptionnelle, les coutures sont parfaites et il est encore plus beau en vrai.",
+            "readmore_text": "Lire la suite"
+          }
+        },
+        "review_card_4xFPya": {
+          "type": "review_card",
+          "settings": {
+            "image": "shopify://shop_images/ff28edbd7e57c27b3ca05285a47df99ba2477a99.png",
+            "name": "Hanna L.",
+            "rating": 5,
+            "verified_text": "Achat Vérifié",
+            "review_text": "Je suis absolument amoureux/amoureuse de ce sac ! La qualité est exceptionnelle, les coutures sont parfaites et il est encore plus beau en vrai.",
+            "readmore_text": "Lire la suite"
+          }
+        }
+      },
+      "block_order": [
+        "review_card_7GfNef",
+        "review_card_N3YBA4",
+        "review_card_4xFPya"
+      ],
+      "disabled": true,
+      "name": "Velin Review Cards",
+      "settings": {
+        "padding_v": 65,
+        "padding_h": 55,
+        "card_gap": 20,
+        "verified_badge_color": "#000000",
+        "verified_color": "#000000",
+        "show_write_button": true,
+        "write_review_text": "Écrire Un Avis",
+        "review_form_title": "Écrire un avis",
+        "rating_label": "Notez le produit",
+        "name_label": "Nom",
+        "name_placeholder": "Nom",
+        "email_label": "Email",
+        "email_placeholder": "nom123@gmail.com",
+        "message_label": "Message",
+        "message_placeholder": "Message",
+        "upload_text": "Ajouter un média",
+        "upload_note": "Les photos et vidéos sont visibles uniquement dans l'e-mail, elles ne sont pas publiées automatiquement.",
+        "submit_text": "Envoyer",
+        "cancel_text": "Annuler",
+        "review_success_text": "Merci pour votre avis ! Nous l'examinerons avant de le publier.",
+        "review_error_text": "Une erreur est survenue. Veuillez réessayer."
+      }
+    },
+    "17878328651f699522": {
+      "type": "apps",
+      "blocks": {
+        "ag_product_reviews_app_block_review_list_VRNnt6": {
+          "type": "shopify://apps/ag-product-reviews/blocks/app-block-review-list/c4e1e9ca-4d46-4e76-bc39-7e42417cb327",
+          "settings": {
+            "air_blockreviews_summaryHeading": "Reviews",
+            "air_blockreviews_layout": "list",
+            "air_blockreviews_singleStarColor": "#16a086",
+            "air_blockreviews_primaryColor": "#121212"
+          }
+        }
+      },
+      "block_order": [
+        "ag_product_reviews_app_block_review_list_VRNnt6"
+      ],
+      "settings": {}
+    },
+    "17856869768407b721": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_ef2c6af_44fhTN": {
+          "type": "ai_gen_block_ef2c6af",
+          "settings": {
+            "section_title": "Vous aimerez aussi",
+            "collection": "",
+            "products_count": 5,
+            "cta_text": "Voir toute la collection",
+            "cta_link": "",
+            "container_width": 1200,
+            "card_width": 300,
+            "grid_gap": 25,
+            "marquee_speed": 65,
+            "section_padding_top": 60,
+            "section_padding_bottom": 60,
+            "title_spacing": 40,
+            "title_font": "playfair_display_n4",
+            "title_size": 36,
+            "title_alignment": "center",
+            "title_color": "#241d16",
+            "product_title_size": 16,
+            "product_title_color": "#241d16",
+            "price_size": 14,
+            "price_color": "#241d16",
+            "sale_price_color": "#d9a441",
+            "image_border_radius": 8,
+            "image_background": "#f4f1ec",
+            "background_color": "#ffffff"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_ef2c6af_44fhTN"
+      ],
+      "settings": {}
+    }
+  },
+  "order": [
+    "main",
+    "velin_product_6TkNPb",
+    "1788307491eff7b841",
+    "leather_story",
+    "leather_vs_faux",
+    "velin_testimonials_QP6kLi",
+    "velin_story_BeENJY",
+    "velin_comparison_FbDEbz",
+    "velin_reviews_cards_EE7gLb",
+    "17878328651f699522",
+    "17856869768407b721"
+  ]
+}

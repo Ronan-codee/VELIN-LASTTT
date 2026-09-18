@@ -1,0 +1,68 @@
+{%- comment -%}
+  Renders a product card. Accepts: product (required)
+{%- endcomment -%}
+{%- liquid
+  assign card_variant = product.selected_or_first_available_variant
+  assign card_discount = 0
+  if card_variant.compare_at_price > card_variant.price
+    assign card_discount = card_variant.compare_at_price | minus: card_variant.price | times: 100.0 | divided_by: card_variant.compare_at_price | round
+  endif
+-%}
+<div class="product-card">
+  <div class="product-card__top">
+    <div>
+      <a href="{{ product.url }}" class="product-card__title-link">
+        <p class="product-card__title">{{ product.title }}</p>
+      </a>
+      <p class="product-card__price">
+        {%- if card_discount > 0 -%}
+          <s>{{ card_variant.compare_at_price | money }}</s>
+        {%- endif -%}
+        {{ card_variant.price | money }}
+      </p>
+    </div>
+    <div class="product-card__icons">
+      <a href="{{ product.url }}" class="product-card__icon" aria-label="{{ product.title | escape }}">
+        {% render 'icon-heart' %}
+      </a>
+      {%- if product.has_only_default_variant and product.available -%}
+        <button
+          type="button"
+          class="product-card__icon product-card__quick-add"
+          data-quick-add="{{ product.selected_or_first_available_variant.id }}"
+          aria-label="{{ 'products.product.add_to_cart' | t }}"
+        >
+          {% render 'icon-cart' %}
+        </button>
+      {%- else -%}
+        <a href="{{ product.url }}" class="product-card__icon" aria-label="{{ 'products.product.add_to_cart' | t }}">
+          {% render 'icon-cart' %}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+
+  <a href="{{ product.url }}" class="product-card__media">
+    {%- if card_discount > 0 -%}
+      <span class="product-card__badge">-{{ card_discount }}%</span>
+    {%- endif -%}
+    {%- if product.featured_media -%}
+      <img
+        class="product-card__image product-card__image--primary"
+        src="{{ product.featured_media | image_url: width: 600 }}"
+        alt="{{ product.featured_media.alt | escape }}"
+        loading="lazy"
+      >
+      {%- if product.images[1] -%}
+        <img
+          class="product-card__image product-card__image--secondary"
+          src="{{ product.images[1] | image_url: width: 600 }}"
+          alt="{{ product.images[1].alt | escape }}"
+          loading="lazy"
+        >
+      {%- endif -%}
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag: 'product-card__placeholder' }}
+    {%- endif -%}
+  </a>
+</div>

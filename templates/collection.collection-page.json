@@ -1,0 +1,144 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-collection",
+      "disabled": true,
+      "settings": {
+        "header_style": "auto"
+      }
+    },
+    "velin_collection_hero_re4KdY": {
+      "type": "velin-collection-hero",
+      "name": "Velin Collection Hero",
+      "settings": {
+        "header_style": "auto",
+        "hero_height": 480,
+        "overlay_opacity": 25
+      }
+    },
+    "velin_collection_page_grid_36en9h": {
+      "type": "velin-collection-page-grid",
+      "blocks": {
+        "filter_tab_mTywDd": {
+          "type": "filter_tab",
+          "settings": {
+            "tab_label": "ALL",
+            "tab_collection": ""
+          }
+        },
+        "filter_tab_XgrR98": {
+          "type": "filter_tab",
+          "settings": {
+            "tab_label": "TOTE BAGS",
+            "tab_collection": ""
+          }
+        },
+        "filter_tab_mdcgjB": {
+          "type": "filter_tab",
+          "settings": {
+            "tab_label": "TOP HANDLE",
+            "tab_collection": ""
+          }
+        },
+        "filter_tab_MirC7F": {
+          "type": "filter_tab",
+          "settings": {
+            "tab_label": "MINI BAGS",
+            "tab_collection": ""
+          }
+        }
+      },
+      "block_order": [
+        "filter_tab_mTywDd",
+        "filter_tab_XgrR98",
+        "filter_tab_mdcgjB",
+        "filter_tab_MirC7F"
+      ],
+      "disabled": true,
+      "name": "Velin Collection Grid",
+      "settings": {
+        "products_limit": 24,
+        "title_bold": false,
+        "title_font_size": 16,
+        "price_font_size": 19
+      }
+    },
+    "velin_collection_page_grid_LbAnNK": {
+      "type": "velin-collection-page-grid",
+      "blocks": {
+        "filter_tab_BGFnCb": {
+          "type": "filter_tab",
+          "settings": {
+            "tab_label": "COLLECTION",
+            "tab_collection": "nos-produits"
+          }
+        },
+        "filter_tab_4R6BFB": {
+          "type": "filter_tab",
+          "settings": {
+            "tab_label": "TOTE BAGS",
+            "tab_collection": "tote-bags"
+          }
+        },
+        "filter_tab_xmbb6A": {
+          "type": "filter_tab",
+          "settings": {
+            "tab_label": "SHOULDER BAGS",
+            "tab_collection": "shoulder-bag"
+          }
+        },
+        "filter_tab_FtEinN": {
+          "type": "filter_tab",
+          "settings": {
+            "tab_label": "CROSSBODY BAGS",
+            "tab_collection": "cross-body-bag"
+          }
+        },
+        "filter_tab_HLXFUJ": {
+          "type": "filter_tab",
+          "settings": {
+            "tab_label": "TOP HANDLE",
+            "tab_collection": "top-handle"
+          }
+        },
+        "filter_tab_p7JMWY": {
+          "type": "filter_tab",
+          "settings": {
+            "tab_label": "MINI BAGS",
+            "tab_collection": "mini-bags"
+          }
+        }
+      },
+      "block_order": [
+        "filter_tab_BGFnCb",
+        "filter_tab_4R6BFB",
+        "filter_tab_xmbb6A",
+        "filter_tab_FtEinN",
+        "filter_tab_HLXFUJ",
+        "filter_tab_p7JMWY"
+      ],
+      "name": "Velin Collection Grid",
+      "settings": {
+        "products_limit": 20,
+        "title_bold": false,
+        "title_font_size": 20,
+        "price_font_size": 14
+      }
+    }
+  },
+  "order": [
+    "main",
+    "velin_collection_hero_re4KdY",
+    "velin_collection_page_grid_36en9h",
+    "velin_collection_page_grid_LbAnNK"
+  ]
+}

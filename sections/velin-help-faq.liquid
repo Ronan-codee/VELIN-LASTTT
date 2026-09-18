@@ -1,0 +1,177 @@
+{% comment %} Velin - Aide et Informations (FAQ / Help page) {% endcomment %}
+{% render 'header-color-override', style: section.settings.header_style %}
+{%- assign sec_id = section.id -%}
+
+<div id="velin-help-{{ sec_id }}" class="velin-help" style="
+  background: {{ section.settings.bg_color }};
+  padding: {{ section.settings.padding_top }}px {{ section.settings.padding_h }}px {{ section.settings.padding_bottom }}px;
+">
+  <div class="velin-help__wrap" style="max-width: {{ section.settings.content_max_width }}px;">
+
+    <h1 class="velin-help__heading" style="font-size: {{ section.settings.heading_size }}px; color: {{ section.settings.heading_color }};">
+      {{ section.settings.heading }}
+    </h1>
+
+    {%- if section.settings.intro_text != blank -%}
+      <div class="velin-help__intro rte">{{ section.settings.intro_text }}</div>
+    {%- endif -%}
+
+    <div class="velin-help__accordion">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'faq_item' -%}
+          <details class="velin-help__item" {{ block.shopify_attributes }}>
+            <summary class="velin-help__question">
+              {{ block.settings.question }}
+              {% render 'icon-caret' %}
+            </summary>
+            <div class="velin-help__answer rte">{{ block.settings.answer }}</div>
+          </details>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+    {%- if section.settings.contact_text != blank -%}
+      <p class="velin-help__contact">
+        {{ section.settings.contact_text }}
+        {%- if section.settings.contact_link_text != blank -%}
+          <a href="{% if section.settings.contact_link_url != blank %}{{ section.settings.contact_link_url }}{% else %}/pages/contact{% endif %}">{{ section.settings.contact_link_text }}</a>
+        {%- endif -%}
+      </p>
+    {%- endif -%}
+
+  </div>
+</div>
+
+<style>
+  .velin-help {
+    box-sizing: border-box;
+    font-family: 'Merriweather', serif;
+  }
+
+  .velin-help__wrap {
+    margin: 0 auto;
+  }
+
+  .velin-help__heading {
+    margin: 0 0 16px;
+    font-family: 'Lusitana', serif;
+    font-weight: 400;
+    line-height: 130%;
+    text-align: center;
+  }
+
+  .velin-help__intro {
+    margin: 0 0 40px;
+    color: #4a4a4a;
+    line-height: 1.6;
+    text-align: center;
+  }
+
+  .velin-help__accordion {
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+  }
+
+  .velin-help__item {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  }
+
+  .velin-help__question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 4px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .velin-help__question::-webkit-details-marker {
+    display: none;
+  }
+
+  .velin-help__question svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+  }
+
+  .velin-help__item[open] .velin-help__question svg {
+    transform: rotate(180deg);
+  }
+
+  .velin-help__answer {
+    padding: 0 4px 20px;
+    color: #4a4a4a;
+    line-height: 1.6;
+    font-size: 14px;
+  }
+
+  .velin-help__contact {
+    margin: 40px 0 0;
+    text-align: center;
+    font-size: 15px;
+  }
+
+  .velin-help__contact a {
+    color: inherit;
+    text-decoration: underline;
+    margin-left: 4px;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Velin Help / FAQ",
+  "settings": [
+    {
+      "type": "select",
+      "id": "header_style",
+      "label": "Header color (logo, text, icons) on this page",
+      "options": [
+        { "value": "auto", "label": "Automatic" },
+        { "value": "black", "label": "Black" },
+        { "value": "white", "label": "White" }
+      ],
+      "default": "auto"
+    },
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "padding_top", "label": "Padding top (px)", "min": 0, "max": 150, "step": 5, "default": 60 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom (px)", "min": 0, "max": 150, "step": 5, "default": 100 },
+    { "type": "range", "id": "padding_h", "label": "Padding left/right (px)", "min": 0, "max": 150, "step": 5, "default": 100 },
+    { "type": "range", "id": "content_max_width", "label": "Content max width (px)", "min": 400, "max": 1000, "step": 10, "default": 720 },
+    { "type": "color", "id": "bg_color", "label": "Background color", "default": "#FFFFFF" },
+    { "type": "header", "content": "Heading" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Aide et Informations" },
+    { "type": "range", "id": "heading_size", "label": "Heading size (px)", "min": 20, "max": 60, "step": 1, "default": 36 },
+    { "type": "color", "id": "heading_color", "label": "Heading color", "default": "#000000" },
+    { "type": "richtext", "id": "intro_text", "label": "Intro text", "default": "<p>Retrouvez ici les réponses aux questions les plus fréquentes.</p>" },
+    { "type": "header", "content": "Contact line (bottom)" },
+    { "type": "text", "id": "contact_text", "label": "Text before link", "default": "Vous ne trouvez pas votre réponse ?" },
+    { "type": "text", "id": "contact_link_text", "label": "Link text", "default": "Contactez-nous" },
+    { "type": "url", "id": "contact_link_url", "label": "Link URL" }
+  ],
+  "blocks": [
+    {
+      "type": "faq_item",
+      "name": "Question",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question", "default": "Quels sont les délais de livraison ?" },
+        { "type": "richtext", "id": "answer", "label": "Answer", "default": "<p>Vos commandes sont généralement expédiées sous 2 à 5 jours ouvrés.</p>" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Velin Help / FAQ",
+      "blocks": [
+        { "type": "faq_item" },
+        { "type": "faq_item" },
+        { "type": "faq_item" },
+        { "type": "faq_item" }
+      ]
+    }
+  ]
+}
+{% endschema %}

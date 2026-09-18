@@ -195,6 +195,31 @@
       </div>
     {% endif %}
 
+    {%- assign has_included_gifts = false -%}
+    {% for block in section.blocks %}{% if block.type == 'included_gift' %}{% assign has_included_gifts = true %}{% endif %}{% endfor %}
+    {% if has_included_gifts %}
+      <div class="velin-pdp__included-gifts">
+        {% for block in section.blocks %}
+          {% if block.type == 'included_gift' %}
+            <div class="velin-pdp__included-gift" {{ block.shopify_attributes }}>
+              {% if block.settings.image != blank %}
+                <img src="{{ block.settings.image | image_url: width: 200 }}" alt="{{ block.settings.title | escape }}" loading="lazy" class="velin-pdp__included-gift-img">
+              {% endif %}
+              <div class="velin-pdp__included-gift-text">
+                <p class="velin-pdp__included-gift-title">
+                  {{ block.settings.title }}
+                  <span class="velin-pdp__included-gift-tag">{{ block.settings.tag_text }}</span>
+                </p>
+                {% if block.settings.text != blank %}
+                  <p class="velin-pdp__included-gift-desc">{{ block.settings.text }}</p>
+                {% endif %}
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
     {% if color_coll != blank %}
       {%- comment -%} Colors from a collection: same bag as separate products, one per color {%- endcomment -%}
       <div class="velin-pdp__colors">
@@ -1201,6 +1226,65 @@
     line-height: 1.7;
   }
 
+  .velin-pdp__included-gifts {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .velin-pdp__included-gift {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    max-width: 506px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    padding: 12px 16px;
+    background: #fbfbfb;
+  }
+
+  .velin-pdp__included-gift-img {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex: 0 0 auto;
+    background: #fff;
+  }
+
+  .velin-pdp__included-gift-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .velin-pdp__included-gift-title {
+    margin: 0;
+    font-weight: 700;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .velin-pdp__included-gift-tag {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #fff;
+    background: #705744;
+    border-radius: 4px;
+    padding: 2px 7px;
+  }
+
+  .velin-pdp__included-gift-desc {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: rgba(0, 0, 0, 0.7);
+  }
+
   .velin-pdp__approved{
     width:100%;
     max-width:611px;
@@ -2071,6 +2155,16 @@ if (compareEl) {
       "name": "Feature chip",
       "settings": [
         { "type": "text", "id": "text", "label": "Text", "default": "Cuir de qualité supérieure" }
+      ]
+    },
+    {
+      "type": "included_gift",
+      "name": "Included gift (with photo)",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Photo" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Bandoulière + chaîne" },
+        { "type": "text", "id": "tag_text", "label": "Tag text", "default": "Offert" },
+        { "type": "textarea", "id": "text", "label": "Description", "default": "Incluses avec votre sac, sans supplément." }
       ]
     },
     {

@@ -147,7 +147,7 @@
         "title_size": 32,
         "compare_color": "#999999",
         "compare_text": "€23 200,00",
-        "show_installments": true,
+        "show_installments": false,
         "installment_count": 3,
         "payment_icon_size": 27,
         "chip_bg": "#f7f7f7",

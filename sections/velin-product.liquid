@@ -1184,6 +1184,11 @@
       flex: 1 1 auto;
       text-align: center;
     }
+
+    .velin-pdp__chip {
+      padding: 10px 8px !important;
+      font-size: 12px !important;
+    }
   }
 
   .velin-pdp__stock {
@@ -2134,7 +2139,7 @@ if (compareEl) {
     { "type": "color", "id": "launch_offer_bg", "label": "Launch urgency badge background", "default": "#705744" },
     { "type": "color", "id": "launch_offer_color", "label": "Launch urgency badge text color", "default": "#ffffff" },
     { "type": "header", "content": "Installments" },
-    { "type": "checkbox", "id": "show_installments", "label": "Show installment payment line", "default": true },
+    { "type": "checkbox", "id": "show_installments", "label": "Show installment payment line", "default": false },
     { "type": "range", "id": "installment_count", "label": "Number of installments", "min": 2, "max": 12, "step": 1, "default": 3, "info": "Amount shown is the current product price divided by this number." },
     { "type": "range", "id": "payment_icon_size", "label": "Klarna badge height (px)", "min": 14, "max": 60, "step": 1, "default": 24 },
     { "type": "header", "content": "Feature chips" },

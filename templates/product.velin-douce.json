@@ -136,6 +136,37 @@
         "description_faq_label": "Description"
       }
     },
+    "benefits_dc01": {
+      "type": "guarantee-cards",
+      "blocks": {
+        "feature_item_dc01a": {
+          "type": "feature_item",
+          "settings": {
+            "icon_type": "leaf",
+            "title": "100% COTON VÉRITABLE",
+            "text": "UNE MATIÈRE DOUCE ET RESPIRANTE, COMME VOTRE LINGE DE LIT PRÉFÉRÉ — PAS DE SYNTHÉTIQUE, PAS DE COMPROMIS."
+          }
+        },
+        "feature_item_dc01b": {
+          "type": "feature_item",
+          "settings": {
+            "icon_type": "washer",
+            "title": "UN SEUL LAVAGE POUR TOUT",
+            "text": "LA COUETTE EST FIXÉE À L'INTÉRIEUR DE LA HOUSSE : PLUS BESOIN DE LAVER DEUX PIÈCES SÉPARÉMENT, TOUT RESSORT FRAIS EN UNE FOIS."
+          }
+        },
+        "feature_item_dc01c": {
+          "type": "feature_item",
+          "settings": {
+            "icon_type": "ruler",
+            "title": "QUATRE TAILLES DISPONIBLES",
+            "text": "140X200, 160X220, 200X200 OU 240X200 CM — LA BONNE TAILLE POUR CHAQUE LIT, SANS JAMAIS MÉLANGER HOUSSE ET COUETTE DÉPAREILLÉES."
+          }
+        }
+      },
+      "block_order": ["feature_item_dc01a", "feature_item_dc01b", "feature_item_dc01c"],
+      "settings": {}
+    },
     "material_story_dc01": {
       "type": "image-with-text",
       "settings": {
@@ -206,6 +237,7 @@
   "order": [
     "main",
     "velin_product_dc01",
+    "benefits_dc01",
     "material_story_dc01",
     "compare_dc01",
     "reviews_dc01"

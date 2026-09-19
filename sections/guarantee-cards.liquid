@@ -129,6 +129,8 @@
               <svg viewBox="0 0 24 24"><rect x="3" y="2" width="18" height="20" rx="2"></rect><circle cx="12" cy="13" r="6"></circle><circle cx="12" cy="13" r="2.5"></circle><circle cx="6.5" cy="5.5" r="0.8"></circle><circle cx="9.5" cy="5.5" r="0.8"></circle></svg>
             {%- elsif block.settings.icon_type == 'ruler' -%}
               <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="10" rx="1"></rect><path d="M6 7v4M10 7v3M14 7v4M18 7v3"></path></svg>
+            {%- elsif block.settings.icon_type == 'lock' -%}
+              <svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
             {%- else -%}
               <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
             {%- endif -%}
@@ -165,7 +167,8 @@
             { "value": "truck", "label": "Truck / Shipping" },
             { "value": "leaf", "label": "Leaf / Natural material" },
             { "value": "washer", "label": "Washer / Laundry" },
-            { "value": "ruler", "label": "Ruler / Sizes" }
+            { "value": "ruler", "label": "Ruler / Sizes" },
+            { "value": "lock", "label": "Lock / Secure payment" }
           ],
           "default": "thumbs"
         },

@@ -10,8 +10,8 @@
     <div class="velin-video-banner__player">
       {{ section.settings.banner_video | video_tag: loop: true, controls: false, muted: true, autoplay: true, playsinline: true, image_size: '1600x' }}
     </div>
-  {% else %}
-    <p class="velin-video-banner__placeholder">Customizer se video select karein</p>
+  {% elsif request.design_mode %}
+    <p class="velin-video-banner__placeholder">Select a video in the theme customizer</p>
   {% endif %}
 </div>
 

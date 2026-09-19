@@ -136,36 +136,38 @@
         "description_faq_label": "Description"
       }
     },
-    "benefits_dc01": {
-      "type": "guarantee-cards",
-      "blocks": {
-        "feature_item_dc01a": {
-          "type": "feature_item",
-          "settings": {
-            "icon_type": "leaf",
-            "title": "100% COTON VÉRITABLE",
-            "text": "UNE MATIÈRE DOUCE ET RESPIRANTE, COMME VOTRE LINGE DE LIT PRÉFÉRÉ — PAS DE SYNTHÉTIQUE, PAS DE COMPROMIS."
-          }
-        },
-        "feature_item_dc01b": {
-          "type": "feature_item",
-          "settings": {
-            "icon_type": "washer",
-            "title": "UN SEUL LAVAGE POUR TOUT",
-            "text": "LA COUETTE EST FIXÉE À L'INTÉRIEUR DE LA HOUSSE : PLUS BESOIN DE LAVER DEUX PIÈCES SÉPARÉMENT, TOUT RESSORT FRAIS EN UNE FOIS."
-          }
-        },
-        "feature_item_dc01c": {
-          "type": "feature_item",
-          "settings": {
-            "icon_type": "ruler",
-            "title": "QUATRE TAILLES DISPONIBLES",
-            "text": "140X200, 160X220, 200X200 OU 240X200 CM — LA BONNE TAILLE POUR CHAQUE LIT, SANS JAMAIS MÉLANGER HOUSSE ET COUETTE DÉPAREILLÉES."
-          }
-        }
-      },
-      "block_order": ["feature_item_dc01a", "feature_item_dc01b", "feature_item_dc01c"],
-      "settings": {}
+    "video_hero_dc01": {
+      "type": "video-banner",
+      "settings": {
+        "banner_video": "",
+        "fallback_color": "#201E50",
+        "overlay_opacity": 30,
+        "banner_height": 500
+      }
+    },
+    "ugc_dc01": {
+      "type": "video-stories",
+      "settings": {
+        "title": "Vu Sur Les Réseaux"
+      }
+    },
+    "compare_dc01": {
+      "type": "leather-vs-faux",
+      "settings": {
+        "background": "white",
+        "eyebrow": "HOUSSE 2-EN-1 VS HOUSSE CLASSIQUE",
+        "eyebrow_color": "#201E50",
+        "heading": "Pourquoi Choisir Une Housse De Couette 2-en-1 ?",
+        "text": "Avec une housse classique, il faut réintroduire et fixer la couette à chaque lavage. Avec Velin Douce, tout est déjà assemblé.",
+        "real_image": "",
+        "real_tag": "Housse 2-en-1 Velin",
+        "real_title": "Couette Et Housse Assemblées En Une Seule Pièce",
+        "real_points": "Le lit se fait en un geste, sans jamais emboîter la couette\nCouette fixée à la housse par des attaches internes\nSe lave entièrement en machine, en une seule fois\nMoins d'acariens et d'odeurs grâce à un lavage plus simple et plus fréquent\nSèche plus vite : une seule épaisseur, pas deux couches superposées\nDisponible en 4 tailles, de 140x200 à 240x200 cm",
+        "fake_image": "",
+        "fake_tag": "Housse + Couette Séparées",
+        "fake_title": "La Méthode Classique",
+        "fake_points": "Il faut réinsérer la couette à chaque changement de linge\nBoutons ou liens qui se détachent avec le temps\nDeux pièces à laver séparément, donc deux lessives\nOdeurs et acariens qui s'installent plus facilement entre les lavages\nSéchage plus long à cause des deux couches superposées\nHousse et couette à assortir soi-même en taille"
+      }
     },
     "material_story_dc01": {
       "type": "image-with-text",
@@ -186,34 +188,108 @@
         "text_gap": 0,
         "eyebrow": "LA MATIÈRE",
         "eyebrow_color": "#201E50",
-        "heading": "Un Coton Doux, Pensé Pour Durer",
+        "heading": "Un Seul Ensemble, Pas Deux Pièces À Gérer",
         "heading_nowrap": false,
         "heading_line_height": 150,
         "price_tag_enabled": false,
         "price_before": "",
         "price_after": "",
-        "text": "Velin Douce est confectionnée dans un coton doux et respirant, agréable été comme hiver. Résistant aux lavages répétés, il garde sa souplesse lavage après lavage — pour une housse qui reste confortable au fil du temps.",
+        "text": "Velin Douce remplace la couette et la housse séparées par un seul ensemble : une enveloppe en coton doux directement fixée à la couette. Plus besoin de la réinsérer à chaque lavage, ni de multiplier les lessives — l'ensemble passe en machine d'un coup, et ressort aussi frais que doux.",
         "button_label": "",
         "button_link": ""
       }
     },
-    "compare_dc01": {
-      "type": "leather-vs-faux",
+    "benefits_coton_dc01": {
+      "type": "guarantee-cards",
+      "blocks": {
+        "feature_item_dc01a": {
+          "type": "feature_item",
+          "settings": {
+            "icon_type": "leaf",
+            "title": "100% COTON VÉRITABLE",
+            "text": "DOUX, RESPIRANT ET NATUREL — LA MATIÈRE DE VOTRE LINGE DE LIT, PAS UN TEXTILE SYNTHÉTIQUE."
+          }
+        },
+        "feature_item_dc01b": {
+          "type": "feature_item",
+          "settings": {
+            "icon_type": "washer",
+            "title": "UNE SEULE PIÈCE À LAVER",
+            "text": "LA HOUSSE EST FIXÉE À LA COUETTE : UN SEUL LAVAGE SUFFIT POUR RETROUVER UN ENSEMBLE FRAIS."
+          }
+        },
+        "feature_item_dc01c": {
+          "type": "feature_item",
+          "settings": {
+            "icon_type": "thumbs",
+            "title": "CONÇUE POUR DURER",
+            "text": "UN COTON RÉSISTANT AUX LAVAGES RÉPÉTÉS, QUI GARDE SA DOUCEUR AU FIL DU TEMPS."
+          }
+        }
+      },
+      "block_order": ["feature_item_dc01a", "feature_item_dc01b", "feature_item_dc01c"],
+      "settings": {}
+    },
+    "freshness_dc01": {
+      "type": "image-with-text",
       "settings": {
+        "image": "",
+        "image_position": "right",
+        "image_fit": "crop",
+        "image_width": 505,
+        "image_height": 600,
         "background": "white",
-        "eyebrow": "HOUSSE 2-EN-1 VS HOUSSE CLASSIQUE",
+        "custom_background": "",
+        "image_radius": 14,
+        "full_width": false,
+        "section_padding": 0,
+        "column_gap": 56,
+        "text_max_width": 0,
+        "text_padding": 0,
+        "text_gap": 0,
+        "eyebrow": "L'ENTRETIEN",
         "eyebrow_color": "#201E50",
-        "heading": "Pourquoi Choisir Une Housse De Couette 2-en-1 ?",
-        "text": "Avec une housse classique, il faut réintroduire et fixer la couette à chaque lavage. Avec Velin Douce, tout est déjà assemblé.",
-        "real_image": "",
-        "real_tag": "Housse 2-en-1 Velin",
-        "real_title": "Couette Et Housse Assemblées En Une Seule Pièce",
-        "real_points": "Plus besoin d'emboîter la couette à chaque lavage\nAttaches internes qui maintiennent la couette bien en place\nUne seule pièce à passer en machine\nS'étale d'un geste, sans plis ni chiffonnage",
-        "fake_image": "",
-        "fake_tag": "Housse + Couette Séparées",
-        "fake_title": "La Méthode Classique",
-        "fake_points": "Couette à réinsérer à la main après chaque lavage\nBoutons ou liens qui se détachent avec le temps\nDeux pièces à laver et à assortir séparément\nCouette qui glisse ou se froisse dans la housse"
+        "heading": "Un Lit Frais, Sans Effort Chaque Semaine",
+        "heading_nowrap": false,
+        "heading_line_height": 150,
+        "price_tag_enabled": false,
+        "price_before": "",
+        "price_after": "",
+        "text": "Comme l'ensemble passe en machine en une seule fois, l'entretien hebdomadaire devient un geste simple plutôt qu'une corvée à deux lessives. Sortez-le du tambour, étalez-le, et votre lit retrouve instantanément sa fraîcheur.",
+        "button_label": "",
+        "button_link": ""
       }
+    },
+    "benefits_pourquoi_dc01": {
+      "type": "guarantee-cards",
+      "blocks": {
+        "feature_item_dc01d": {
+          "type": "feature_item",
+          "settings": {
+            "icon_type": "thumbs",
+            "title": "RETOURS SOUS 30 JOURS",
+            "text": "UN SOUCI ? VOUS DISPOSEZ DE 30 JOURS APRÈS RÉCEPTION POUR CHANGER D'AVIS, SANS JUSTIFICATION."
+          }
+        },
+        "feature_item_dc01e": {
+          "type": "feature_item",
+          "settings": {
+            "icon_type": "lock",
+            "title": "PAIEMENT 100% SÉCURISÉ",
+            "text": "TOUTES LES TRANSACTIONS SONT CHIFFRÉES ET PROTÉGÉES, QUEL QUE SOIT VOTRE MOYEN DE PAIEMENT."
+          }
+        },
+        "feature_item_dc01f": {
+          "type": "feature_item",
+          "settings": {
+            "icon_type": "truck",
+            "title": "EXPÉDIÉE SOUS 24-48H",
+            "text": "COMMANDE PRÉPARÉE RAPIDEMENT, AVEC NUMÉRO DE SUIVI COMMUNIQUÉ DÈS L'ENVOI."
+          }
+        }
+      },
+      "block_order": ["feature_item_dc01d", "feature_item_dc01e", "feature_item_dc01f"],
+      "settings": {}
     },
     "reviews_dc01": {
       "type": "apps",
@@ -237,9 +313,13 @@
   "order": [
     "main",
     "velin_product_dc01",
-    "benefits_dc01",
-    "material_story_dc01",
+    "video_hero_dc01",
+    "ugc_dc01",
     "compare_dc01",
+    "material_story_dc01",
+    "benefits_coton_dc01",
+    "freshness_dc01",
+    "benefits_pourquoi_dc01",
     "reviews_dc01"
   ]
 }

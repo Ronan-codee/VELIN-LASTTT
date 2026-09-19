@@ -100,7 +100,7 @@
     font-weight: 600;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--color-brown);
+    color: {{ section.settings.eyebrow_color | default: 'var(--color-brown)' }};
     margin: 0 0 16px;
     padding-bottom: 10px;
     position: relative;
@@ -114,7 +114,7 @@
     bottom: 0;
     width: 28px;
     height: 1px;
-    background: var(--color-brown);
+    background: {{ section.settings.eyebrow_color | default: 'var(--color-brown)' }};
     transform: translateX(-50%);
   }
 
@@ -270,6 +270,7 @@
       "default": "beige"
     },
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "CUIR VÉRITABLE VS SIMILI CUIR" },
+    { "type": "color", "id": "eyebrow_color", "label": "Eyebrow color (optional)", "info": "Leave blank to use the theme's default brown accent." },
     { "type": "textarea", "id": "heading", "label": "Heading", "default": "Pourquoi Choisir Du Cuir Véritable ?" },
     {
       "type": "textarea",

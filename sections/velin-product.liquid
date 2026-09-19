@@ -743,7 +743,7 @@
   }
 
   .velin-pdp__thumb.is-active {
-    outline: 2px solid #705744;
+    outline: 2px solid {{ section.settings.accent_color }};
   }
 
   .velin-pdp__thumb img {
@@ -854,7 +854,7 @@
 
   .velin-pdp__free-shipping svg {
     flex: 0 0 auto;
-    color: #705744;
+    color: {{ section.settings.accent_color }};
   }
 
 
@@ -942,7 +942,7 @@
   }
 
   .velin-pdp__swatch.is-active {
-    outline: 2px solid #705744;
+    outline: 2px solid {{ section.settings.accent_color }};
     outline-offset: 2px;
   }
 
@@ -992,8 +992,8 @@
   }
 
   .velin-pdp__size-pill.is-active {
-    border-color: #705744;
-    background: #705744;
+    border-color: {{ section.settings.accent_color }};
+    background: {{ section.settings.accent_color }};
     color: #fff;
   }
 
@@ -1020,7 +1020,7 @@
   }
 
   .velin-pdp__offer.is-selected {
-    border-color: #705744;
+    border-color: {{ section.settings.accent_color }};
     border-width: 1.5px;
   }
 
@@ -1055,8 +1055,8 @@
   }
 
   .velin-pdp__offer.is-selected .velin-pdp__offer-dot {
-    background: var(--velin-selected-color, #AA8870);
-    border-color: #705744;
+    background: var(--velin-selected-color, {{ section.settings.accent_color_soft }});
+    border-color: {{ section.settings.accent_color }};
   }
 
   .velin-pdp__offer-price {
@@ -1069,7 +1069,7 @@
     display: inline-block;
     padding: 3px 10px;
     border-radius: 999px;
-    background: #705744;
+    background: {{ section.settings.accent_color }};
     color: #fff;
     font-size: 11px;
     font-weight: 600;
@@ -1125,7 +1125,7 @@
     font-weight: 500;
     font-size: 16px;
     text-transform: capitalize;
-    color: #AA8870;
+    color: {{ section.settings.accent_color_soft }};
     background: #fff;
     cursor: pointer;
   }
@@ -1369,7 +1369,7 @@
     letter-spacing: 0.04em;
     text-transform: uppercase;
     color: #fff;
-    background: #705744;
+    background: {{ section.settings.accent_color }};
     border-radius: 4px;
     padding: 2px 7px;
   }
@@ -2294,6 +2294,9 @@ if (compareEl) {
       "info": "Har line par: Naam:#hex — e.g. Brun:#AA8870. Swatches product ke variants se automatic bante hain; yahan sirf naam ka rang set hota hai.",
       "default": "Noir:#000000\nBrun:#AA8870\nVert:#026465\nBleu:#00475D\nRouge:#B3001B\nBeige:#D8C7B2\nBlanc:#FFFFFF\nGris:#8E8E8E\nRose:#E8B4C4\nMarron:#6B4A2F\nMarron clair:#A9876B\nCamel:#C19A6B\nTaupe:#8B7E74\nTaupe clair:#B0A69B\nGrège:#B7AC9C\nBlack:#000000\nBrown:#6B4A2F\nStone Grey:#C4BFB5\nStone Gray:#C4BFB5\nGray:#8E8E8E\nSilver:#C4BFB5\nIvoire:#F3EEE3\nBleu Glacier:#C6D2DC\nMarron Camel:#A9713E\nBeige Crème:#EFE3D0\nMarron Chocolat:#3B2216\nJaune Doré:#D4A017\nBlanc Cassé:#F2ECDF\nVert Citron:#C9D94A"
     },
+    { "type": "header", "content": "Accent" },
+    { "type": "color", "id": "accent_color", "label": "Accent color", "info": "Used for active swatches/pills, selected offer border, badges and free-shipping icon.", "default": "#705744" },
+    { "type": "color", "id": "accent_color_soft", "label": "Accent color (soft)", "info": "Used for the offer dot fill and the variant-picker dropdown text.", "default": "#AA8870" },
     { "type": "header", "content": "Sizes" },
     { "type": "text", "id": "size_label", "label": "Size label", "default": "Taille" },
     { "type": "text", "id": "size_option_name", "label": "Product option name (lowercase)", "default": "taille" },

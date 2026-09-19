@@ -75,7 +75,7 @@
     font-weight: 600;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--color-brown);
+    color: {{ section.settings.eyebrow_color | default: 'var(--color-brown)' }};
     margin: 0 0 16px;
     padding-bottom: 10px;
     position: relative;
@@ -89,7 +89,7 @@
     bottom: 0;
     width: 28px;
     height: 1px;
-    background: var(--color-brown);
+    background: {{ section.settings.eyebrow_color | default: 'var(--color-brown)' }};
   }
 
   .image-with-text__heading {
@@ -308,6 +308,12 @@
       "id": "eyebrow",
       "label": "Eyebrow tag",
       "info": "Small category label above the heading (e.g. MATIÈRE, PRIX, FABRICATION)."
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow color (optional)",
+      "info": "Leave blank to use the theme's default brown accent."
     },
     {
       "type": "textarea",

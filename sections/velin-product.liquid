@@ -353,6 +353,9 @@
                   <span class="velin-pdp__offer-title">
                     <span class="velin-pdp__offer-dot" data-offer-dot></span>
                     {{ block.settings.title }}
+                    {% if block.settings.badge_text != blank %}
+                      <span class="velin-pdp__offer-badge">{{ block.settings.badge_text }}</span>
+                    {% endif %}
                   </span>
                   {%- if block.settings.price_text != blank -%}
                     <span class="velin-pdp__offer-price">{{ block.settings.price_text }}</span>
@@ -373,33 +376,45 @@
                   </ul>
                 {% endif %}
                 {% if block.settings.show_variant_picker %}
-                  {% if color_coll != blank %}
-                    <div class="velin-pdp__variant-picker">
-                      <select data-color-nav id="velin-color-nav-{{ block.id }}" aria-label="{{ section.settings.color_label }}">
-                        {% for p in color_coll.products %}
-                          {%- assign p_color = '' -%}
-                          {%- for opt in p.options_with_values -%}
-                            {%- assign od = opt.name | downcase -%}
-                            {%- if od == section.settings.color_option_name or od == 'couleur' or od == 'color' -%}
-                              {%- assign p_color = opt.values | first -%}
-                            {%- endif -%}
-                          {%- endfor -%}
-                          {%- if p_color == '' -%}{%- assign p_color = p.title -%}{%- endif -%}
-                          <option value="{{ p.url }}" {% if p.id == product.id %}selected{% endif %}>{{ p_color }}</option>
-                        {% endfor %}
-                      </select>
-                      <label for="velin-color-nav-{{ block.id }}" class="velin-pdp__variant-label">{{ section.settings.color_label | upcase }}</label>
-                    </div>
-                  {% elsif color_option_index >= 0 %}
-                    <div class="velin-pdp__variant-picker">
-                      <select data-color-select id="velin-color-select-{{ block.id }}" aria-label="{{ section.settings.color_label }}">
-                        {% for value in color_option.values %}
-                          <option value="{{ value | escape }}" {% if value == color_option.selected_value %}selected{% endif %}>{{ value }}</option>
-                        {% endfor %}
-                      </select>
-                      <label for="velin-color-select-{{ block.id }}" class="velin-pdp__variant-label">{{ section.settings.color_label | upcase }}</label>
-                    </div>
-                  {% endif %}
+                  <div class="velin-pdp__variant-picker">
+                    {% if color_coll != blank %}
+                      <div class="velin-pdp__variant-group">
+                        <select data-color-nav id="velin-color-nav-{{ block.id }}" aria-label="{{ section.settings.color_label }}">
+                          {% for p in color_coll.products %}
+                            {%- assign p_color = '' -%}
+                            {%- for opt in p.options_with_values -%}
+                              {%- assign od = opt.name | downcase -%}
+                              {%- if od == section.settings.color_option_name or od == 'couleur' or od == 'color' -%}
+                                {%- assign p_color = opt.values | first -%}
+                              {%- endif -%}
+                            {%- endfor -%}
+                            {%- if p_color == '' -%}{%- assign p_color = p.title -%}{%- endif -%}
+                            <option value="{{ p.url }}" {% if p.id == product.id %}selected{% endif %}>{{ p_color }}</option>
+                          {% endfor %}
+                        </select>
+                        <label for="velin-color-nav-{{ block.id }}" class="velin-pdp__variant-label">{{ section.settings.color_label | upcase }}</label>
+                      </div>
+                    {% elsif color_option_index >= 0 %}
+                      <div class="velin-pdp__variant-group">
+                        <select data-color-select id="velin-color-select-{{ block.id }}" aria-label="{{ section.settings.color_label }}">
+                          {% for value in color_option.values %}
+                            <option value="{{ value | escape }}" {% if value == color_option.selected_value %}selected{% endif %}>{{ value }}</option>
+                          {% endfor %}
+                        </select>
+                        <label for="velin-color-select-{{ block.id }}" class="velin-pdp__variant-label">{{ section.settings.color_label | upcase }}</label>
+                      </div>
+                    {% endif %}
+                    {% if size_option_index >= 0 %}
+                      <div class="velin-pdp__variant-group">
+                        <select data-size-select id="velin-size-select-{{ block.id }}" aria-label="{{ section.settings.size_label }}">
+                          {% for value in size_option.values %}
+                            <option value="{{ value | escape }}" {% if value == size_option.selected_value %}selected{% endif %}>{{ value }}</option>
+                          {% endfor %}
+                        </select>
+                        <label for="velin-size-select-{{ block.id }}" class="velin-pdp__variant-label">{{ section.settings.size_label | upcase }}</label>
+                      </div>
+                    {% endif %}
+                  </div>
                 {% endif %}
               </div>
             </label>
@@ -1050,6 +1065,19 @@
     line-height: 100%;
   }
 
+  .velin-pdp__offer-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: #705744;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    line-height: 1.6;
+    text-transform: uppercase;
+  }
+
   /* Left edge lines up under the "1" of "1 Sac" (25px dot + 10px gap);
      right edge lines up under the price above (full-width space-between). */
   .velin-pdp__offer-sub {
@@ -1075,6 +1103,13 @@
 
   .velin-pdp__variant-picker {
     margin-top: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 20px;
+  }
+
+  .velin-pdp__variant-group {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -1839,6 +1874,7 @@ if (compareEl) {
       root.querySelectorAll(".velin-pdp__size-pill").forEach(function (p) {
         p.classList.toggle("is-active", p.getAttribute("data-size-value") === value);
       });
+      root.querySelectorAll("[data-size-select]").forEach(function (sel) { sel.value = value; });
 
       if (sizeIndex < 0) return;
       var sizeKey = "option" + (sizeIndex + 1);
@@ -1882,6 +1918,10 @@ if (compareEl) {
       pill.addEventListener("click", function () {
         selectSize(pill.getAttribute("data-size-value"));
       });
+    });
+
+    root.querySelectorAll("[data-size-select]").forEach(function (sel) {
+      sel.addEventListener("change", function () { selectSize(sel.value); });
     });
 
     var initialSizePill = root.querySelector(".velin-pdp__size-pill.is-active") || root.querySelector(".velin-pdp__size-pill");
@@ -2313,7 +2353,8 @@ if (compareEl) {
         { "type": "text", "id": "sub_label", "label": "Sub label", "default": "Prix Régulier" },
         { "type": "text", "id": "sub_price", "label": "Sub price (strikethrough)", "default": "23,200.00" },
         { "type": "textarea", "id": "perks", "label": "Perks (one per line)" },
-        { "type": "checkbox", "id": "show_variant_picker", "label": "Show color dropdown", "default": false },
+        { "type": "text", "id": "badge_text", "label": "Badge text (optional, e.g. Pack Duo)", "default": "" },
+        { "type": "checkbox", "id": "show_variant_picker", "label": "Show color/size dropdown", "default": false },
         { "type": "checkbox", "id": "preselected", "label": "Selected by default", "default": false }
       ]
     },

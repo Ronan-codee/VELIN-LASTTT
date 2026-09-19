@@ -354,21 +354,6 @@
       </div>
     {% endif %}
 
-    {% if size_option_index >= 0 %}
-      <div class="velin-pdp__sizes">
-        <p class="velin-pdp__sizes-label">{{ section.settings.size_label }}</p>
-        <div class="velin-pdp__size-pills">
-          {% for value in size_option.values %}
-            <button
-              type="button"
-              class="velin-pdp__size-pill{% if value == size_option.selected_value %} is-active{% endif %}"
-              data-size-value="{{ value | escape }}"
-            >{{ value }}</button>
-          {% endfor %}
-        </div>
-      </div>
-    {% endif %}
-
     {%- comment -%} ---------- Offers (1 Sac / 2 Sac) ---------- {%- endcomment -%}
     {%- assign has_offers = false -%}
     {% for block in section.blocks %}{% if block.type == 'offer' %}{% assign has_offers = true %}{% endif %}{% endfor %}
@@ -1706,6 +1691,28 @@
         };
         placeFreeShipping();
         setTimeout(placeFreeShipping, 800);
+      }
+
+      // Moves the free-shipping line + Add to cart button below the
+      // Unlimited Bundles widget, so the bundle picker is the first thing
+      // shown and this pair sits just above the guarantee card. Same
+      // one-shot-with-retries approach as above (no persistent observer),
+      // run later since the bundle widget injects itself after the app's
+      // own delayed render.
+      var guaranteeEl = root.querySelector(".velin-pdp__guarantee");
+      var buyForm = submitBtn.closest("form");
+      if (guaranteeEl && buyForm) {
+        var placeBuyBoxAboveGuarantee = function () {
+          var parent = guaranteeEl.parentNode;
+          if (freeShippingEl && freeShippingEl.nextElementSibling !== guaranteeEl) {
+            parent.insertBefore(freeShippingEl, guaranteeEl);
+          }
+          if (buyForm.nextElementSibling !== guaranteeEl) {
+            parent.insertBefore(buyForm, guaranteeEl);
+          }
+        };
+        setTimeout(placeBuyBoxAboveGuarantee, 800);
+        setTimeout(placeBuyBoxAboveGuarantee, 1800);
       }
     }
 

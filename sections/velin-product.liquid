@@ -11,6 +11,15 @@
   endfor
   assign map_lines = section.settings.color_map | strip | newline_to_br | split: '<br />'
 
+  assign size_option_index = -1
+  for option in product.options_with_values
+    assign opt_down = option.name | downcase
+    if opt_down == section.settings.size_option_name or opt_down == 'taille' or opt_down == 'size'
+      assign size_option_index = forloop.index0
+      assign size_option = option
+    endif
+  endfor
+
   comment
     Color collection: ONLY the per-product metafield (custom.color_collection)
     decides this. No global fallback — a product with no metafield set shows
@@ -311,6 +320,21 @@
             aria-label="{{ own_color | escape }}"
             title="{{ own_color | escape }}"
           ></span>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if size_option_index >= 0 %}
+      <div class="velin-pdp__sizes">
+        <p class="velin-pdp__sizes-label">{{ section.settings.size_label }}</p>
+        <div class="velin-pdp__size-pills">
+          {% for value in size_option.values %}
+            <button
+              type="button"
+              class="velin-pdp__size-pill{% if value == size_option.selected_value %} is-active{% endif %}"
+              data-size-value="{{ value | escape }}"
+            >{{ value }}</button>
+          {% endfor %}
         </div>
       </div>
     {% endif %}
@@ -919,6 +943,43 @@
     font-size: 15px;
     font-weight: 700;
     text-shadow: 0 0 3px rgba(0, 0, 0, 0.7);
+  }
+
+  .velin-pdp__sizes {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .velin-pdp__sizes-label {
+    margin: 0;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 100%;
+    text-transform: capitalize;
+  }
+
+  .velin-pdp__size-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .velin-pdp__size-pill {
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    background: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 100%;
+    cursor: pointer;
+  }
+
+  .velin-pdp__size-pill.is-active {
+    border-color: #705744;
+    background: #705744;
+    color: #fff;
   }
 
   .velin-pdp__offers {
@@ -1547,6 +1608,7 @@
     var colorMediaEl = root.querySelector("[data-pdp-color-media]");
     var colorMedia = colorMediaEl ? JSON.parse(colorMediaEl.textContent) : {};
     var colorIndex = {{ color_option_index }};
+    var sizeIndex = {{ size_option_index }};
     var variantInput = root.querySelector("[data-variant-id]");
     var qtyInput = root.querySelector("[data-qty-input]");
     var priceEl = document.getElementById("VelinPDPPrice-{{ section.id }}");
@@ -1701,7 +1763,13 @@
 
       if (colorIndex >= 0) {
         var optionKey = "option" + (colorIndex + 1);
-        var variant = productData.variants.find(function (v) { return v[optionKey] === value; });
+        var sizeValueForColor = sizeIndex >= 0 ? getActiveSizeValue() : null;
+        var sizeKeyForColor = sizeIndex >= 0 ? "option" + (sizeIndex + 1) : null;
+        var variant = productData.variants.find(function (v) {
+          if (v[optionKey] !== value) return false;
+          if (sizeKeyForColor && sizeValueForColor && v[sizeKeyForColor] !== sizeValueForColor) return false;
+          return true;
+        });
         if (variant && variantInput) {
           variantInput.value = variant.id;
           setAvailability(variant.available);
@@ -1753,6 +1821,71 @@ if (compareEl) {
     // On load, sync the dot, dropdown, and check mark to the selected color
     var initialSwatch = root.querySelector(".velin-pdp__swatch.is-active") || root.querySelector(".velin-pdp__swatch");
     if (initialSwatch) selectColor(initialSwatch.getAttribute("data-color-value"));
+
+    function getActiveSizeValue() {
+      var activePill = root.querySelector(".velin-pdp__size-pill.is-active");
+      return activePill ? activePill.getAttribute("data-size-value") : null;
+    }
+
+    function getActiveColorValue() {
+      var activeSwatch = root.querySelector(".velin-pdp__swatch.is-active");
+      return activeSwatch ? activeSwatch.getAttribute("data-color-value") : null;
+    }
+
+    // Size selection (pills stay in sync). Mirrors selectColor's variant-matching
+    // and price/availability side effects, combined with the active color when
+    // the product also has a color option.
+    function selectSize(value) {
+      root.querySelectorAll(".velin-pdp__size-pill").forEach(function (p) {
+        p.classList.toggle("is-active", p.getAttribute("data-size-value") === value);
+      });
+
+      if (sizeIndex < 0) return;
+      var sizeKey = "option" + (sizeIndex + 1);
+      var colorValue = colorIndex >= 0 ? getActiveColorValue() : null;
+      var colorKey = colorIndex >= 0 ? "option" + (colorIndex + 1) : null;
+      var variant = productData.variants.find(function (v) {
+        if (v[sizeKey] !== value) return false;
+        if (colorKey && colorValue && v[colorKey] !== colorValue) return false;
+        return true;
+      });
+      if (!variant || !variantInput) return;
+
+      variantInput.value = variant.id;
+      setAvailability(variant.available);
+      if (stickyAtcPrice) stickyAtcPrice.textContent = formatMoney(variant.price);
+      if (priceEl) priceEl.textContent = formatMoney(variant.price);
+      if (installmentEl) installmentEl.textContent = formatMoney(variant.price / installmentCount);
+
+      var compareEl = root.querySelector(".velin-pdp__compare");
+      if (compareEl) {
+        if (variant.compare_at_price > variant.price) {
+          compareEl.textContent = formatMoney(variant.compare_at_price);
+          compareEl.style.display = "";
+        } else {
+          compareEl.style.display = "none";
+        }
+      }
+
+      root.querySelectorAll("[data-offer-live-price]").forEach(function (el) {
+        var qty = parseInt(el.getAttribute("data-offer-qty") || "1", 10);
+        el.textContent = formatMoney(variant.price * qty);
+      });
+
+      if (mainImg && variant.featured_image && variant.featured_image.src) {
+        showMainImage(variant.featured_image.src);
+        root.querySelectorAll(".velin-pdp__thumb").forEach(function (t) { t.classList.remove("is-active"); });
+      }
+    }
+
+    root.querySelectorAll(".velin-pdp__size-pill").forEach(function (pill) {
+      pill.addEventListener("click", function () {
+        selectSize(pill.getAttribute("data-size-value"));
+      });
+    });
+
+    var initialSizePill = root.querySelector(".velin-pdp__size-pill.is-active") || root.querySelector(".velin-pdp__size-pill");
+    if (initialSizePill) selectSize(initialSizePill.getAttribute("data-size-value"));
 
     // Offers → quantity
     root.querySelectorAll("[data-offer]").forEach(function (offer) {
@@ -2121,6 +2254,9 @@ if (compareEl) {
       "info": "Har line par: Naam:#hex — e.g. Brun:#AA8870. Swatches product ke variants se automatic bante hain; yahan sirf naam ka rang set hota hai.",
       "default": "Noir:#000000\nBrun:#AA8870\nVert:#026465\nBleu:#00475D\nRouge:#B3001B\nBeige:#D8C7B2\nBlanc:#FFFFFF\nGris:#8E8E8E\nRose:#E8B4C4\nMarron:#6B4A2F\nMarron clair:#A9876B\nCamel:#C19A6B\nTaupe:#8B7E74\nTaupe clair:#B0A69B\nGrège:#B7AC9C\nBlack:#000000\nBrown:#6B4A2F\nStone Grey:#C4BFB5\nStone Gray:#C4BFB5\nGray:#8E8E8E\nSilver:#C4BFB5\nIvoire:#F3EEE3\nBleu Glacier:#C6D2DC\nMarron Camel:#A9713E\nBeige Crème:#EFE3D0\nMarron Chocolat:#3B2216\nJaune Doré:#D4A017\nBlanc Cassé:#F2ECDF\nVert Citron:#C9D94A"
     },
+    { "type": "header", "content": "Sizes" },
+    { "type": "text", "id": "size_label", "label": "Size label", "default": "Taille" },
+    { "type": "text", "id": "size_option_name", "label": "Product option name (lowercase)", "default": "taille" },
     { "type": "header", "content": "Add to cart" },
     { "type": "checkbox", "id": "show_free_shipping", "label": "Show free shipping line above the button", "default": true },
     { "type": "text", "id": "free_shipping_text", "label": "Free shipping text", "default": "Livraison gratuite" },

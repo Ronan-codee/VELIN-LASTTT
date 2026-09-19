@@ -1770,14 +1770,28 @@ if (compareEl) {
       }
     }
 
+    // On phone, the photo sits above the color swatches in the stacked layout,
+    // so it's already out of view by the time someone scrolls down to tap a
+    // color — the photo does change, but nobody sees it happen. Scroll it back
+    // into view on selection so the color change is actually visible.
+    function scrollToMainImageOnMobile() {
+      if (mainImageWrap && window.matchMedia("(max-width: 749px)").matches) {
+        mainImageWrap.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+
     root.querySelectorAll(".velin-pdp__swatch").forEach(function (swatch) {
       swatch.addEventListener("click", function () {
         selectColor(swatch.getAttribute("data-color-value"));
+        scrollToMainImageOnMobile();
       });
     });
 
     root.querySelectorAll("[data-color-select]").forEach(function (sel) {
-      sel.addEventListener("change", function () { selectColor(sel.value); });
+      sel.addEventListener("change", function () {
+        selectColor(sel.value);
+        scrollToMainImageOnMobile();
+      });
     });
 
     // Collection mode: dropdown navigates to the chosen color's product page

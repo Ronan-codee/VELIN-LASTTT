@@ -1,0 +1,258 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "disabled": true,
+      "settings": {}
+    },
+    "velin_product_dc01": {
+      "type": "velin-product",
+      "blocks": {
+        "chip_dc01a": {
+          "type": "chip",
+          "settings": {
+            "text": "100% Coton Doux"
+          }
+        },
+        "chip_dc01b": {
+          "type": "chip",
+          "settings": {
+            "text": "Couette Intégrée"
+          }
+        },
+        "chip_dc01c": {
+          "type": "chip",
+          "settings": {
+            "text": "Lavable En Machine"
+          }
+        },
+        "chip_dc01d": {
+          "type": "chip",
+          "settings": {
+            "text": "Fermeture Zip Invisible"
+          }
+        },
+        "faq_item_dc01a": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Comment fonctionne la housse de couette 2-en-1 ?",
+            "answer": "La couette est intégrée directement à l'intérieur de la housse et fixée par des attaches internes, pour ne plus jamais avoir à emboîter une couette dans sa housse. Un coup pour l'étaler, et c'est fait."
+          }
+        },
+        "faq_item_dc01b": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Quel entretien pour Velin Douce ?",
+            "answer": "L'ensemble se lave en machine à 30°C. Nous recommandons un cycle délicat et un séchage à basse température pour préserver le gonflant et la douceur du coton sur la durée."
+          }
+        },
+        "faq_item_dc01c": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Expédition et livraison",
+            "answer": "Nous préparons votre commande avec soin sous 24 à 48 heures ouvrées. Le délai de livraison varie ensuite selon votre lieu de résidence. Un numéro de suivi vous est communiqué dès l'expédition afin de pouvoir suivre votre colis."
+          }
+        },
+        "faq_item_dc01d": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Retours et remboursements",
+            "answer": "Vous disposez d'un délai de 30 jours après réception de votre commande pour exercer votre droit de rétractation. Le produit doit être retourné dans son état d'origine, non utilisé et dans son emballage d'origine. Le remboursement est effectué selon le mode de paiement utilisé lors de l'achat."
+          }
+        },
+        "offer_dc01a": {
+          "type": "offer",
+          "settings": {
+            "title": "1 Housse De Couette",
+            "quantity": 1,
+            "price_text": "",
+            "sub_label": "",
+            "sub_price": "",
+            "perks": "+ 2 Taies D'oreiller Offertes",
+            "badge_text": "",
+            "show_variant_picker": true,
+            "preselected": true
+          }
+        },
+        "offer_dc01b": {
+          "type": "offer",
+          "settings": {
+            "title": "2 Housses De Couette",
+            "quantity": 2,
+            "price_text": "",
+            "sub_label": "",
+            "sub_price": "",
+            "perks": "+ 4 Taies D'oreiller Offertes",
+            "badge_text": "Pack Duo",
+            "show_variant_picker": false,
+            "preselected": false
+          }
+        },
+        "offer_dc01c": {
+          "type": "offer",
+          "settings": {
+            "title": "3 Housses De Couette",
+            "quantity": 3,
+            "price_text": "",
+            "sub_label": "",
+            "sub_price": "",
+            "perks": "+ 6 Taies D'oreiller Offertes",
+            "badge_text": "Le Plus Choisi",
+            "show_variant_picker": false,
+            "preselected": false
+          }
+        }
+      },
+      "block_order": [
+        "chip_dc01a",
+        "chip_dc01b",
+        "chip_dc01c",
+        "chip_dc01d",
+        "faq_item_dc01a",
+        "faq_item_dc01b",
+        "faq_item_dc01c",
+        "faq_item_dc01d",
+        "offer_dc01a",
+        "offer_dc01b",
+        "offer_dc01c"
+      ],
+      "name": "Velin Product Page",
+      "settings": {
+        "header_style": "black",
+        "bg_color": "#ffffff",
+        "padding_v": 80,
+        "padding_h": 100,
+        "column_gap": 122,
+        "media_width": 680,
+        "image_height": 460,
+        "image_bg": "#ffffff",
+        "media_gap": 22,
+        "thumbs_height": 105,
+        "thumbs_gap": 16,
+        "info_width": 480,
+        "info_gap": 14,
+        "badge_text": "HOUSSE DE COUETTE 2-EN-1 EN COTON",
+        "badge_bg": "#f8f8f8",
+        "badge_size": 18,
+        "avatar_1": "",
+        "avatar_2": "",
+        "avatar_3": "",
+        "social_text": "",
+        "title_size": 32,
+        "compare_color": "#999999",
+        "compare_text": "",
+        "launch_offer_text": "",
+        "launch_offer_bg": "#201E50",
+        "launch_offer_color": "#ffffff",
+        "accent_color": "#201E50",
+        "accent_color_soft": "#00B77F",
+        "show_installments": true,
+        "installment_count": 3,
+        "payment_icon_size": 24,
+        "chip_bg": "#f7f7f7",
+        "chip_size": 14,
+        "chip_gap": 16,
+        "color_label": "Couleur",
+        "color_option_name": "couleur",
+        "color_map": "Noir:#000000\nBrun:#AA8870\nVert:#026465\nBleu:#00475D\nRouge:#B3001B\nBeige:#D8C7B2\nBlanc:#FFFFFF\nGris:#8E8E8E",
+        "size_label": "Taille",
+        "size_option_name": "taille",
+        "show_free_shipping": true,
+        "free_shipping_text": "Livraison gratuite",
+        "atc_text": "AJOUTER AU PANIER",
+        "atc_bg": "#000000",
+        "atc_color": "#ffffff",
+        "show_stock": false,
+        "stock_title": "Stock Limité",
+        "stock_sub": "Forte Demande, Quantités Limitées",
+        "sold_percent": 89,
+        "sold_label": "Vendus",
+        "stock_bar_color": "#201E50",
+        "countdown_label": "Fin Dans",
+        "countdown_hours": 47,
+        "guarantee_image": "",
+        "guarantee_heading": "Satisfait Ou Remboursé Sous 30 Jours",
+        "guarantee_text": "Achetez en toute confiance. Si cette housse de couette ne répond pas à vos attentes en matière de qualité ou de confort, vous pouvez nous la retourner sous 30 jours après la livraison.",
+        "approved_heading": "Ils Ont Adopté Velin Douce",
+        "video_card_width": 160,
+        "video_card_height": 250,
+        "video_gap": 16,
+        "show_description_faq": true,
+        "description_faq_label": "Description"
+      }
+    },
+    "material_story_dc01": {
+      "type": "image-with-text",
+      "settings": {
+        "image": "",
+        "image_position": "left",
+        "image_fit": "crop",
+        "image_width": 505,
+        "image_height": 600,
+        "background": "beige",
+        "custom_background": "",
+        "image_radius": 14,
+        "full_width": false,
+        "section_padding": 0,
+        "column_gap": 56,
+        "text_max_width": 0,
+        "text_padding": 0,
+        "text_gap": 0,
+        "eyebrow": "LA MATIÈRE",
+        "eyebrow_color": "#201E50",
+        "heading": "Un Coton Doux, Pensé Pour Durer",
+        "heading_nowrap": false,
+        "heading_line_height": 150,
+        "price_tag_enabled": false,
+        "price_before": "",
+        "price_after": "",
+        "text": "Velin Douce est confectionnée dans un coton doux et respirant, agréable été comme hiver. Résistant aux lavages répétés, il garde sa souplesse lavage après lavage — pour une housse qui reste confortable au fil du temps.",
+        "button_label": "",
+        "button_link": ""
+      }
+    },
+    "compare_dc01": {
+      "type": "leather-vs-faux",
+      "settings": {
+        "background": "white",
+        "eyebrow": "HOUSSE 2-EN-1 VS HOUSSE CLASSIQUE",
+        "eyebrow_color": "#201E50",
+        "heading": "Pourquoi Choisir Une Housse De Couette 2-en-1 ?",
+        "text": "Avec une housse classique, il faut réintroduire et fixer la couette à chaque lavage. Avec Velin Douce, tout est déjà assemblé.",
+        "real_image": "",
+        "real_tag": "Housse 2-en-1 Velin",
+        "real_title": "Couette Et Housse Assemblées En Une Seule Pièce",
+        "real_points": "Plus besoin d'emboîter la couette à chaque lavage\nAttaches internes qui maintiennent la couette bien en place\nUne seule pièce à passer en machine\nS'étale d'un geste, sans plis ni chiffonnage",
+        "fake_image": "",
+        "fake_tag": "Housse + Couette Séparées",
+        "fake_title": "La Méthode Classique",
+        "fake_points": "Couette à réinsérer à la main après chaque lavage\nBoutons ou liens qui se détachent avec le temps\nDeux pièces à laver et à assortir séparément\nCouette qui glisse ou se froisse dans la housse"
+      }
+    },
+    "reviews_dc01": {
+      "type": "apps",
+      "blocks": {
+        "ag_product_reviews_app_block_review_list_dc01": {
+          "type": "shopify://apps/ag-product-reviews/blocks/app-block-review-list/c4e1e9ca-4d46-4e76-bc39-7e42417cb327",
+          "settings": {
+            "air_blockreviews_summaryHeading": "Avis",
+            "air_blockreviews_layout": "list",
+            "air_blockreviews_singleStarColor": "#16a086",
+            "air_blockreviews_primaryColor": "#121212"
+          }
+        }
+      },
+      "block_order": [
+        "ag_product_reviews_app_block_review_list_dc01"
+      ],
+      "settings": {}
+    }
+  },
+  "order": [
+    "main",
+    "velin_product_dc01",
+    "material_story_dc01",
+    "compare_dc01",
+    "reviews_dc01"
+  ]
+}

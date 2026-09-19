@@ -1,0 +1,338 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "disabled": true,
+      "settings": {}
+    },
+    "velin_product_dc01": {
+      "type": "velin-product-v2",
+      "blocks": {
+        "chip_dc01a": {
+          "type": "chip",
+          "settings": {
+            "text": "100% Coton Doux"
+          }
+        },
+        "chip_dc01b": {
+          "type": "chip",
+          "settings": {
+            "text": "Couette Intégrée"
+          }
+        },
+        "chip_dc01c": {
+          "type": "chip",
+          "settings": {
+            "text": "Lavable En Machine"
+          }
+        },
+        "chip_dc01d": {
+          "type": "chip",
+          "settings": {
+            "text": "Fermeture Zip Invisible"
+          }
+        },
+        "faq_item_dc01a": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Comment fonctionne la housse de couette 2-en-1 ?",
+            "answer": "La couette est intégrée directement à l'intérieur de la housse et fixée par des attaches internes, pour ne plus jamais avoir à emboîter une couette dans sa housse. Un coup pour l'étaler, et c'est fait."
+          }
+        },
+        "faq_item_dc01b": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Quel entretien pour Velin ?",
+            "answer": "L'ensemble se lave en machine à 30°C. Nous recommandons un cycle délicat et un séchage à basse température pour préserver le gonflant et la douceur du coton sur la durée."
+          }
+        },
+        "faq_item_dc01c": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Expédition et livraison",
+            "answer": "Nous préparons votre commande avec soin sous 24 à 48 heures ouvrées. Le délai de livraison varie ensuite selon votre lieu de résidence. Un numéro de suivi vous est communiqué dès l'expédition afin de pouvoir suivre votre colis."
+          }
+        },
+        "faq_item_dc01d": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Retours et remboursements",
+            "answer": "Vous disposez d'un délai de 30 jours après réception de votre commande pour exercer votre droit de rétractation. Le produit doit être retourné dans son état d'origine, non utilisé et dans son emballage d'origine. Le remboursement est effectué selon le mode de paiement utilisé lors de l'achat."
+          }
+        }
+      },
+      "block_order": [
+        "chip_dc01a",
+        "chip_dc01b",
+        "chip_dc01c",
+        "chip_dc01d",
+        "faq_item_dc01a",
+        "faq_item_dc01b",
+        "faq_item_dc01c",
+        "faq_item_dc01d"
+      ],
+      "name": "Velin Product Page",
+      "settings": {
+        "header_style": "black",
+        "bg_color": "#ffffff",
+        "padding_v": 80,
+        "padding_h": 100,
+        "column_gap": 122,
+        "media_width": 680,
+        "image_height": 460,
+        "image_bg": "#ffffff",
+        "media_gap": 22,
+        "thumbs_height": 105,
+        "thumbs_gap": 16,
+        "info_width": 480,
+        "info_gap": 14,
+        "badge_text": "",
+        "badge_bg": "#f8f8f8",
+        "badge_size": 18,
+        "avatar_1": "",
+        "avatar_2": "",
+        "avatar_3": "",
+        "social_text": "",
+        "title_size": 32,
+        "compare_color": "#999999",
+        "compare_text": "",
+        "launch_offer_text": "",
+        "launch_offer_bg": "#201E50",
+        "launch_offer_color": "#ffffff",
+        "accent_color": "#201E50",
+        "accent_color_soft": "#00B77F",
+        "show_installments": true,
+        "installment_count": 3,
+        "payment_icon_size": 24,
+        "chip_bg": "#f7f7f7",
+        "chip_size": 14,
+        "chip_gap": 16,
+        "color_label": "Couleur",
+        "color_option_name": "couleur",
+        "color_map": "Noir:#000000\nBrun:#AA8870\nVert:#026465\nBleu:#00475D\nRouge:#B3001B\nBeige:#D8C7B2\nBlanc:#FFFFFF\nGris:#8E8E8E",
+        "size_label": "Taille",
+        "size_option_name": "taille",
+        "show_free_shipping": true,
+        "free_shipping_text": "Livraison gratuite",
+        "atc_text": "AJOUTER AU PANIER",
+        "atc_bg": "#000000",
+        "atc_color": "#ffffff",
+        "show_stock": false,
+        "stock_title": "Stock Limité",
+        "stock_sub": "Forte Demande, Quantités Limitées",
+        "sold_percent": 89,
+        "sold_label": "Vendus",
+        "stock_bar_color": "#201E50",
+        "countdown_label": "Fin Dans",
+        "countdown_hours": 47,
+        "trust_item_1": "30 Jours Pour Changer d'Avis",
+        "trust_item_2": "Expédiée Sous 24-48h",
+        "trust_item_3": "Lit Fait En Un Geste",
+        "approved_heading": "Ils Ont Adopté Velin",
+        "video_card_width": 160,
+        "video_card_height": 250,
+        "video_gap": 16,
+        "show_description_faq": true,
+        "description_faq_label": "Description"
+      }
+    },
+    "video_hero_dc01": {
+      "type": "video-banner",
+      "settings": {
+        "banner_video": "",
+        "fallback_color": "#201E50",
+        "overlay_opacity": 30,
+        "banner_height": 500
+      }
+    },
+    "ugc_dc01": {
+      "type": "video-stories",
+      "settings": {
+        "title": "Vu Sur Les Réseaux"
+      }
+    },
+    "compare_dc01": {
+      "type": "velin-comparison-table",
+      "blocks": {
+        "row_dc01a": { "type": "comparison_row", "settings": { "label": "Gain de temps au quotidien", "theirs_state": "cross" } },
+        "row_dc01b": { "type": "comparison_row", "settings": { "label": "Couette fixée à la housse", "theirs_state": "cross" } },
+        "row_dc01c": { "type": "comparison_row", "settings": { "label": "Lavable en une seule fois", "theirs_state": "cross" } },
+        "row_dc01d": { "type": "comparison_row", "settings": { "label": "Moins d'acariens et d'odeurs", "theirs_state": "cross" } },
+        "row_dc01e": { "type": "comparison_row", "settings": { "label": "Séchage plus rapide", "theirs_state": "cross" } },
+        "row_dc01f": { "type": "comparison_row", "settings": { "label": "Plusieurs tailles disponibles", "theirs_state": "check" } }
+      },
+      "block_order": ["row_dc01a", "row_dc01b", "row_dc01c", "row_dc01d", "row_dc01e", "row_dc01f"],
+      "settings": {
+        "eyebrow": "LE COMPARATIF",
+        "heading": "Gagnez Du Temps, Tous Les Jours",
+        "text": "Avec Velin, vous faites votre lit en un geste et ne gérez plus jamais de housse à part.",
+        "ours_label": "Velin",
+        "theirs_label": "Housse classique"
+      }
+    },
+    "material_story_dc01": {
+      "type": "image-with-text",
+      "settings": {
+        "image": "",
+        "image_position": "right",
+        "image_fit": "crop",
+        "image_width": 505,
+        "image_height": 600,
+        "background": "beige",
+        "custom_background": "",
+        "image_radius": 14,
+        "full_width": false,
+        "section_padding": 0,
+        "column_gap": 56,
+        "text_max_width": 0,
+        "text_padding": 0,
+        "text_gap": 0,
+        "eyebrow": "LA MATIÈRE",
+        "eyebrow_color": "#201E50",
+        "heading": "Un Seul Ensemble, Pas Deux Pièces À Gérer",
+        "heading_nowrap": false,
+        "heading_line_height": 150,
+        "price_tag_enabled": false,
+        "price_before": "",
+        "price_after": "",
+        "text": "Velin remplace la couette et la housse séparées par un seul ensemble : une enveloppe en coton doux directement fixée à la couette. Plus besoin de la réinsérer à chaque lavage, ni de multiplier les lessives — l'ensemble passe en machine d'un coup, et ressort aussi frais que doux.",
+        "button_label": "",
+        "button_link": ""
+      }
+    },
+    "benefits_coton_dc01": {
+      "type": "velin-image-benefits",
+      "blocks": {
+        "card_dc01a": {
+          "type": "benefit_card",
+          "settings": {
+            "icon_type": "leaf",
+            "title": "100% Coton Véritable",
+            "text": "Doux, respirant et naturel — la matière de votre linge de lit, pas un textile synthétique."
+          }
+        },
+        "card_dc01b": {
+          "type": "benefit_card",
+          "settings": {
+            "icon_type": "washer",
+            "title": "Une Seule Pièce À Laver",
+            "text": "La housse est fixée à la couette : un seul lavage suffit pour retrouver un ensemble frais."
+          }
+        },
+        "card_dc01c": {
+          "type": "benefit_card",
+          "settings": {
+            "icon_type": "ruler",
+            "title": "Quatre Tailles Disponibles",
+            "text": "De 140x200 à 240x200 cm, une taille adaptée à chaque lit."
+          }
+        }
+      },
+      "block_order": ["card_dc01a", "card_dc01b", "card_dc01c"],
+      "settings": {
+        "image": "",
+        "fallback_color": "#201E50",
+        "min_height": 480,
+        "eyebrow": "VELIN",
+        "heading": "Le Coton Véritable, En Version Pratique"
+      }
+    },
+    "freshness_dc01": {
+      "type": "image-with-text",
+      "settings": {
+        "image": "",
+        "image_position": "left",
+        "image_fit": "crop",
+        "image_width": 505,
+        "image_height": 600,
+        "background": "white",
+        "custom_background": "",
+        "image_radius": 14,
+        "full_width": false,
+        "section_padding": 0,
+        "column_gap": 56,
+        "text_max_width": 0,
+        "text_padding": 0,
+        "text_gap": 0,
+        "eyebrow": "L'ENTRETIEN",
+        "eyebrow_color": "#201E50",
+        "heading": "Un Lit Frais, Sans Effort Chaque Semaine",
+        "heading_nowrap": false,
+        "heading_line_height": 150,
+        "price_tag_enabled": false,
+        "price_before": "",
+        "price_after": "",
+        "text": "Comme l'ensemble passe en machine en une seule fois, l'entretien hebdomadaire devient un geste simple plutôt qu'une corvée à deux lessives. Sortez-le du tambour, étalez-le, et votre lit retrouve instantanément sa fraîcheur.",
+        "button_label": "",
+        "button_link": ""
+      }
+    },
+    "benefits_pourquoi_dc01": {
+      "type": "velin-image-benefits",
+      "blocks": {
+        "card_dc01d": {
+          "type": "benefit_card",
+          "settings": {
+            "icon_type": "thumbs",
+            "title": "Retours Sous 30 Jours",
+            "text": "Un souci ? Vous disposez de 30 jours après réception pour changer d'avis, sans justification."
+          }
+        },
+        "card_dc01e": {
+          "type": "benefit_card",
+          "settings": {
+            "icon_type": "lock",
+            "title": "Paiement 100% Sécurisé",
+            "text": "Toutes les transactions sont chiffrées et protégées, quel que soit votre moyen de paiement."
+          }
+        },
+        "card_dc01f": {
+          "type": "benefit_card",
+          "settings": {
+            "icon_type": "truck",
+            "title": "Expédiée Sous 24-48h",
+            "text": "Commande préparée rapidement, avec numéro de suivi communiqué dès l'envoi."
+          }
+        }
+      },
+      "block_order": ["card_dc01d", "card_dc01e", "card_dc01f"],
+      "settings": {
+        "image": "",
+        "fallback_color": "#201E50",
+        "min_height": 480,
+        "eyebrow": "VELIN",
+        "heading": "Pourquoi Choisir Velin ?"
+      }
+    },
+    "reviews_dc01": {
+      "type": "apps",
+      "blocks": {
+        "ag_product_reviews_app_block_review_list_dc01": {
+          "type": "shopify://apps/ag-product-reviews/blocks/app-block-review-list/c4e1e9ca-4d46-4e76-bc39-7e42417cb327",
+          "settings": {
+            "air_blockreviews_summaryHeading": "Avis",
+            "air_blockreviews_layout": "list",
+            "air_blockreviews_singleStarColor": "#16a086",
+            "air_blockreviews_primaryColor": "#121212"
+          }
+        }
+      },
+      "block_order": [
+        "ag_product_reviews_app_block_review_list_dc01"
+      ],
+      "settings": {}
+    }
+  },
+  "order": [
+    "main",
+    "velin_product_dc01",
+    "video_hero_dc01",
+    "ugc_dc01",
+    "compare_dc01",
+    "material_story_dc01",
+    "benefits_coton_dc01",
+    "freshness_dc01",
+    "benefits_pourquoi_dc01",
+    "reviews_dc01"
+  ]
+}

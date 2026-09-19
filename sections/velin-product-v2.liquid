@@ -1,0 +1,2527 @@
+{% comment %} Velin - Product Page (Figma: 1445 container, 612 media / 611 info, 122px gap). {% endcomment %}
+
+{%- liquid
+  assign color_option_index = -1
+  for option in product.options_with_values
+    assign opt_down = option.name | downcase
+    if opt_down == section.settings.color_option_name or opt_down == 'couleur' or opt_down == 'color'
+      assign color_option_index = forloop.index0
+      assign color_option = option
+    endif
+  endfor
+  assign map_lines = section.settings.color_map | strip | newline_to_br | split: '<br />'
+
+  assign size_option_index = -1
+  for option in product.options_with_values
+    assign opt_down = option.name | downcase
+    if opt_down == section.settings.size_option_name or opt_down == 'taille' or opt_down == 'size'
+      assign size_option_index = forloop.index0
+      assign size_option = option
+    endif
+  endfor
+
+  comment
+    Color collection: ONLY the per-product metafield (custom.color_collection)
+    decides this. No global fallback — a product with no metafield set shows
+    no cross-product color swatches at all, so bags never inherit another
+    bag's colors.
+  endcomment
+  assign color_coll = blank
+  if product.metafields.custom.color_collection.value != blank
+    assign color_coll = product.metafields.custom.color_collection.value
+  endif
+-%}
+
+{%- comment -%}
+  Per-color thumbnail groups: an image belongs to a color if its ALT TEXT
+  matches that color's option value exactly (set alt text when uploading,
+  e.g. "Black", "Stone Grey"). Used to swap the whole thumbnail strip when
+  a swatch is clicked, not just the single featured image.
+{%- endcomment -%}
+{%- capture color_media_map -%}
+  {
+    {%- if color_option_index >= 0 -%}
+      {%- for value in color_option.values -%}
+        {%- assign color_group = product.images | where: 'alt', value -%}
+        {{ value | json }}: [
+          {%- for img in color_group -%}
+            { "full": {{ img | image_url: width: 1200 | json }}, "thumb": {{ img | image_url: width: 240 | json }} }{% unless forloop.last %},{% endunless %}
+          {%- endfor -%}
+        ]{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    {%- endif -%}
+  }
+{%- endcapture -%}
+
+{% render 'header-color-override', style: section.settings.header_style %}
+<div class="velin-pdp" id="VelinPDP-{{ section.id }}" style="
+  background: {{ section.settings.bg_color }};
+  padding: {{ section.settings.padding_v }}px {{ section.settings.padding_h }}px;
+  gap: {{ section.settings.column_gap }}px;
+">
+
+  {%- comment -%} ---------- LEFT: media ---------- {%- endcomment -%}
+  <div class="velin-pdp__media" style="width: {{ section.settings.media_width }}px; gap: {{ section.settings.media_gap }}px;">
+    <div class="velin-pdp__main-image{% unless product.selected_or_first_available_variant.available %} is-sold-out{% endunless %}" style="height: {{ section.settings.image_height }}px; background: {{ section.settings.image_bg }};">
+      {% unless product.selected_or_first_available_variant.available %}
+        <span class="velin-pdp__sold-out-badge">{{ 'products.product.sold_out' | t }}</span>
+      {% endunless %}
+      {% if product.featured_media %}
+        <img
+          id="VelinPDPMainImg-{{ section.id }}"
+          src="{{ product.featured_media | image_url: width: 1200 }}"
+          alt="{{ product.featured_media.alt | escape }}"
+          loading="eager"
+        >
+      {% endif %}
+      <div class="velin-pdp__main-video" id="VelinPDPMainVideo-{{ section.id }}" hidden></div>
+    </div>
+    {% if product.media.size > 1 %}
+      <div class="velin-pdp__thumbs" style="height: {{ section.settings.thumbs_height }}px; gap: {{ section.settings.thumbs_gap }}px;">
+        {% for media in product.media %}
+          {%- liquid
+            assign thumb_is_video = false
+            if media.media_type == 'video' or media.media_type == 'external_video'
+              assign thumb_is_video = true
+            endif
+            if thumb_is_video
+              assign thumb_full = media.preview_image | image_url: width: 1200
+              assign thumb_small = media.preview_image | image_url: width: 240
+            else
+              assign thumb_full = media | image_url: width: 1200
+              assign thumb_small = media | image_url: width: 240
+            endif
+          -%}
+          <button
+            type="button"
+            class="velin-pdp__thumb{% if forloop.first %} is-active{% endif %}"
+            data-full="{{ thumb_full }}"
+            {% if thumb_is_video %}data-video-id="{{ media.id }}"{% endif %}
+            aria-label="{% if thumb_is_video %}Vidéo{% else %}Image{% endif %} {{ forloop.index }}"
+          >
+            <img src="{{ thumb_small }}" alt="{{ media.alt | escape }}" loading="lazy">
+            {% if thumb_is_video %}
+              <span class="velin-pdp__thumb-play" aria-hidden="true">
+                <svg width="8" height="10" viewBox="0 0 10 12" fill="none"><path d="M10 6L0 12V0L10 6Z" fill="#fff"/></svg>
+              </span>
+            {% endif %}
+          </button>
+        {% endfor %}
+      </div>
+    {% endif %}
+    <div hidden aria-hidden="true">
+      {% for media in product.media %}
+        {% if media.media_type == 'video' %}
+          <template data-pdp-video-template="{{ media.id }}">
+            {{ media | video_tag: image_size: '1200x', autoplay: false, loop: false, controls: true, muted: false, playsinline: true, preload: 'metadata', class: 'velin-pdp__main-video-el' }}
+          </template>
+        {% elsif media.media_type == 'external_video' %}
+          <template data-pdp-video-template="{{ media.id }}">
+            {{ media | external_video_tag: autoplay: false, class: 'velin-pdp__main-video-el' }}
+          </template>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+  {%- comment -%} ---------- RIGHT: info ---------- {%- endcomment -%}
+  <div class="velin-pdp__info" style="width: {{ section.settings.info_width }}px; gap: {{ section.settings.info_gap }}px;">
+
+    {% if section.settings.badge_text != blank %}
+      <div class="velin-pdp__badge" style="background: {{ section.settings.badge_bg }}; font-size: {{ section.settings.badge_size }}px;">
+        {{ section.settings.badge_text }}
+      </div>
+    {% endif %}
+
+    {% if section.settings.social_text != blank %}
+      <div class="velin-pdp__social">
+        <span class="velin-pdp__avatars">
+          {% if section.settings.avatar_1 != blank %}<img src="{{ section.settings.avatar_1 | image_url: width: 56 }}" alt="">{% endif %}
+          {% if section.settings.avatar_2 != blank %}<img src="{{ section.settings.avatar_2 | image_url: width: 56 }}" alt="">{% endif %}
+          {% if section.settings.avatar_3 != blank %}<img src="{{ section.settings.avatar_3 | image_url: width: 56 }}" alt="">{% endif %}
+        </span>
+        <span class="velin-pdp__social-text">
+  <strong>KIM</strong>
+
+  <svg class="velin-verified-badge" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path fill="#1DA1F2" d="M12 0l2.3 1.6 2.8-.4 1.6 2.3 2.8.8.4 2.8 2.3 1.6-.8 2.8.8 2.8-2.3 1.6-.4 2.8-2.8.8-1.6 2.3-2.8-.4L12 24l-2.3-1.6-2.8.4-1.6-2.3-2.8-.8-.4-2.8L0 15.2l.8-2.8L0 9.6 2.3 8l.4-2.8 2.8-.8L7.1 2l2.8.4L12 0z"/>
+    <path d="M8.8 12.3l2.1 2.1 4.6-4.6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+
+  <span>Et plus de 3000 clients nous ont fait confiance</span>
+</span>
+      </div>
+    {% endif %}
+
+    <div class="velin-pdp__title-price-group">
+      <h1 class="velin-pdp__title" style="font-size: {{ section.settings.title_size }}px;">{{ product.title }}</h1>
+
+      <div class="velin-pdp__price-row">
+        {% if product.compare_at_price > product.price %}
+          <s class="velin-pdp__compare" style="color: {{ section.settings.compare_color }};">{{ product.compare_at_price | money }}</s>
+        {% elsif section.settings.compare_text != blank %}
+          <s class="velin-pdp__compare" style="color: {{ section.settings.compare_color }};">{{ section.settings.compare_text }}</s>
+        {% endif %}
+        <span class="velin-pdp__price" id="VelinPDPPrice-{{ section.id }}">{{ product.price | money }}</span>
+        <!-- Air reviews star rating -->
+        <div class="AirReviews-Widget AirReviews-Widget--Stars"></div>
+      </div>
+
+      {% if section.settings.launch_offer_text != blank %}
+        {%- liquid
+          assign velin_offer_month_num = 'now' | date: '%-m'
+          case velin_offer_month_num
+            when '1'
+              assign velin_offer_month_fr = 'janvier'
+            when '2'
+              assign velin_offer_month_fr = 'février'
+            when '3'
+              assign velin_offer_month_fr = 'mars'
+            when '4'
+              assign velin_offer_month_fr = 'avril'
+            when '5'
+              assign velin_offer_month_fr = 'mai'
+            when '6'
+              assign velin_offer_month_fr = 'juin'
+            when '7'
+              assign velin_offer_month_fr = 'juillet'
+            when '8'
+              assign velin_offer_month_fr = 'août'
+            when '9'
+              assign velin_offer_month_fr = 'septembre'
+            when '10'
+              assign velin_offer_month_fr = 'octobre'
+            when '11'
+              assign velin_offer_month_fr = 'novembre'
+            when '12'
+              assign velin_offer_month_fr = 'décembre'
+          endcase
+          assign velin_offer_day = 'now' | date: '%-d'
+        -%}
+        <p class="velin-pdp__launch-badge" style="background: {{ section.settings.launch_offer_bg }}; color: {{ section.settings.launch_offer_color }};">
+          {{ section.settings.launch_offer_text }} {{ velin_offer_day }} {{ velin_offer_month_fr }}
+        </p>
+      {% endif %}
+    </div>
+
+    {% if section.settings.show_installments %}
+      {%- liquid
+        assign velin_installment_count = section.settings.installment_count | default: 3
+        assign velin_installment_amount = product.price | times: 1.0 | divided_by: velin_installment_count
+        assign velin_klarna_h = section.settings.payment_icon_size | default: 24
+        assign velin_klarna_w = velin_klarna_h | times: 64 | divided_by: 27.0 | round
+      -%}
+      <div class="velin-pdp__installments">
+        <span class="velin-pdp__installments-text">Ou {{ velin_installment_count }}x sans frais de <span id="VelinPDPInstallment-{{ section.id }}">{{ velin_installment_amount | money }}</span> avec</span>
+        <svg class="velin-pdp__klarna" width="{{ velin_klarna_w }}" height="{{ velin_klarna_h }}" viewBox="0 0 64 27" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Klarna">
+          <rect width="64" height="27" rx="6" fill="#FFB3C7"></rect>
+          <text x="32" y="18.5" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="700" font-size="13" fill="#17120F">Klarna</text>
+        </svg>
+      </div>
+    {% endif %}
+
+    {%- assign has_chips = false -%}
+    {% for block in section.blocks %}{% if block.type == 'chip' %}{% assign has_chips = true %}{% endif %}{% endfor %}
+    {% if has_chips %}
+      <div class="velin-pdp__chips" style="gap: {{ section.settings.chip_gap }}px;">
+        {% for block in section.blocks %}
+          {% if block.type == 'chip' %}
+            <div class="velin-pdp__chip" style="background: {{ section.settings.chip_bg }}; font-size: {{ section.settings.chip_size }}px; width: calc(50% - {{ section.settings.chip_gap | divided_by: 2.0 }}px);" {{ block.shopify_attributes }}>
+              {{ block.settings.text }}
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {%- assign has_included_gifts = false -%}
+    {% for block in section.blocks %}{% if block.type == 'included_gift' %}{% assign has_included_gifts = true %}{% endif %}{% endfor %}
+    {% if has_included_gifts %}
+      <div class="velin-pdp__included-gifts">
+        {% for block in section.blocks %}
+          {% if block.type == 'included_gift' %}
+            <div class="velin-pdp__included-gift" {{ block.shopify_attributes }}>
+              {% if block.settings.image != blank %}
+                <img src="{{ block.settings.image | image_url: width: 200 }}" alt="{{ block.settings.title | escape }}" loading="lazy" class="velin-pdp__included-gift-img">
+              {% endif %}
+              <div class="velin-pdp__included-gift-text">
+                <p class="velin-pdp__included-gift-title">
+                  {{ block.settings.title }}
+                  <span class="velin-pdp__included-gift-tag">{{ block.settings.tag_text }}</span>
+                </p>
+                {% if block.settings.text != blank %}
+                  <p class="velin-pdp__included-gift-desc">{{ block.settings.text }}</p>
+                {% endif %}
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if color_coll != blank %}
+      {%- comment -%} Colors from a collection: same bag as separate products, one per color {%- endcomment -%}
+      <div class="velin-pdp__colors">
+        <p class="velin-pdp__colors-label">{{ section.settings.color_label }}</p>
+        <div class="velin-pdp__swatches">
+          {% for p in color_coll.products %}
+            {%- assign p_color = '' -%}
+            {%- for opt in p.options_with_values -%}
+              {%- assign od = opt.name | downcase -%}
+              {%- if od == section.settings.color_option_name or od == 'couleur' or od == 'color' -%}
+                {%- assign p_color = opt.values | first -%}
+              {%- endif -%}
+            {%- endfor -%}
+            {%- if p_color == '' -%}{%- assign p_color = p.title -%}{%- endif -%}
+            {%- assign swatch_hex = '' -%}
+            {%- for line in map_lines -%}
+              {%- assign pair = line | strip | split: ':' -%}
+              {%- assign pair_name = pair[0] | strip | downcase -%}
+              {%- assign val_down = p_color | downcase -%}
+              {%- if pair_name == val_down -%}{%- assign swatch_hex = pair[1] | strip -%}{%- endif -%}
+            {%- endfor -%}
+            {%- if swatch_hex == '' -%}{%- assign swatch_hex = '#cccccc' -%}{%- endif -%}
+            <a
+              href="{{ p.url }}"
+              class="velin-pdp__swatch{% if p.id == product.id %} is-active{% endif %}"
+              data-color-value="{{ p_color | escape }}"
+              style="background: {{ swatch_hex }};"
+              aria-label="{{ p_color | escape }}"
+              title="{{ p_color | escape }}"
+            ></a>
+          {% endfor %}
+        </div>
+      </div>
+    {% elsif color_option_index >= 0 %}
+      <div class="velin-pdp__colors">
+        <p class="velin-pdp__colors-label">{{ section.settings.color_label }}</p>
+        <div class="velin-pdp__swatches">
+          {% for value in color_option.values %}
+            {%- assign swatch_hex = '' -%}
+            {%- for line in map_lines -%}
+              {%- assign pair = line | strip | split: ':' -%}
+              {%- assign pair_name = pair[0] | strip | downcase -%}
+              {%- assign val_down = value | downcase -%}
+              {%- if pair_name == val_down -%}{%- assign swatch_hex = pair[1] | strip -%}{%- endif -%}
+            {%- endfor -%}
+            {%- if swatch_hex == '' -%}{%- assign swatch_hex = '#cccccc' -%}{%- endif -%}
+            <button
+              type="button"
+              class="velin-pdp__swatch{% if value == color_option.selected_value %} is-active{% endif %}"
+              data-color-value="{{ value | escape }}"
+              style="background: {{ swatch_hex }};"
+              aria-label="{{ value | escape }}"
+            ></button>
+          {% endfor %}
+        </div>
+      </div>
+    {% elsif product.metafields.shopify['color-pattern'].value != blank %}
+      {%- comment -%} This product's own color(s), tagged directly via Shopify's Category metafields (no sibling products / no variant option) {%- endcomment -%}
+      <div class="velin-pdp__colors">
+        <p class="velin-pdp__colors-label">{{ section.settings.color_label }}</p>
+        <div class="velin-pdp__swatches">
+          {% for color_ref in product.metafields.shopify['color-pattern'].value %}
+            <span
+              class="velin-pdp__swatch is-active"
+              style="background: {{ color_ref.color }};"
+              aria-label="{{ color_ref.label | escape }}"
+              title="{{ color_ref.label | escape }}"
+            ></span>
+          {% endfor %}
+        </div>
+      </div>
+    {% elsif product.metafields.custom.bag_color.value != blank %}
+      {%- comment -%} This product's own color, from the simple "Couleur du sac" text field {%- endcomment -%}
+      {%- assign own_color = product.metafields.custom.bag_color.value -%}
+      {%- assign own_color_down = own_color | downcase -%}
+      {%- assign swatch_hex = '' -%}
+      {%- for line in map_lines -%}
+        {%- assign pair = line | strip | split: ':' -%}
+        {%- assign pair_name = pair[0] | strip | downcase -%}
+        {%- if pair_name == own_color_down -%}{%- assign swatch_hex = pair[1] | strip -%}{%- endif -%}
+      {%- endfor -%}
+      {%- if swatch_hex == '' -%}{%- assign swatch_hex = '#cccccc' -%}{%- endif -%}
+      <div class="velin-pdp__colors">
+        <p class="velin-pdp__colors-label">{{ section.settings.color_label }}</p>
+        <div class="velin-pdp__swatches">
+          <span
+            class="velin-pdp__swatch is-active"
+            style="background: {{ swatch_hex }};"
+            aria-label="{{ own_color | escape }}"
+            title="{{ own_color | escape }}"
+          ></span>
+        </div>
+      </div>
+    {% endif %}
+
+    {%- comment -%} ---------- Offers (1 Sac / 2 Sac) ---------- {%- endcomment -%}
+    {%- assign has_offers = false -%}
+    {% for block in section.blocks %}{% if block.type == 'offer' %}{% assign has_offers = true %}{% endif %}{% endfor %}
+    {% if has_offers and product.type != "Portefeuille" %}
+      <div class="velin-pdp__offers">
+        {% for block in section.blocks %}
+          {% if block.type == 'offer' %}
+            <label class="velin-pdp__offer{% if block.settings.preselected %} is-selected{% endif %}" data-offer data-qty="{{ block.settings.quantity }}" {{ block.shopify_attributes }}>
+              <input type="radio" name="velin-offer-{{ section.id }}" value="{{ block.settings.quantity }}" {% if block.settings.preselected %}checked{% endif %}>
+              <div class="velin-pdp__offer-body">
+                <div class="velin-pdp__offer-row">
+                  <span class="velin-pdp__offer-title">
+                    <span class="velin-pdp__offer-dot" data-offer-dot></span>
+                    {{ block.settings.title }}
+                    {% if block.settings.badge_text != blank %}
+                      <span class="velin-pdp__offer-badge">{{ block.settings.badge_text }}</span>
+                    {% endif %}
+                  </span>
+                  {%- if block.settings.price_text != blank -%}
+                    <span class="velin-pdp__offer-price">{{ block.settings.price_text }}</span>
+                  {%- else -%}
+                    <span class="velin-pdp__offer-price" data-offer-live-price data-offer-qty="{{ block.settings.quantity }}">{{ product.price | times: block.settings.quantity | money }}</span>
+                  {%- endif -%}
+                </div>
+                {% if block.settings.sub_label != blank %}
+                  <div class="velin-pdp__offer-sub">
+                    <span>{{ block.settings.sub_label }}</span>
+                    <s>{{ block.settings.sub_price }}</s>
+                  </div>
+                {% endif %}
+                {% if block.settings.perks != blank %}
+                  <ul class="velin-pdp__offer-perks">
+                    {% assign perks = block.settings.perks | newline_to_br | split: '<br />' %}
+                    {% for perk in perks %}<li>{{ perk }}</li>{% endfor %}
+                  </ul>
+                {% endif %}
+                {% if block.settings.show_variant_picker %}
+                  <div class="velin-pdp__variant-picker">
+                    {% if color_coll != blank %}
+                      <div class="velin-pdp__variant-group">
+                        <select data-color-nav id="velin-color-nav-{{ block.id }}" aria-label="{{ section.settings.color_label }}">
+                          {% for p in color_coll.products %}
+                            {%- assign p_color = '' -%}
+                            {%- for opt in p.options_with_values -%}
+                              {%- assign od = opt.name | downcase -%}
+                              {%- if od == section.settings.color_option_name or od == 'couleur' or od == 'color' -%}
+                                {%- assign p_color = opt.values | first -%}
+                              {%- endif -%}
+                            {%- endfor -%}
+                            {%- if p_color == '' -%}{%- assign p_color = p.title -%}{%- endif -%}
+                            <option value="{{ p.url }}" {% if p.id == product.id %}selected{% endif %}>{{ p_color }}</option>
+                          {% endfor %}
+                        </select>
+                        <label for="velin-color-nav-{{ block.id }}" class="velin-pdp__variant-label">{{ section.settings.color_label | upcase }}</label>
+                      </div>
+                    {% elsif color_option_index >= 0 %}
+                      <div class="velin-pdp__variant-group">
+                        <select data-color-select id="velin-color-select-{{ block.id }}" aria-label="{{ section.settings.color_label }}">
+                          {% for value in color_option.values %}
+                            <option value="{{ value | escape }}" {% if value == color_option.selected_value %}selected{% endif %}>{{ value }}</option>
+                          {% endfor %}
+                        </select>
+                        <label for="velin-color-select-{{ block.id }}" class="velin-pdp__variant-label">{{ section.settings.color_label | upcase }}</label>
+                      </div>
+                    {% endif %}
+                    {% if size_option_index >= 0 %}
+                      <div class="velin-pdp__variant-group">
+                        <select data-size-select id="velin-size-select-{{ block.id }}" aria-label="{{ section.settings.size_label }}">
+                          {% for value in size_option.values %}
+                            <option value="{{ value | escape }}" {% if value == size_option.selected_value %}selected{% endif %}>{{ value }}</option>
+                          {% endfor %}
+                        </select>
+                        <label for="velin-size-select-{{ block.id }}" class="velin-pdp__variant-label">{{ section.settings.size_label | upcase }}</label>
+                      </div>
+                    {% endif %}
+                  </div>
+                {% endif %}
+              </div>
+            </label>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {%- comment -%} ---------- Free shipping line ---------- {%- endcomment -%}
+    {% if section.settings.show_free_shipping and section.settings.free_shipping_text != blank %}
+      <div class="velin-pdp__free-shipping" data-free-shipping>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M2 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7Z" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M14 10h3.3a1 1 0 0 1 .8.4l2.4 3.2a1 1 0 0 1 .2.6V16a1 1 0 0 1-1 1H14v-7Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+          <circle cx="7" cy="18" r="1.6" stroke="currentColor" stroke-width="1.6"/>
+          <circle cx="17.5" cy="18" r="1.6" stroke="currentColor" stroke-width="1.6"/>
+        </svg>
+        <span>{{ section.settings.free_shipping_text }}</span>
+      </div>
+    {% endif %}
+
+    {%- comment -%} ---------- Add to cart ---------- {%- endcomment -%}
+    {%- form 'product', product, id: 'VelinPDPForm' -%}
+      <input type="hidden" name="items[0][id]" value="{{ product.selected_or_first_available_variant.id }}" data-variant-id>
+      <input type="hidden" name="items[0][quantity]" value="1" data-qty-input>
+      <button
+        type="submit"
+        class="velin-pdp__atc"
+        style="background: {{ section.settings.atc_bg }}; color: {{ section.settings.atc_color }};"
+        data-atc-text="{{ section.settings.atc_text | escape }}"
+        data-sold-out-text="{{ 'products.product.sold_out' | t | escape }}"
+        {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %}
+      >
+        {% if product.selected_or_first_available_variant.available %}{{ section.settings.atc_text }}{% else %}{{ 'products.product.sold_out' | t }}{% endif %}
+      </button>
+    {%- endform -%}
+
+    {%- comment -%} ---------- Stock bar ---------- {%- endcomment -%}
+    {% if section.settings.show_stock %}
+      <div class="velin-pdp__stock">
+        <p class="velin-pdp__stock-title">{{ section.settings.stock_title }}</p>
+        <p class="velin-pdp__stock-sub">{{ section.settings.stock_sub }}</p>
+        <div class="velin-pdp__stock-bar">
+          <div class="velin-pdp__stock-fill" style="width: {{ section.settings.sold_percent }}%; background: {{ section.settings.stock_bar_color }};"></div>
+        </div>
+        <div class="velin-pdp__stock-row">
+          <span class="velin-pdp__stock-sold">{{ section.settings.sold_percent }} % {{ section.settings.sold_label }}</span>
+          <span>{{ section.settings.countdown_label }} <span data-countdown data-hours="{{ section.settings.countdown_hours }}">--:--:--</span></span>
+        </div>
+      </div>
+    {% endif %}
+
+    {%- comment -%} ---------- Guarantee ---------- {%- endcomment -%}
+    {%- comment -%} ---------- Trust strip (3 icons) — used when trust_item_* are set ---------- {%- endcomment -%}
+    {% if section.settings.trust_item_1 != blank or section.settings.trust_item_2 != blank or section.settings.trust_item_3 != blank %}
+      <div class="velin-pdp__trust-strip">
+        {% if section.settings.trust_item_1 != blank %}
+          <div class="velin-pdp__trust-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2"></rect><path d="M3 9.5h18"></path><path d="M8 2.5v4M16 2.5v4"></path><path d="M12 12.8c-1.4-1.4-3.6-1-3.6 1 0 1.6 1.8 2.9 3.6 4.4 1.8-1.5 3.6-2.8 3.6-4.4 0-2-2.2-2.4-3.6-1Z"></path></svg>
+            <span>{{ section.settings.trust_item_1 }}</span>
+          </div>
+        {% endif %}
+        {% if section.settings.trust_item_2 != blank %}
+          <div class="velin-pdp__trust-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5V8Z"></path><path d="M3 8l9 5 9-5"></path><path d="M12 13v8"></path></svg>
+            <span>{{ section.settings.trust_item_2 }}</span>
+          </div>
+        {% endif %}
+        {% if section.settings.trust_item_3 != blank %}
+          <div class="velin-pdp__trust-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5"></path><path d="M2 18v2M22 18v2"></path><path d="M4 11V8a2 2 0 0 1 2-2h5a2 2 0 0 1 2 2v3"></path><path d="M13 11V9.5a1.5 1.5 0 0 1 1.5-1.5H18a2 2 0 0 1 2 2v1"></path></svg>
+            <span>{{ section.settings.trust_item_3 }}</span>
+          </div>
+        {% endif %}
+      </div>
+    {% elsif section.settings.guarantee_heading != blank %}
+      <div class="velin-pdp__guarantee">
+        <div class="velin-pdp__guarantee-head">
+          {% if section.settings.guarantee_image != blank %}
+            <img src="{{ section.settings.guarantee_image | image_url: width: 80 }}" alt="">
+          {% endif %}
+          <span>{{ section.settings.guarantee_heading }}</span>
+        </div>
+        {% if section.settings.guarantee_text != blank %}
+          <p>{{ section.settings.guarantee_text }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {%- comment -%} ---------- Approved videos ---------- {%- endcomment -%}
+
+{%- assign has_videos = false -%}
+{% for block in section.blocks %}
+  {% if block.type == 'video_thumb' %}
+    {% assign has_videos = true %}
+  {% endif %}
+{% endfor %}
+
+{% if has_videos %}
+  <div class="velin-pdp__approved">
+
+    {% if section.settings.approved_heading != blank %}
+      <p class="velin-pdp__approved-heading">
+        {{ section.settings.approved_heading }}
+      </p>
+    {% endif %}
+
+    <div class="velin-pdp__approved-wrap">
+  <button type="button" class="velin-pdp__approved-arrow velin-pdp__approved-arrow--prev" data-approved-prev aria-label="Previous">
+    <svg width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M7 1L1 7L7 13" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+
+  <div class="velin-pdp__approved-grid" style="gap: {{ section.settings.video_gap }}px;">
+{% for block in section.blocks %}
+  {% if block.type == 'video_thumb' %}
+
+    <div class="velin-pdp__approved-item" style="width: {{ section.settings.video_card_width }}px; height: {{ section.settings.video_card_height }}px;" {{ block.shopify_attributes }}>
+
+      <div class="velin-video-card" data-lazy-video-card>
+
+        {%- comment -%}
+          Lightweight poster shown immediately; the real <video> (with its
+          multi-MB source) stays inert inside a <template> — never fetched by
+          the browser — until this card is scrolled near the viewport. See
+          the IntersectionObserver below.
+        {%- endcomment -%}
+        <img class="velin-video-poster" src="{{ block.settings.video.preview_image | image_url: width: 400 }}" alt="" loading="lazy">
+
+        <template data-lazy-video-template>
+          {{
+            block.settings.video
+            | video_tag:
+            image_size: '400x',
+            autoplay: false,
+            loop: false,
+            controls: false,
+            muted: false,
+            playsinline: true,
+            preload: 'metadata',
+            class: 'velin-video'
+          }}
+        </template>
+
+        <button type="button" class="velin-video-play">
+          <svg width="10" height="12" viewBox="0 0 10 12" fill="none">
+            <path d="M10 6L0 12V0L10 6Z" fill="#000"/>
+          </svg>
+        </button>
+
+      </div>
+
+    </div>
+
+  {% endif %}
+{% endfor %}
+
+  </div>
+
+  <button type="button" class="velin-pdp__approved-arrow velin-pdp__approved-arrow--next" data-approved-next aria-label="Next">
+    <svg width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M1 1L7 7L1 13" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  </div>
+
+  </div>
+{% endif %}
+
+    {%- comment -%} ---------- FAQ ---------- {%- endcomment -%}
+    {%- assign has_faq = false -%}
+    {% for block in section.blocks %}{% if block.type == 'faq_item' %}{% assign has_faq = true %}{% endif %}{% endfor %}
+    {%- assign show_description_faq = false -%}
+    {% if section.settings.show_description_faq and product.description != blank %}{% assign show_description_faq = true %}{% endif %}
+    {% if has_faq or show_description_faq %}
+      <div class="velin-faq">
+        {% if show_description_faq %}
+          <div class="velin-faq__item" data-faq-default-open>
+            <button type="button" class="velin-faq__row" data-faq-toggle>
+              <p class="velin-faq__question">{{ section.settings.description_faq_label }}</p>
+              <span class="velin-faq__plus" data-faq-plus></span>
+            </button>
+            <div class="velin-faq__divider"></div>
+            <div class="velin-faq__answer" data-faq-answer>
+              <div class="velin-faq__answer-inner">
+                {{ product.description }}
+              </div>
+            </div>
+          </div>
+        {% endif %}
+        {% for block in section.blocks %}
+          {% if block.type == 'faq_item' %}
+            <div class="velin-faq__item" {{ block.shopify_attributes }}>
+              <button type="button" class="velin-faq__row" data-faq-toggle>
+                <p class="velin-faq__question">{{ block.settings.question }}</p>
+                <span class="velin-faq__plus" data-faq-plus></span>
+              </button>
+              <div class="velin-faq__divider"></div>
+              <div class="velin-faq__answer" data-faq-answer>
+                <div class="velin-faq__answer-inner">
+                  {{ block.settings.answer }}
+                </div>
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+  </div>
+
+  <script type="application/json" data-pdp-product>{{ product | json }}</script>
+  <script type="application/json" data-pdp-color-media>{{ color_media_map }}</script>
+</div>
+
+<div class="velin-pdp__sticky-atc" data-sticky-atc>
+  <div class="velin-pdp__sticky-atc-inner">
+    <div class="velin-pdp__sticky-atc-info">
+      {%- if product.featured_image -%}
+        <img class="velin-pdp__sticky-atc-image" src="{{ product.featured_image | image_url: width: 100 }}" alt="" loading="lazy">
+      {%- endif -%}
+      <div class="velin-pdp__sticky-atc-text">
+        <p class="velin-pdp__sticky-atc-title">{{ product.title }}</p>
+        <p class="velin-pdp__sticky-atc-price" data-sticky-atc-price>{{ product.selected_or_first_available_variant.price | money }}</p>
+      </div>
+    </div>
+    <button
+      type="button"
+      class="velin-pdp__sticky-atc-btn"
+      data-sticky-atc-btn
+      style="background: {{ section.settings.atc_bg }}; color: {{ section.settings.atc_color }};"
+    >{{ section.settings.atc_text }}</button>
+  </div>
+</div>
+
+<style>
+  .velin-pdp {
+    max-width: 1445px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    display: flex;
+    align-items: flex-start;
+    font-family: 'Merriweather', serif;
+    color: #000;
+    padding-top: 24px !important;
+    padding-bottom: 24px !important;
+  }
+
+  .velin-pdp__media {
+    flex: 0 0 auto;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 20px;
+  }
+
+  .velin-pdp__main-image {
+    position: relative;
+    width: 100%;
+    max-height: 72vh;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .velin-pdp__main-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  .velin-pdp__main-image img[hidden] {
+    display: none;
+  }
+
+  .velin-pdp__main-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .velin-pdp__main-video[hidden] {
+    display: none;
+  }
+
+  .velin-pdp__main-video-el {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    border: none;
+  }
+
+  .velin-pdp__thumb-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+
+  .velin-pdp__main-image.is-sold-out img {
+    filter: grayscale(70%);
+    opacity: 0.75;
+  }
+
+  .velin-pdp__sold-out-badge {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    z-index: 1;
+    background: #1a1a1a;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 4px;
+  }
+
+  .velin-pdp__thumbs {
+    display: flex;
+    overflow-x: auto;
+  }
+
+  .velin-pdp__thumb {
+    position: relative;
+    flex: 0 0 auto;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+    border: none;
+    padding: 0;
+    background: #fff;
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 2px 2px 6.5px 0px #00000040;
+  }
+
+  .velin-pdp__thumb.is-active {
+    outline: 2px solid {{ section.settings.accent_color }};
+  }
+
+  .velin-pdp__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .velin-pdp__info {
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .velin-pdp__badge {
+    width: fit-content;
+    min-width: 506px;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-family: 'Lusitana', serif;
+    font-weight: 400;
+    line-height: 100%;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .velin-pdp__social {
+    display: flex;
+    align-items: center;
+    gap: 17px;
+  }
+
+  .velin-pdp__avatars {
+    display: inline-flex;
+  }
+
+  .velin-pdp__avatars img {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+    margin-left: -8px;
+  }
+
+  .velin-pdp__avatars img:first-child {
+    margin-left: 0;
+  }
+
+  .velin-pdp__social-text {
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 100%;
+    font-variant: small-caps;
+  }
+
+  .velin-pdp__title-price-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .velin-pdp__title {
+    font-family: 'Lusitana', serif;
+    font-weight: 400;
+    line-height: 100%;
+    text-transform: uppercase;
+    margin: 0;
+  }
+
+  .velin-pdp__price-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .velin-pdp__launch-badge {
+    display: inline-block;
+    align-self: flex-start;
+    width: fit-content;
+    margin: 8px 0 0;
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    line-height: 100%;
+    white-space: nowrap;
+  }
+
+  .velin-pdp__free-shipping {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+    font-family: 'Merriweather', serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #1a1a1a;
+    text-align: center;
+  }
+
+  .velin-pdp__free-shipping svg {
+    flex: 0 0 auto;
+    color: {{ section.settings.accent_color }};
+  }
+
+  .velin-pdp__compare {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 100%;
+  }
+
+  .velin-pdp__price {
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 100%;
+    text-transform: uppercase;
+  }
+
+  .velin-pdp__installments {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 10px;
+    font-size: 14px;
+    line-height: 100%;
+    text-transform: capitalize;
+    max-width: 100%;
+  }
+
+  .velin-pdp__installments-text {
+    white-space: nowrap;
+  }
+
+  .velin-pdp__installments img {
+    height: 18px;
+    width: auto;
+    flex-shrink: 0;
+  }
+
+  .velin-pdp__klarna {
+    flex-shrink: 0;
+    display: block;
+  }
+
+  .velin-pdp__chips {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .velin-pdp__chip {
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 16px 14px;
+    border-radius: 8px;
+    line-height: 100%;
+    text-transform: capitalize;
+    text-align: center;
+  }
+
+  .velin-pdp__colors {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .velin-pdp__colors-label {
+    margin: 0;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 100%;
+    text-transform: capitalize;
+  }
+
+  .velin-pdp__swatches {
+    display: flex;
+    gap: 4px;
+  }
+
+  .velin-pdp__swatch {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .velin-pdp__swatch.is-active {
+    outline: 2px solid {{ section.settings.accent_color }};
+    outline-offset: 2px;
+  }
+
+  /* Selected swatch shows a check mark */
+  .velin-pdp__swatch.is-active::after {
+    content: "\2713";
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.7);
+  }
+
+  .velin-pdp__sizes {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .velin-pdp__sizes-label {
+    margin: 0;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 100%;
+    text-transform: capitalize;
+  }
+
+  .velin-pdp__size-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .velin-pdp__size-pill {
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    background: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 100%;
+    cursor: pointer;
+  }
+
+  .velin-pdp__size-pill.is-active {
+    border-color: {{ section.settings.accent_color }};
+    background: {{ section.settings.accent_color }};
+    color: #fff;
+  }
+
+  .velin-pdp__offers {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: -10px;
+  }
+
+  {% comment %} Tightens the gap around whatever the Unlimited Bundles app injects between the offer box and the add-to-cart button {% endcomment %}
+  .velin-pdp__offers ~ form .velin-pdp__atc {
+    margin-top: -10px;
+  }
+
+  .velin-pdp__offer {
+    display: block;
+    max-width: 506px;
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    box-sizing: border-box;
+  }
+
+  .velin-pdp__offer.is-selected {
+    border-color: {{ section.settings.accent_color }};
+    border-width: 1.5px;
+  }
+
+  .velin-pdp__offer input {
+    display: none;
+  }
+
+  .velin-pdp__offer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .velin-pdp__offer-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 100%;
+    text-transform: capitalize;
+  }
+
+  .velin-pdp__offer-dot {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    display: inline-block;
+    background: transparent;
+  }
+
+  .velin-pdp__offer.is-selected .velin-pdp__offer-dot {
+    background: var(--velin-selected-color, {{ section.settings.accent_color_soft }});
+    border-color: {{ section.settings.accent_color }};
+  }
+
+  .velin-pdp__offer-price {
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 100%;
+  }
+
+  .velin-pdp__offer-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: {{ section.settings.accent_color }};
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    line-height: 1.6;
+    text-transform: uppercase;
+  }
+
+  /* Left edge lines up under the "1" of "1 Sac" (25px dot + 10px gap);
+     right edge lines up under the price above (full-width space-between). */
+  .velin-pdp__offer-sub {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    padding-left: 35px;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 100%;
+    text-transform: capitalize;
+    color: rgba(0, 0, 0, 0.7);
+  }
+
+  /* Perks start under the "2" of "2 Sac", same 35px inset as the sub-row */
+  .velin-pdp__offer-perks {
+    margin: 10px 0 0;
+    padding-left: 35px;
+    list-style-position: inside;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .velin-pdp__variant-picker {
+    margin-top: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 20px;
+  }
+
+  .velin-pdp__variant-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .velin-pdp__variant-picker select {
+    width: 92px;
+    height: 40px;
+    border-radius: 6px;
+    border: 0.5px solid #00000099;
+    padding: 10px 12px;
+    font-family: 'Merriweather', serif;
+    font-weight: 500;
+    font-size: 16px;
+    text-transform: capitalize;
+    color: {{ section.settings.accent_color_soft }};
+    background: #fff;
+    cursor: pointer;
+  }
+
+  .velin-pdp__variant-label {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: rgba(0, 0, 0, 0.6);
+    cursor: pointer;
+  }
+
+  .velin-pdp__atc {
+    width: 100%;
+    max-width: 506px;
+    border: none;
+    padding: 16px;
+    border-radius: 6px;
+    font-family: 'Merriweather', serif;
+    font-size: 14px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .velin-pdp__atc:hover {
+    opacity: 0.9;
+  }
+
+  .velin-pdp__atc[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .velin-pdp__sticky-atc {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 400;
+    background: #ffffff;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+    transform: translateY(100%);
+    transition: transform 0.25s ease;
+  }
+
+  .velin-pdp__sticky-atc.is-visible {
+    transform: translateY(0);
+  }
+
+  .velin-pdp__sticky-atc-inner {
+    max-width: 1445px;
+    margin: 0 auto;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .velin-pdp__sticky-atc-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
+
+  .velin-pdp__sticky-atc-image {
+    width: 44px;
+    height: 44px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex: 0 0 auto;
+  }
+
+  .velin-pdp__sticky-atc-text {
+    min-width: 0;
+  }
+
+  .velin-pdp__sticky-atc-title {
+    margin: 0;
+    font-family: 'Merriweather', serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #000;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .velin-pdp__sticky-atc-price {
+    margin: 2px 0 0;
+    font-family: 'Merriweather', serif;
+    font-size: 13px;
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  .velin-pdp__sticky-atc-btn {
+    flex: 0 0 auto;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 6px;
+    font-family: 'Merriweather', serif;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.2s ease;
+  }
+
+  .velin-pdp__sticky-atc-btn:hover {
+    opacity: 0.9;
+  }
+
+  @media (max-width: 749px) {
+    .velin-pdp__sticky-atc-title {
+      display: none;
+    }
+
+    .velin-pdp__sticky-atc-btn {
+      flex: 1 1 auto;
+      text-align: center;
+    }
+
+    .velin-pdp__chip {
+      padding: 10px 8px !important;
+      font-size: 12px !important;
+    }
+  }
+
+  .velin-pdp__stock {
+    max-width: 506px;
+  }
+
+  .velin-pdp__stock-title {
+    margin: 0 0 4px;
+    font-weight: 700;
+    font-size: 15px;
+  }
+
+  .velin-pdp__stock-sub {
+    margin: 0 0 10px;
+    font-size: 13px;
+    color: rgba(0, 0, 0, 0.7);
+  }
+
+  .velin-pdp__stock-bar {
+    height: 8px;
+    border-radius: 4px;
+    background: #e7e2dc;
+    overflow: hidden;
+  }
+
+  .velin-pdp__stock-fill {
+    height: 100%;
+    border-radius: 4px;
+  }
+
+  .velin-pdp__stock-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.7);
+  }
+
+  .velin-pdp__stock-sold {
+    font-weight: 700;
+    color: #000;
+  }
+
+  .velin-pdp__guarantee {
+    max-width: 506px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    padding: 18px 20px;
+    background: #fbfbfb;
+  }
+
+  .velin-pdp__guarantee-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 8px;
+  }
+
+  .velin-pdp__guarantee-head img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+  }
+
+  .velin-pdp__guarantee p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .velin-pdp__trust-strip {
+    max-width: 506px;
+    border-radius: 16px;
+    padding: 18px 20px;
+    background: #F5F6FA;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px 20px;
+  }
+
+  .velin-pdp__trust-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1 1 auto;
+  }
+
+  .velin-pdp__trust-item svg {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    color: {{ section.settings.accent_color }};
+  }
+
+  .velin-pdp__trust-item span {
+    margin: 0;
+    font-family: 'Merriweather', serif;
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 1.35;
+  }
+
+  .velin-pdp__included-gifts {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .velin-pdp__included-gift {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    max-width: 506px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    padding: 12px 16px;
+    background: #fbfbfb;
+  }
+
+  .velin-pdp__included-gift-img {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex: 0 0 auto;
+    background: #fff;
+  }
+
+  .velin-pdp__included-gift-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .velin-pdp__included-gift-title {
+    margin: 0;
+    font-weight: 700;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .velin-pdp__included-gift-tag {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #fff;
+    background: {{ section.settings.accent_color }};
+    border-radius: 4px;
+    padding: 2px 7px;
+  }
+
+  .velin-pdp__included-gift-desc {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: rgba(0, 0, 0, 0.7);
+  }
+
+  .velin-pdp__approved{
+    width:100%;
+    max-width:611px;
+    display:flex;
+    flex-direction:column;
+    gap:46px;
+}
+
+.velin-pdp__approved-heading{
+    margin:0;
+    width:275px;
+    height:20px;
+    font-family:'Merriweather',serif;
+    font-size:16px;
+    font-weight:500;
+    line-height:100%;
+    color:#000;
+    text-align:center;
+    align-self:center;
+}
+
+.velin-pdp__approved-wrap{
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.velin-pdp__approved-grid{
+    width:100%;
+    display:flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.velin-pdp__approved-grid::-webkit-scrollbar {
+    display: none;
+}
+
+.velin-pdp__approved-arrow{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.velin-pdp__approved-arrow--prev{
+    left: -14px;
+}
+
+.velin-pdp__approved-arrow--next{
+    right: -14px;
+}
+
+.velin-pdp__approved-item{
+    overflow:hidden;
+    border-radius:6px;
+    flex:0 0 auto;
+    scroll-snap-align: start;
+}
+
+.velin-pdp__approved-item video{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+    border-radius:6px;
+}
+.velin-pdp__approved-item {
+  position: relative;
+}
+
+.velin-video-card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.velin-video-card video,
+.velin-video-poster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.velin-video-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.velin-video-play.is-playing {
+  display: none;
+}
+.velin-faq{
+  width: 100%;
+  max-width: 505px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.velin-faq__item{
+  display: flex;
+  flex-direction: column;
+}
+
+.velin-faq__row{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 24px;
+  padding: 0 0 12px 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.velin-faq__question{
+  margin: 0;
+  max-width: 448px;
+  font-family: 'Merriweather', serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 100%;
+  text-transform: capitalize;
+  color: #000;
+}
+
+.velin-faq__plus{
+  position: relative;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+}
+
+.velin-faq__plus::before,
+.velin-faq__plus::after{
+  content: '';
+  position: absolute;
+  background: #000;
+}
+
+.velin-faq__plus::before{
+  width: 14px;
+  height: 2px;
+  top: 11px;
+  left: 5px;
+}
+
+.velin-faq__plus::after{
+  width: 2px;
+  height: 14px;
+  top: 5px;
+  left: 11px;
+  transition: opacity 0.2s ease;
+}
+
+.velin-faq__item.is-open .velin-faq__plus::after{
+  opacity: 0;
+}
+
+.velin-faq__divider{
+  width: 100%;
+  height: 0;
+  border-top: 0.3px solid #000;
+}
+
+.velin-faq__answer{
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.velin-faq__answer-inner{
+  padding: 16px 0 0;
+  font-family: 'Merriweather', serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(0, 0, 0, 0.7);
+}
+  @media screen and (max-width: 1100px) {
+    .velin-pdp {
+      flex-direction: column;
+      padding-top: 16px !important;
+      padding-right: 20px !important;
+      padding-bottom: 20px !important;
+      padding-left: 20px !important;
+      gap: 32px !important;
+    }
+
+    .velin-pdp__launch-badge {
+      white-space: normal;
+      max-width: 100%;
+    }
+
+    .velin-pdp__media {
+      position: static;
+      width: 100% !important;
+    }
+
+    .velin-pdp__main-image {
+      height: auto !important;
+      aspect-ratio: 1 / 1;
+      max-height: 85vh;
+    }
+
+    .velin-pdp__info {
+      width: 100% !important;
+    }
+
+    .velin-pdp__badge {
+      min-width: 0;
+      width: 100%;
+    }
+
+    .velin-pdp__installments {
+      flex-wrap: wrap;
+    }
+
+    .velin-pdp__installments-text {
+      white-space: normal;
+    }
+  }
+</style>
+
+<script>
+  (function () {
+    var root = document.getElementById("VelinPDP-{{ section.id }}");
+    if (!root) return;
+
+    var productData = JSON.parse(root.querySelector("[data-pdp-product]").textContent);
+    var colorMediaEl = root.querySelector("[data-pdp-color-media]");
+    var colorMedia = colorMediaEl ? JSON.parse(colorMediaEl.textContent) : {};
+    var colorIndex = {{ color_option_index }};
+    var sizeIndex = {{ size_option_index }};
+    var variantInput = root.querySelector("[data-variant-id]");
+    var qtyInput = root.querySelector("[data-qty-input]");
+    var priceEl = document.getElementById("VelinPDPPrice-{{ section.id }}");
+    var installmentEl = document.getElementById("VelinPDPInstallment-{{ section.id }}");
+    var installmentCount = {{ velin_installment_count | default: 3 }};
+    var mainImg = document.getElementById("VelinPDPMainImg-{{ section.id }}");
+    var mainVideo = document.getElementById("VelinPDPMainVideo-{{ section.id }}");
+    var thumbsRow = root.querySelector(".velin-pdp__thumbs");
+    var submitBtn = root.querySelector(".velin-pdp__atc");
+    var mainImageWrap = root.querySelector(".velin-pdp__main-image");
+    var stickyAtc = document.querySelector("[data-sticky-atc]");
+    var stickyAtcPrice = stickyAtc ? stickyAtc.querySelector("[data-sticky-atc-price]") : null;
+
+    // Places the free-shipping line immediately above the add-to-cart button.
+    // One-shot (immediate + a single delayed retry in case the Unlimited
+    // Bundles widget inserts itself slightly later) — deliberately NOT an
+    // ongoing MutationObserver, since that previously fought with the app's
+    // own DOM-watching logic and caused it to render its widget twice.
+    if (submitBtn) {
+      var freeShippingEl = document.querySelector("[data-free-shipping]");
+      if (freeShippingEl) {
+        var placeFreeShipping = function () {
+          if (submitBtn.previousElementSibling !== freeShippingEl) {
+            submitBtn.parentNode.insertBefore(freeShippingEl, submitBtn);
+          }
+        };
+        placeFreeShipping();
+        setTimeout(placeFreeShipping, 800);
+      }
+
+      // Moves the free-shipping line + Add to cart button below the
+      // Unlimited Bundles widget, so the bundle picker is the first thing
+      // shown and this pair sits just above the guarantee card. Same
+      // one-shot-with-retries approach as above (no persistent observer),
+      // run later since the bundle widget injects itself after the app's
+      // own delayed render.
+      var guaranteeEl = root.querySelector(".velin-pdp__trust-strip, .velin-pdp__guarantee");
+      var buyForm = submitBtn.closest("form");
+      if (guaranteeEl && buyForm) {
+        var placeBuyBoxAboveGuarantee = function () {
+          var parent = guaranteeEl.parentNode;
+          if (freeShippingEl && freeShippingEl.nextElementSibling !== guaranteeEl) {
+            parent.insertBefore(freeShippingEl, guaranteeEl);
+          }
+          if (buyForm.nextElementSibling !== guaranteeEl) {
+            parent.insertBefore(buyForm, guaranteeEl);
+          }
+          // Cancels out the bundle widget's own bottom spacing so this
+          // block sits close under it instead of leaving a large gap.
+          if (freeShippingEl) freeShippingEl.style.marginTop = "-40px";
+        };
+        setTimeout(placeBuyBoxAboveGuarantee, 800);
+        setTimeout(placeBuyBoxAboveGuarantee, 1800);
+      }
+    }
+
+    function setAvailability(available) {
+      if (submitBtn) {
+        submitBtn.disabled = !available;
+        submitBtn.textContent = available
+          ? submitBtn.getAttribute("data-atc-text")
+          : submitBtn.getAttribute("data-sold-out-text");
+      }
+      if (!mainImageWrap) return;
+      mainImageWrap.classList.toggle("is-sold-out", !available);
+      var badge = mainImageWrap.querySelector(".velin-pdp__sold-out-badge");
+      if (!available && !badge) {
+        badge = document.createElement("span");
+        badge.className = "velin-pdp__sold-out-badge";
+        badge.textContent = submitBtn ? submitBtn.getAttribute("data-sold-out-text") : "";
+        mainImageWrap.insertBefore(badge, mainImageWrap.firstChild);
+      } else if (available && badge) {
+        badge.remove();
+      }
+    }
+
+    // Thumbnails
+    // Stops/clears any playing video and shows the plain image again.
+    function showMainImage(src) {
+      if (mainVideo) {
+        mainVideo.innerHTML = "";
+        mainVideo.hidden = true;
+      }
+      if (mainImg) {
+        mainImg.hidden = false;
+        mainImg.src = src;
+      }
+    }
+
+    // Clones the hidden <template> for this media id into the video slot.
+    function showMainVideo(mediaId) {
+      var template = root.querySelector('[data-pdp-video-template="' + mediaId + '"]');
+      if (!mainVideo || !template) return;
+      mainVideo.innerHTML = "";
+      mainVideo.appendChild(template.content.cloneNode(true));
+      mainVideo.hidden = false;
+      if (mainImg) mainImg.hidden = true;
+    }
+
+    function bindThumb(thumb) {
+      thumb.addEventListener("click", function () {
+        root.querySelectorAll(".velin-pdp__thumb").forEach(function (t) { t.classList.remove("is-active"); });
+        thumb.classList.add("is-active");
+        var videoId = thumb.getAttribute("data-video-id");
+        if (videoId) {
+          showMainVideo(videoId);
+        } else {
+          showMainImage(thumb.getAttribute("data-full"));
+        }
+      });
+    }
+    root.querySelectorAll(".velin-pdp__thumb").forEach(bindThumb);
+
+    // Video thumbnails, captured once before any color-based rebuild, so they
+    // can be re-appended every time showColorMedia() replaces the strip with
+    // an images-only list (product.images excludes video by design — see
+    // showColorMedia below — but the video itself should stay reachable
+    // regardless of which color is selected).
+    var videoThumbSources = Array.prototype.slice.call(
+      root.querySelectorAll(".velin-pdp__thumb[data-video-id]")
+    );
+
+    // Inserts the video thumb(s) at the 3rd position (index 2) of the strip,
+    // falling back to the end if there aren't enough photos ahead of it yet.
+    function appendVideoThumbs() {
+      if (!thumbsRow) return;
+      var referenceNode = thumbsRow.children[2] || null;
+      videoThumbSources.forEach(function (source) {
+        var clone = source.cloneNode(true);
+        clone.classList.remove("is-active");
+        bindThumb(clone);
+        thumbsRow.insertBefore(clone, referenceNode);
+      });
+    }
+
+    // Swap the whole thumbnail strip to only this color's photos (matched by image alt text).
+    // product.images (and therefore this color grouping) never includes video/model media —
+    // that's a Shopify-level distinction, not something this theme filters — so the video
+    // thumbnails are re-appended afterwards to stay visible no matter which color is active.
+    function showColorMedia(value) {
+      var group = colorMedia[value];
+      if (!thumbsRow || !group || !group.length) return;
+      thumbsRow.innerHTML = "";
+      group.forEach(function (item, idx) {
+        var thumb = document.createElement("button");
+        thumb.type = "button";
+        thumb.className = "velin-pdp__thumb" + (idx === 0 ? " is-active" : "");
+        thumb.setAttribute("data-full", item.full);
+        thumb.setAttribute("aria-label", "Image " + (idx + 1));
+        var img = document.createElement("img");
+        img.src = item.thumb;
+        img.loading = "lazy";
+        thumb.appendChild(img);
+        bindThumb(thumb);
+        thumbsRow.appendChild(thumb);
+      });
+      appendVideoThumbs();
+      showMainImage(group[0].full);
+    }
+
+    function formatMoney(cents) {
+      return (cents / 100).toLocaleString("fr-FR", {
+        style: "currency",
+        currency: (window.Shopify && Shopify.currency ? Shopify.currency.active : "EUR")
+      });
+    }
+
+    // Color selection (swatches + selects stay in sync)
+    function selectColor(value) {
+      root.querySelectorAll(".velin-pdp__swatch").forEach(function (s) {
+        s.classList.toggle("is-active", s.getAttribute("data-color-value") === value);
+        if (s.getAttribute("data-color-value") === value) {
+          root.style.setProperty("--velin-selected-color", getComputedStyle(s).backgroundColor);
+        }
+      });
+      root.querySelectorAll("[data-color-select]").forEach(function (sel) { sel.value = value; });
+
+      if (colorIndex >= 0) {
+        var optionKey = "option" + (colorIndex + 1);
+        var sizeValueForColor = sizeIndex >= 0 ? getActiveSizeValue() : null;
+        var sizeKeyForColor = sizeIndex >= 0 ? "option" + (sizeIndex + 1) : null;
+        var variant = productData.variants.find(function (v) {
+          if (v[optionKey] !== value) return false;
+          if (sizeKeyForColor && sizeValueForColor && v[sizeKeyForColor] !== sizeValueForColor) return false;
+          return true;
+        });
+        if (variant && variantInput) {
+          variantInput.value = variant.id;
+          setAvailability(variant.available);
+          if (stickyAtcPrice) stickyAtcPrice.textContent = formatMoney(variant.price);
+          if (priceEl) priceEl.textContent = formatMoney(variant.price);
+          if (installmentEl) installmentEl.textContent = formatMoney(variant.price / installmentCount);
+var compareEl = root.querySelector(".velin-pdp__compare");
+
+if (compareEl) {
+  if (variant.compare_at_price > variant.price) {
+    compareEl.textContent = formatMoney(variant.compare_at_price);
+    compareEl.style.display = "";
+  } else {
+    compareEl.style.display = "none";
+  }
+}
+          // Offer boxes with automatic price follow the selected variant
+          root.querySelectorAll("[data-offer-live-price]").forEach(function (el) {
+            var qty = parseInt(el.getAttribute("data-offer-qty") || "1", 10);
+            el.textContent = formatMoney(variant.price * qty);
+          });
+
+          // Prefer this color's full photo set (grouped by image alt text); fall back to the single variant image
+          if (colorMedia[value] && colorMedia[value].length) {
+            showColorMedia(value);
+          } else if (mainImg && variant.featured_image && variant.featured_image.src) {
+            showMainImage(variant.featured_image.src);
+            root.querySelectorAll(".velin-pdp__thumb").forEach(function (t) { t.classList.remove("is-active"); });
+          }
+        }
+      }
+    }
+
+    // On phone, the photo sits above the color swatches in the stacked layout,
+    // so it's already out of view by the time someone scrolls down to tap a
+    // color — the photo does change, but nobody sees it happen. Scroll it back
+    // into view on selection so the color change is actually visible.
+    function scrollToMainImageOnMobile() {
+      if (mainImageWrap && window.matchMedia("(max-width: 749px)").matches) {
+        mainImageWrap.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+
+    root.querySelectorAll(".velin-pdp__swatch").forEach(function (swatch) {
+      swatch.addEventListener("click", function () {
+        selectColor(swatch.getAttribute("data-color-value"));
+        scrollToMainImageOnMobile();
+      });
+    });
+
+    root.querySelectorAll("[data-color-select]").forEach(function (sel) {
+      sel.addEventListener("change", function () {
+        selectColor(sel.value);
+        scrollToMainImageOnMobile();
+      });
+    });
+
+    // Collection mode: dropdown navigates to the chosen color's product page
+    root.querySelectorAll("[data-color-nav]").forEach(function (sel) {
+      sel.addEventListener("change", function () { window.location.href = sel.value; });
+    });
+
+    // On load, sync the dot, dropdown, and check mark to the selected color
+    var initialSwatch = root.querySelector(".velin-pdp__swatch.is-active") || root.querySelector(".velin-pdp__swatch");
+    if (initialSwatch) selectColor(initialSwatch.getAttribute("data-color-value"));
+
+    function getActiveSizeValue() {
+      var activePill = root.querySelector(".velin-pdp__size-pill.is-active");
+      return activePill ? activePill.getAttribute("data-size-value") : null;
+    }
+
+    function getActiveColorValue() {
+      var activeSwatch = root.querySelector(".velin-pdp__swatch.is-active");
+      return activeSwatch ? activeSwatch.getAttribute("data-color-value") : null;
+    }
+
+    // Size selection (pills stay in sync). Mirrors selectColor's variant-matching
+    // and price/availability side effects, combined with the active color when
+    // the product also has a color option.
+    function selectSize(value) {
+      root.querySelectorAll(".velin-pdp__size-pill").forEach(function (p) {
+        p.classList.toggle("is-active", p.getAttribute("data-size-value") === value);
+      });
+      root.querySelectorAll("[data-size-select]").forEach(function (sel) { sel.value = value; });
+
+      if (sizeIndex < 0) return;
+      var sizeKey = "option" + (sizeIndex + 1);
+      var colorValue = colorIndex >= 0 ? getActiveColorValue() : null;
+      var colorKey = colorIndex >= 0 ? "option" + (colorIndex + 1) : null;
+      var variant = productData.variants.find(function (v) {
+        if (v[sizeKey] !== value) return false;
+        if (colorKey && colorValue && v[colorKey] !== colorValue) return false;
+        return true;
+      });
+      if (!variant || !variantInput) return;
+
+      variantInput.value = variant.id;
+      setAvailability(variant.available);
+      if (stickyAtcPrice) stickyAtcPrice.textContent = formatMoney(variant.price);
+      if (priceEl) priceEl.textContent = formatMoney(variant.price);
+      if (installmentEl) installmentEl.textContent = formatMoney(variant.price / installmentCount);
+
+      var compareEl = root.querySelector(".velin-pdp__compare");
+      if (compareEl) {
+        if (variant.compare_at_price > variant.price) {
+          compareEl.textContent = formatMoney(variant.compare_at_price);
+          compareEl.style.display = "";
+        } else {
+          compareEl.style.display = "none";
+        }
+      }
+
+      root.querySelectorAll("[data-offer-live-price]").forEach(function (el) {
+        var qty = parseInt(el.getAttribute("data-offer-qty") || "1", 10);
+        el.textContent = formatMoney(variant.price * qty);
+      });
+
+      if (mainImg && variant.featured_image && variant.featured_image.src) {
+        showMainImage(variant.featured_image.src);
+        root.querySelectorAll(".velin-pdp__thumb").forEach(function (t) { t.classList.remove("is-active"); });
+      }
+    }
+
+    root.querySelectorAll(".velin-pdp__size-pill").forEach(function (pill) {
+      pill.addEventListener("click", function () {
+        selectSize(pill.getAttribute("data-size-value"));
+      });
+    });
+
+    root.querySelectorAll("[data-size-select]").forEach(function (sel) {
+      sel.addEventListener("change", function () { selectSize(sel.value); });
+    });
+
+    var initialSizePill = root.querySelector(".velin-pdp__size-pill.is-active") || root.querySelector(".velin-pdp__size-pill");
+    if (initialSizePill) selectSize(initialSizePill.getAttribute("data-size-value"));
+
+    // Offers → quantity
+    root.querySelectorAll("[data-offer]").forEach(function (offer) {
+      offer.addEventListener("click", function () {
+        root.querySelectorAll("[data-offer]").forEach(function (o) { o.classList.remove("is-selected"); });
+        offer.classList.add("is-selected");
+        if (qtyInput) qtyInput.value = offer.getAttribute("data-qty") || "1";
+      });
+    });
+    var initial = root.querySelector("[data-offer].is-selected");
+    if (initial && qtyInput) qtyInput.value = initial.getAttribute("data-qty") || "1";
+
+    // Countdown
+    var cd = root.querySelector("[data-countdown]");
+    if (cd) {
+      var remaining = parseFloat(cd.getAttribute("data-hours") || "18") * 3600;
+      setInterval(function () {
+        remaining = Math.max(0, remaining - 1);
+        var h = Math.floor(remaining / 3600);
+        var m = Math.floor((remaining % 3600) / 60);
+        var s = Math.floor(remaining % 60);
+        cd.textContent = String(h).padStart(2, "0") + ":" + String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+      }, 1000);
+    }
+    // FAQ accordion
+    var defaultOpenFaq = root.querySelector("[data-faq-default-open]");
+    if (defaultOpenFaq) {
+      var defaultOpenAnswer = defaultOpenFaq.querySelector("[data-faq-answer]");
+      defaultOpenFaq.classList.add("is-open");
+      if (defaultOpenAnswer) {
+        defaultOpenAnswer.style.maxHeight = defaultOpenAnswer.scrollHeight + "px";
+        // Images/fonts inside the answer can still be loading when the line above
+        // runs, locking max-height in at an under-measured value. Re-measure once
+        // everything has finished loading.
+        window.addEventListener("load", function () {
+          if (defaultOpenFaq.classList.contains("is-open")) {
+            defaultOpenAnswer.style.maxHeight = defaultOpenAnswer.scrollHeight + "px";
+          }
+        });
+      }
+    }
+
+    root.querySelectorAll("[data-faq-toggle]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var item = btn.closest(".velin-faq__item");
+        var answer = item.querySelector("[data-faq-answer]");
+        var isOpen = item.classList.contains("is-open");
+
+        root.querySelectorAll(".velin-faq__item").forEach(function (i) {
+          i.classList.remove("is-open");
+          i.querySelector("[data-faq-answer]").style.maxHeight = null;
+        });
+
+        if (!isOpen) {
+          item.classList.add("is-open");
+          answer.style.maxHeight = answer.scrollHeight + "px";
+        }
+      });
+    });
+    // Approved videos - prev/next arrows
+    root.querySelectorAll(".velin-pdp__approved-wrap").forEach(function (wrap) {
+      var grid = wrap.querySelector(".velin-pdp__approved-grid");
+      var prevBtn = wrap.querySelector("[data-approved-prev]");
+      var nextBtn = wrap.querySelector("[data-approved-next]");
+      if (!grid) return;
+      var firstItem = grid.querySelector(".velin-pdp__approved-item");
+      var scrollAmount = firstItem ? firstItem.offsetWidth + {{ section.settings.video_gap }} : 200;
+
+      if (prevBtn) {
+        prevBtn.addEventListener("click", function () {
+          grid.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+        });
+      }
+      if (nextBtn) {
+        nextBtn.addEventListener("click", function () {
+          grid.scrollBy({ left: scrollAmount, behavior: "smooth" });
+        });
+      }
+    });
+    // Approved videos — lazy load. Each card's real <video> (multi-MB source)
+    // sits inert inside a <template> — the browser never fetches it — until
+    // the card scrolls within ~400px of the viewport. Swaps in for the poster
+    // at that point; nothing changes visually until then.
+    function wireVideoCardClick(card) {
+      var video = card.querySelector("video");
+      var btn = card.querySelector(".velin-video-play");
+      if (!video || !btn) return;
+      card.addEventListener("click", function () {
+        if (video.paused) {
+          video.play();
+          btn.classList.add("is-playing");
+        } else {
+          video.pause();
+          btn.classList.remove("is-playing");
+        }
+      });
+    }
+
+    function loadLazyVideoCard(card) {
+      var template = card.querySelector("[data-lazy-video-template]");
+      var poster = card.querySelector(".velin-video-poster");
+      if (!template) return;
+      var videoNode = template.content.cloneNode(true);
+      if (poster) {
+        poster.replaceWith(videoNode);
+      } else {
+        card.insertBefore(videoNode, template);
+      }
+      template.remove();
+      wireVideoCardClick(card);
+    }
+
+    var lazyVideoCards = root.querySelectorAll("[data-lazy-video-card]");
+    if (lazyVideoCards.length) {
+      if ("IntersectionObserver" in window) {
+        var lazyVideoObserver = new IntersectionObserver(function (entries, observer) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              loadLazyVideoCard(entry.target);
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { rootMargin: "400px 0px", threshold: 0.01 });
+        lazyVideoCards.forEach(function (card) {
+          lazyVideoObserver.observe(card);
+        });
+      } else {
+        // No IntersectionObserver support — load everything immediately rather than never.
+        lazyVideoCards.forEach(loadLazyVideoCard);
+      }
+    }
+
+    // Sticky add-to-cart bar — shown once the main add-to-cart button scrolls above the viewport.
+    // Uses a plain scroll listener (rather than IntersectionObserver) so it reacts immediately
+    // on both mobile and desktop regardless of layout/column height differences.
+    if (stickyAtc && submitBtn) {
+      var stickyAtcTicking = false;
+      function updateStickyAtcVisibility() {
+        stickyAtcTicking = false;
+        var scrolledPast = submitBtn.getBoundingClientRect().bottom < 0;
+        stickyAtc.classList.toggle("is-visible", scrolledPast);
+      }
+      window.addEventListener("scroll", function () {
+        if (stickyAtcTicking) return;
+        stickyAtcTicking = true;
+        window.requestAnimationFrame(updateStickyAtcVisibility);
+      }, { passive: true });
+      window.addEventListener("resize", updateStickyAtcVisibility);
+      updateStickyAtcVisibility();
+    }
+
+    var stickyAtcBtn = stickyAtc ? stickyAtc.querySelector("[data-sticky-atc-btn]") : null;
+    if (stickyAtcBtn) {
+      stickyAtcBtn.addEventListener("click", function () {
+        var form = document.getElementById("VelinPDPForm");
+        if (!form) return;
+        if (form.requestSubmit) {
+          form.requestSubmit();
+        } else {
+          form.dispatchEvent(new Event("submit", { cancelable: true }));
+        }
+      });
+    }
+
+    // Add to cart via AJAX so it opens the sliding cart instead of navigating to /cart.
+    var atcForm = document.getElementById("VelinPDPForm");
+    if (atcForm) {
+      atcForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var submitBtn = atcForm.querySelector('[type="submit"]');
+        if (submitBtn) submitBtn.disabled = true;
+
+        fetch("/cart/add.js", {
+          method: "POST",
+          body: new FormData(atcForm),
+          headers: { Accept: "application/json" },
+        })
+          .then(function (res) {
+            if (!res.ok) throw new Error("Add to cart failed");
+            return fetch("/cart.js");
+          })
+          .then(function (res) { return res.json(); })
+          .then(function (cart) {
+            if (window.VelinCartDrawer) {
+              return window.VelinCartDrawer.refresh(cart).then(function () {
+                window.VelinCartDrawer.open();
+              });
+            }
+            document.querySelectorAll("[data-cart-count]").forEach(function (el) {
+              el.textContent = cart.item_count;
+              el.classList.toggle("is-empty", cart.item_count === 0);
+            });
+          })
+          .catch(function () {
+            atcForm.submit();
+          })
+          .finally(function () {
+            if (submitBtn) submitBtn.disabled = false;
+          });
+      });
+    }
+  })();
+</script>
+
+{%- comment -%}
+  Lazy-load the AirReviews review-carousel images (class "AirReviews-Carousel__Image").
+  That carousel is injected client-side by the AirReviews app itself — its markup
+  isn't part of this theme, so it can't be edited directly and none of its own
+  code is touched here. This only watches for its <img> tags appearing anywhere
+  on the page and defers each one's real download until it's about to scroll
+  into view, the same way the approved-videos carousel above already defers its
+  <video> sources. Purely additive: doesn't touch AirReviews or any other image.
+{%- endcomment -%}
+<script>
+  (function () {
+    var LAZY_CLASS = "AirReviews-Carousel__Image";
+    var ROOT_MARGIN = "500px 0px";
+    var FALLBACK_DELAY_MS = 8000;
+
+    if (!("IntersectionObserver" in window)) return; // let these images load normally
+
+    var pending = [];
+
+    var observer = new IntersectionObserver(function (entries, obs) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          restoreImage(entry.target);
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: ROOT_MARGIN, threshold: 0.01 });
+
+    function restoreImage(img) {
+      if (img.dataset.lazySrcset) {
+        img.setAttribute("srcset", img.dataset.lazySrcset);
+        delete img.dataset.lazySrcset;
+      }
+      if (img.dataset.lazySrc) {
+        img.setAttribute("src", img.dataset.lazySrc);
+        delete img.dataset.lazySrc;
+      }
+    }
+
+    function deferImage(img) {
+      if (img.dataset.lazyHandled) return;
+      var realSrc = img.getAttribute("src");
+      if (!realSrc || realSrc.indexOf("data:") === 0) return;
+      img.dataset.lazyHandled = "1";
+      img.dataset.lazySrc = realSrc;
+      img.removeAttribute("src");
+      var realSrcset = img.getAttribute("srcset");
+      if (realSrcset) {
+        img.dataset.lazySrcset = realSrcset;
+        img.removeAttribute("srcset");
+      }
+      if ("loading" in HTMLImageElement.prototype) img.loading = "lazy";
+      pending.push(img);
+      observer.observe(img);
+    }
+
+    function scan(node) {
+      if (node.nodeType !== 1) return;
+      if (node.classList && node.classList.contains(LAZY_CLASS)) deferImage(node);
+      if (node.querySelectorAll) {
+        node.querySelectorAll("." + LAZY_CLASS).forEach(deferImage);
+      }
+    }
+
+    document.querySelectorAll("." + LAZY_CLASS).forEach(deferImage);
+
+    var mo = new MutationObserver(function (mutations) {
+      mutations.forEach(function (m) {
+        m.addedNodes.forEach(scan);
+      });
+    });
+    mo.observe(document.documentElement, { childList: true, subtree: true });
+
+    // Safety net: if anything about the carousel prevents the observer from
+    // ever reporting an image as visible (e.g. it's revealed via a mechanism
+    // IntersectionObserver can't see), force-load whatever is still pending
+    // rather than leave a review photo permanently blank.
+    setTimeout(function () {
+      pending.forEach(function (img) {
+        if (img.dataset.lazySrc) {
+          observer.unobserve(img);
+          restoreImage(img);
+        }
+      });
+    }, FALLBACK_DELAY_MS);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Velin Product Page",
+  "settings": [
+    {
+      "type": "select",
+      "id": "header_style",
+      "label": "Header color (logo, text, icons) on this page",
+      "options": [
+        { "value": "auto", "label": "Automatic" },
+        { "value": "black", "label": "Black" },
+        { "value": "white", "label": "White" }
+      ],
+      "default": "auto"
+    },
+    { "type": "header", "content": "Layout" },
+    { "type": "color", "id": "bg_color", "label": "Background", "default": "#FFFFFF" },
+    { "type": "range", "id": "padding_v", "label": "Padding top/bottom (px)", "min": 0, "max": 150, "step": 5, "default": 80 },
+    { "type": "range", "id": "padding_h", "label": "Padding left/right (px)", "min": 0, "max": 150, "step": 5, "default": 100 },
+    { "type": "range", "id": "column_gap", "label": "Gap image/text (px)", "min": 20, "max": 200, "step": 2, "default": 122 },
+    { "type": "header", "content": "Images (left)" },
+    { "type": "range", "id": "media_width", "label": "Image column width (px)", "min": 300, "max": 800, "step": 5, "default": 610 },
+    { "type": "range", "id": "image_height", "label": "Main image height (px)", "min": 200, "max": 800, "step": 10, "default": 480 },
+    { "type": "color", "id": "image_bg", "label": "Image background", "default": "#F7F8F6" },
+    { "type": "range", "id": "media_gap", "label": "Gap image to thumbnails (px)", "min": 0, "max": 80, "step": 2, "default": 40 },
+    { "type": "range", "id": "thumbs_height", "label": "Thumbnails height (px)", "min": 60, "max": 200, "step": 5, "default": 105 },
+    { "type": "range", "id": "thumbs_gap", "label": "Gap between thumbnails (px)", "min": 0, "max": 60, "step": 1, "default": 21 },
+    { "type": "header", "content": "Text column (right)" },
+    { "type": "range", "id": "info_width", "label": "Text column width (px)", "min": 300, "max": 800, "step": 5, "default": 610 },
+    { "type": "range", "id": "info_gap", "label": "Gap between elements (px)", "min": 0, "max": 80, "step": 2, "default": 14 },
+    { "type": "header", "content": "Top badge" },
+    { "type": "text", "id": "badge_text", "label": "Badge text", "default": "Le sac iconique  Bag-off" },
+    { "type": "color", "id": "badge_bg", "label": "Badge background", "default": "#F7F7F7" },
+    { "type": "range", "id": "badge_size", "label": "Badge text size (px)", "min": 10, "max": 28, "step": 1, "default": 16 },
+    { "type": "header", "content": "Social proof" },
+    { "type": "image_picker", "id": "avatar_1", "label": "Avatar 1" },
+    { "type": "image_picker", "id": "avatar_2", "label": "Avatar 2" },
+    { "type": "image_picker", "id": "avatar_3", "label": "Avatar 3" },
+    { "type": "text", "id": "social_text", "label": "Social text", "default": "KIM  Et plus de 3000 clients nous ont  fait confiance" },
+    { "type": "header", "content": "Title & price" },
+    { "type": "range", "id": "title_size", "label": "Title size (px)", "min": 18, "max": 60, "step": 1, "default": 32 },
+    { "type": "color", "id": "compare_color", "label": "Old price color", "default": "#999999" },
+    {
+      "type": "text",
+      "id": "compare_text",
+      "label": "Old price (cut) text",
+      "info": "Product par compare-at price set ho toh woh automatic dikhti hai; warna yahan likhi price red cut hokar dikhegi. Khali = kuch nahi.",
+      "default": "€23 200,00"
+    },
+    {
+      "type": "text",
+      "id": "launch_offer_text",
+      "label": "Launch urgency text",
+      "info": "Small badge shown under the price. The current day's date (in French) is appended automatically — do not include a date here. Leave empty to hide the badge.",
+      "default": "Offre Promo Rentrée · Valable jusqu'au"
+    },
+    { "type": "color", "id": "launch_offer_bg", "label": "Launch urgency badge background", "default": "#705744" },
+    { "type": "color", "id": "launch_offer_color", "label": "Launch urgency badge text color", "default": "#ffffff" },
+    { "type": "header", "content": "Installments" },
+    { "type": "checkbox", "id": "show_installments", "label": "Show installment payment line", "default": false },
+    { "type": "range", "id": "installment_count", "label": "Number of installments", "min": 2, "max": 12, "step": 1, "default": 3, "info": "Amount shown is the current product price divided by this number." },
+    { "type": "range", "id": "payment_icon_size", "label": "Klarna badge height (px)", "min": 14, "max": 60, "step": 1, "default": 24 },
+    { "type": "header", "content": "Feature chips" },
+    { "type": "color", "id": "chip_bg", "label": "Chip background", "default": "#F7F7F7" },
+    { "type": "range", "id": "chip_size", "label": "Chip text size (px)", "min": 10, "max": 22, "step": 1, "default": 14 },
+    { "type": "range", "id": "chip_gap", "label": "Gap between chips (px)", "min": 0, "max": 40, "step": 2, "default": 16 },
+    { "type": "header", "content": "Colors" },
+    { "type": "text", "id": "color_label", "label": "Color label", "default": "Couleur" },
+    { "type": "text", "id": "color_option_name", "label": "Product option name (lowercase)", "default": "couleur" },
+    {
+      "type": "textarea",
+      "id": "color_map",
+      "label": "Color swatch map",
+      "info": "Har line par: Naam:#hex — e.g. Brun:#AA8870. Swatches product ke variants se automatic bante hain; yahan sirf naam ka rang set hota hai.",
+      "default": "Noir:#000000\nBrun:#AA8870\nVert:#026465\nBleu:#00475D\nRouge:#B3001B\nBeige:#D8C7B2\nBlanc:#FFFFFF\nGris:#8E8E8E\nRose:#E8B4C4\nMarron:#6B4A2F\nMarron clair:#A9876B\nCamel:#C19A6B\nTaupe:#8B7E74\nTaupe clair:#B0A69B\nGrège:#B7AC9C\nBlack:#000000\nBrown:#6B4A2F\nStone Grey:#C4BFB5\nStone Gray:#C4BFB5\nGray:#8E8E8E\nSilver:#C4BFB5\nIvoire:#F3EEE3\nBleu Glacier:#C6D2DC\nMarron Camel:#A9713E\nBeige Crème:#EFE3D0\nMarron Chocolat:#3B2216\nJaune Doré:#D4A017\nBlanc Cassé:#F2ECDF\nVert Citron:#C9D94A"
+    },
+    { "type": "header", "content": "Accent" },
+    { "type": "color", "id": "accent_color", "label": "Accent color", "info": "Used for active swatches/pills, selected offer border, badges and free-shipping icon.", "default": "#705744" },
+    { "type": "color", "id": "accent_color_soft", "label": "Accent color (soft)", "info": "Used for the offer dot fill and the variant-picker dropdown text.", "default": "#AA8870" },
+    { "type": "header", "content": "Sizes" },
+    { "type": "text", "id": "size_label", "label": "Size label", "default": "Taille" },
+    { "type": "text", "id": "size_option_name", "label": "Product option name (lowercase)", "default": "taille" },
+    { "type": "header", "content": "Add to cart" },
+    { "type": "checkbox", "id": "show_free_shipping", "label": "Show free shipping line above the button", "default": true },
+    { "type": "text", "id": "free_shipping_text", "label": "Free shipping text", "default": "Livraison gratuite" },
+    { "type": "text", "id": "atc_text", "label": "Button text", "default": "AJOUTER AU PANIER" },
+    { "type": "color", "id": "atc_bg", "label": "Button background", "default": "#705744" },
+    { "type": "color", "id": "atc_color", "label": "Button text color", "default": "#FFFFFF" },
+    { "type": "header", "content": "Stock bar" },
+    { "type": "checkbox", "id": "show_stock", "label": "Show stock bar", "default": true },
+    { "type": "text", "id": "stock_title", "label": "Stock title", "default": "Stock Limité" },
+    { "type": "text", "id": "stock_sub", "label": "Stock subtitle", "default": "Forte Demande, Quantités Limitées" },
+    { "type": "range", "id": "sold_percent", "label": "Sold percent", "min": 0, "max": 100, "step": 1, "default": 89 },
+    { "type": "text", "id": "sold_label", "label": "Sold label", "default": "Vendus" },
+    { "type": "color", "id": "stock_bar_color", "label": "Bar color", "default": "#705744" },
+    { "type": "text", "id": "countdown_label", "label": "Countdown label", "default": "Fin Dans" },
+    { "type": "range", "id": "countdown_hours", "label": "Countdown hours", "min": 1, "max": 72, "step": 1, "default": 18 },
+    { "type": "header", "content": "Trust strip (3 icons, overrides Guarantee below when set)" },
+    { "type": "text", "id": "trust_item_1", "label": "Item 1" },
+    { "type": "text", "id": "trust_item_2", "label": "Item 2" },
+    { "type": "text", "id": "trust_item_3", "label": "Item 3" },
+    { "type": "header", "content": "Guarantee" },
+    { "type": "image_picker", "id": "guarantee_image", "label": "Badge image" },
+    { "type": "text", "id": "guarantee_heading", "label": "Heading", "default": "Satisfait Ou  Remboursé Sous 30  Jours" },
+    { "type": "textarea", "id": "guarantee_text", "label": "Text", "default": "Achetez En Toute Confiance. Si Votre Sac En Cuir Ne Répond Pas À Vos Attentes En Matière De Qualité, De Fabrication Ou De Durabilité, Vous Pouvez Nous Le Retourner Sous 30 Jours Après La Livraison." },
+    { "type": "header", "content": "Approved videos" },
+   { "type": "text", "id": "approved_heading", "label": "Heading", "default": "Approuvé Par 100  000+ Passionnés" },
+{ "type": "range", "id": "video_card_width", "label": "Video card width (px)", "min": 80, "max": 300, "step": 5, "default": 150 },
+{ "type": "range", "id": "video_card_height", "label": "Video card height (px)", "min": 120, "max": 500, "step": 5, "default": 240 },
+{ "type": "range", "id": "video_gap", "label": "Gap between videos (px)", "min": 0, "max": 40, "step": 1, "default": 16 },
+{ "type": "header", "content": "FAQ" },
+{ "type": "checkbox", "id": "show_description_faq", "label": "Add a \"Description\" accordion item at the top", "default": true, "info": "Pulls the product's Description field automatically — edit it on the product page in Shopify admin and it updates here too." },
+{ "type": "text", "id": "description_faq_label", "label": "Description accordion label", "default": "Description" }
+  ],
+  "blocks": [
+    {
+      "type": "chip",
+      "name": "Feature chip",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Text", "default": "Cuir de qualité supérieure" }
+      ]
+    },
+    {
+      "type": "included_gift",
+      "name": "Cadeau inclus",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Photo" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Bandoulière + chaîne" },
+        { "type": "text", "id": "tag_text", "label": "Tag text", "default": "Offert" },
+        { "type": "textarea", "id": "text", "label": "Description", "default": "Incluses avec votre sac, sans supplément." }
+      ]
+    },
+    {
+      "type": "offer",
+      "name": "Offer box",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "1 Sac" },
+        { "type": "range", "id": "quantity", "label": "Quantity", "min": 1, "max": 5, "step": 1, "default": 1 },
+        { "type": "text", "id": "price_text", "label": "Price text", "default": "19,999.00" },
+        { "type": "text", "id": "sub_label", "label": "Sub label", "default": "Prix Régulier" },
+        { "type": "text", "id": "sub_price", "label": "Sub price (strikethrough)", "default": "23,200.00" },
+        { "type": "textarea", "id": "perks", "label": "Perks (one per line)" },
+        { "type": "text", "id": "badge_text", "label": "Badge text (optional, e.g. Pack Duo)" },
+        { "type": "checkbox", "id": "show_variant_picker", "label": "Show color/size dropdown", "default": false },
+        { "type": "checkbox", "id": "preselected", "label": "Selected by default", "default": false }
+      ]
+    },
+    {
+  "type": "video_thumb",
+  "name": "Approved video",
+  "settings": [
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Video"
+    }
+  ]
+},
+{
+  "type": "faq_item",
+  "name": "FAQ item",
+  "settings": [
+    { "type": "text", "id": "question", "label": "Question", "default": "Comment ce sac est-il fabriqué ?" },
+    { "type": "textarea", "id": "answer", "label": "Answer", "default": "Chaque sac est fabriqué à la main avec un cuir premium sélectionné avec soin." }
+  ]
+}
+
+  ],
+  "presets": [
+    {
+      "name": "Velin Product Page",
+      "blocks": [
+        { "type": "chip", "settings": { "text": "Cuir de qualité supérieure" } },
+        { "type": "chip", "settings": { "text": "Extérieur résistant à  l'eau" } },
+        { "type": "chip", "settings": { "text": "Bandoulière réglable" } },
+        { "type": "chip", "settings": { "text": "Coutures renforcées" } },
+        { "type": "offer", "settings": { "title": "1 Sac", "quantity": 1, "price_text": "19,999.00", "sub_label": "Prix Régulier", "sub_price": "23,200.00", "show_variant_picker": true, "preselected": true } },
+        { "type": "offer", "settings": { "title": "2 Sac", "quantity": 2, "price_text": "28,999.00", "sub_label": "Offre Limitée", "sub_price": "39,999.00", "perks": "Cadeau Mystère  Offert\nLivraison  Offerte" } },
+        { "type": "video_thumb" },
+        { "type": "video_thumb" },
+        { "type": "video_thumb" },
+        { "type": "video_thumb" },
+        { "type": "faq_item", "settings": { "question": "Comment ce sac est-il fabriqué ?", "answer": "Chaque sac est fabriqué à la main avec un cuir premium." } },
+{ "type": "faq_item", "settings": { "question": "Quels sont les avantages ?", "answer": "Durabilité, confort et élégance au quotidien." } },
+{ "type": "faq_item", "settings": { "question": "Peut-il contenir tous mes essentiels du quotidien ?", "answer": "Oui, son intérieur spacieux est conçu pour tous vos essentiels." } },
+{ "type": "faq_item", "settings": { "question": "Expédition et livraison", "answer": "Livraison gratuite sous 3 à 5 jours ouvrés." } },
+{ "type": "faq_item", "settings": { "question": "Retours et remboursements", "answer": "Retours acceptés sous 30 jours." } },
+{ "type": "faq_item", "settings": { "question": "De quel matériau est fait ce sac ?", "answer": "Cuir véritable premium, sélectionné pour sa qualité et sa durabilité." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

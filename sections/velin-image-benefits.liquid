@@ -1,0 +1,205 @@
+{% comment %} Velin - Full-bleed image with overlaid heading + floating benefit cards {% endcomment %}
+
+<div class="velin-imgben" style="min-height: {{ section.settings.min_height }}px; background: {{ section.settings.fallback_color }};">
+  {% if section.settings.image != blank %}
+    <img class="velin-imgben__bg" src="{{ section.settings.image | image_url: width: 1800 }}" alt="{{ section.settings.heading | escape }}" loading="lazy">
+  {% endif %}
+
+  <div class="velin-imgben__scrim"></div>
+
+  {% if section.settings.eyebrow != blank or section.settings.heading != blank %}
+    <div class="velin-imgben__intro">
+      {% if section.settings.eyebrow != blank %}
+        <p class="velin-imgben__eyebrow">{{ section.settings.eyebrow }}</p>
+      {% endif %}
+      {% if section.settings.heading != blank %}
+        <h2 class="velin-imgben__heading">{{ section.settings.heading }}</h2>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  {%- assign has_cards = false -%}
+  {% for block in section.blocks %}{% if block.type == 'benefit_card' %}{% assign has_cards = true %}{% endif %}{% endfor %}
+  {% if has_cards %}
+    <div class="velin-imgben__cards">
+      {% for block in section.blocks %}
+        {% if block.type == 'benefit_card' %}
+          <div class="velin-imgben__card" {{ block.shopify_attributes }}>
+            <span class="velin-imgben__card-icon">
+              {% case block.settings.icon_type %}
+                {% when 'leaf' %}
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#201E50" stroke-width="2"><path d="M5 21c8-1 14-7 15-16-9 1-15 7-15 16z"></path><path d="M5 21c1-4 4-8 8-11"></path></svg>
+                {% when 'washer' %}
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#201E50" stroke-width="2"><rect x="3" y="2" width="18" height="20" rx="2"></rect><circle cx="12" cy="13" r="6"></circle></svg>
+                {% when 'ruler' %}
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#201E50" stroke-width="2"><rect x="2" y="7" width="20" height="10" rx="1"></rect><path d="M6 7v4M10 7v3M14 7v4M18 7v3"></path></svg>
+                {% when 'lock' %}
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#201E50" stroke-width="2"><rect x="4" y="11" width="16" height="10" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                {% when 'truck' %}
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#201E50" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                {% else %}
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#201E50" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
+              {% endcase %}
+            </span>
+            <p class="velin-imgben__card-title">{{ block.settings.title }}</p>
+            <p class="velin-imgben__card-text">{{ block.settings.text }}</p>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+
+<style>
+  .velin-imgben {
+    position: relative;
+    width: 100%;
+    max-width: 1639px;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 14px;
+    box-sizing: border-box;
+  }
+
+  .velin-imgben__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .velin-imgben__scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 65%, rgba(0,0,0,0.15) 100%);
+  }
+
+  .velin-imgben__intro {
+    position: relative;
+    z-index: 2;
+    padding: 32px 32px 0;
+    color: #fff;
+  }
+
+  .velin-imgben__eyebrow {
+    margin: 0 0 6px;
+    font-family: 'Merriweather', serif;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.85;
+  }
+
+  .velin-imgben__heading {
+    margin: 0;
+    font-family: 'Lusitana', serif;
+    font-weight: 400;
+    font-size: 26px;
+    line-height: 1.3;
+    max-width: 420px;
+  }
+
+  .velin-imgben__cards {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 40px 24px 32px;
+    margin-top: 140px;
+  }
+
+  .velin-imgben__card {
+    flex: 1 1 240px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(4px);
+    border-radius: 12px;
+    padding: 18px 20px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    box-sizing: border-box;
+  }
+
+  .velin-imgben__card-icon {
+    display: inline-flex;
+    margin-bottom: 10px;
+  }
+
+  .velin-imgben__card-title {
+    margin: 0 0 4px;
+    font-family: 'Merriweather', serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: #000;
+  }
+
+  .velin-imgben__card-text {
+    margin: 0;
+    font-family: 'Merriweather', serif;
+    font-size: 12px;
+    line-height: 1.5;
+    color: rgba(0, 0, 0, 0.65);
+  }
+
+  @media screen and (max-width: 749px) {
+    .velin-imgben {
+      border-radius: 0;
+    }
+    .velin-imgben__cards {
+      flex-direction: column;
+      margin-top: 220px;
+    }
+    .velin-imgben__heading {
+      font-size: 22px;
+      max-width: 100%;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Velin Image + Benefits",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Background image" },
+    { "type": "color", "id": "fallback_color", "label": "Fallback background (no image)", "default": "#201E50" },
+    { "type": "range", "id": "min_height", "label": "Minimum height (px)", "min": 300, "max": 800, "step": 10, "default": 520 },
+    { "type": "text", "id": "eyebrow", "label": "Small brand label", "default": "VELIN" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Pourquoi Velin Douce ?" }
+  ],
+  "blocks": [
+    {
+      "type": "benefit_card",
+      "name": "Benefit card",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon_type",
+          "label": "Icon",
+          "options": [
+            { "value": "leaf", "label": "Leaf / Natural material" },
+            { "value": "washer", "label": "Washer / Laundry" },
+            { "value": "ruler", "label": "Ruler / Sizes" },
+            { "value": "lock", "label": "Lock / Secure payment" },
+            { "value": "truck", "label": "Truck / Shipping" },
+            { "value": "thumbs", "label": "Thumbs up / Satisfaction" }
+          ],
+          "default": "leaf"
+        },
+        { "type": "text", "id": "title", "label": "Title", "default": "Card title" },
+        { "type": "textarea", "id": "text", "label": "Text", "default": "Card description." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Velin Image + Benefits",
+      "blocks": [
+        { "type": "benefit_card" },
+        { "type": "benefit_card" },
+        { "type": "benefit_card" }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -152,28 +152,29 @@
       }
     },
     "compare_dc01": {
-      "type": "leather-vs-faux",
+      "type": "velin-comparison-table",
+      "blocks": {
+        "row_dc01a": { "type": "comparison_row", "settings": { "label": "Gain de temps au quotidien", "theirs_state": "cross" } },
+        "row_dc01b": { "type": "comparison_row", "settings": { "label": "Couette fixée à la housse", "theirs_state": "cross" } },
+        "row_dc01c": { "type": "comparison_row", "settings": { "label": "Lavable en une seule fois", "theirs_state": "cross" } },
+        "row_dc01d": { "type": "comparison_row", "settings": { "label": "Moins d'acariens et d'odeurs", "theirs_state": "cross" } },
+        "row_dc01e": { "type": "comparison_row", "settings": { "label": "Séchage plus rapide", "theirs_state": "cross" } },
+        "row_dc01f": { "type": "comparison_row", "settings": { "label": "Plusieurs tailles disponibles", "theirs_state": "check" } }
+      },
+      "block_order": ["row_dc01a", "row_dc01b", "row_dc01c", "row_dc01d", "row_dc01e", "row_dc01f"],
       "settings": {
-        "background": "white",
-        "eyebrow": "HOUSSE 2-EN-1 VS HOUSSE CLASSIQUE",
-        "eyebrow_color": "#201E50",
-        "heading": "Pourquoi Choisir Une Housse De Couette 2-en-1 ?",
-        "text": "Avec une housse classique, il faut réintroduire et fixer la couette à chaque lavage. Avec Velin Douce, tout est déjà assemblé.",
-        "real_image": "",
-        "real_tag": "Housse 2-en-1 Velin",
-        "real_title": "Couette Et Housse Assemblées En Une Seule Pièce",
-        "real_points": "Le lit se fait en un geste, sans jamais emboîter la couette\nCouette fixée à la housse par des attaches internes\nSe lave entièrement en machine, en une seule fois\nMoins d'acariens et d'odeurs grâce à un lavage plus simple et plus fréquent\nSèche plus vite : une seule épaisseur, pas deux couches superposées\nDisponible en 4 tailles, de 140x200 à 240x200 cm",
-        "fake_image": "",
-        "fake_tag": "Housse + Couette Séparées",
-        "fake_title": "La Méthode Classique",
-        "fake_points": "Il faut réinsérer la couette à chaque changement de linge\nBoutons ou liens qui se détachent avec le temps\nDeux pièces à laver séparément, donc deux lessives\nOdeurs et acariens qui s'installent plus facilement entre les lavages\nSéchage plus long à cause des deux couches superposées\nHousse et couette à assortir soi-même en taille"
+        "eyebrow": "LE COMPARATIF",
+        "heading": "Gagnez Du Temps, Tous Les Jours",
+        "text": "Avec Velin Douce, vous faites votre lit en un geste et ne gérez plus jamais de housse à part.",
+        "ours_label": "Velin Douce",
+        "theirs_label": "Housse classique"
       }
     },
     "material_story_dc01": {
       "type": "image-with-text",
       "settings": {
         "image": "",
-        "image_position": "left",
+        "image_position": "right",
         "image_fit": "crop",
         "image_width": 505,
         "image_height": 600,
@@ -200,41 +201,47 @@
       }
     },
     "benefits_coton_dc01": {
-      "type": "guarantee-cards",
+      "type": "velin-image-benefits",
       "blocks": {
-        "feature_item_dc01a": {
-          "type": "feature_item",
+        "card_dc01a": {
+          "type": "benefit_card",
           "settings": {
             "icon_type": "leaf",
-            "title": "100% COTON VÉRITABLE",
-            "text": "DOUX, RESPIRANT ET NATUREL — LA MATIÈRE DE VOTRE LINGE DE LIT, PAS UN TEXTILE SYNTHÉTIQUE."
+            "title": "100% Coton Véritable",
+            "text": "Doux, respirant et naturel — la matière de votre linge de lit, pas un textile synthétique."
           }
         },
-        "feature_item_dc01b": {
-          "type": "feature_item",
+        "card_dc01b": {
+          "type": "benefit_card",
           "settings": {
             "icon_type": "washer",
-            "title": "UNE SEULE PIÈCE À LAVER",
-            "text": "LA HOUSSE EST FIXÉE À LA COUETTE : UN SEUL LAVAGE SUFFIT POUR RETROUVER UN ENSEMBLE FRAIS."
+            "title": "Une Seule Pièce À Laver",
+            "text": "La housse est fixée à la couette : un seul lavage suffit pour retrouver un ensemble frais."
           }
         },
-        "feature_item_dc01c": {
-          "type": "feature_item",
+        "card_dc01c": {
+          "type": "benefit_card",
           "settings": {
-            "icon_type": "thumbs",
-            "title": "CONÇUE POUR DURER",
-            "text": "UN COTON RÉSISTANT AUX LAVAGES RÉPÉTÉS, QUI GARDE SA DOUCEUR AU FIL DU TEMPS."
+            "icon_type": "ruler",
+            "title": "Quatre Tailles Disponibles",
+            "text": "De 140x200 à 240x200 cm, une taille adaptée à chaque lit."
           }
         }
       },
-      "block_order": ["feature_item_dc01a", "feature_item_dc01b", "feature_item_dc01c"],
-      "settings": {}
+      "block_order": ["card_dc01a", "card_dc01b", "card_dc01c"],
+      "settings": {
+        "image": "",
+        "fallback_color": "#201E50",
+        "min_height": 480,
+        "eyebrow": "VELIN",
+        "heading": "Le Coton Véritable, En Version Pratique"
+      }
     },
     "freshness_dc01": {
       "type": "image-with-text",
       "settings": {
         "image": "",
-        "image_position": "right",
+        "image_position": "left",
         "image_fit": "crop",
         "image_width": 505,
         "image_height": 600,
@@ -261,35 +268,41 @@
       }
     },
     "benefits_pourquoi_dc01": {
-      "type": "guarantee-cards",
+      "type": "velin-image-benefits",
       "blocks": {
-        "feature_item_dc01d": {
-          "type": "feature_item",
+        "card_dc01d": {
+          "type": "benefit_card",
           "settings": {
             "icon_type": "thumbs",
-            "title": "RETOURS SOUS 30 JOURS",
-            "text": "UN SOUCI ? VOUS DISPOSEZ DE 30 JOURS APRÈS RÉCEPTION POUR CHANGER D'AVIS, SANS JUSTIFICATION."
+            "title": "Retours Sous 30 Jours",
+            "text": "Un souci ? Vous disposez de 30 jours après réception pour changer d'avis, sans justification."
           }
         },
-        "feature_item_dc01e": {
-          "type": "feature_item",
+        "card_dc01e": {
+          "type": "benefit_card",
           "settings": {
             "icon_type": "lock",
-            "title": "PAIEMENT 100% SÉCURISÉ",
-            "text": "TOUTES LES TRANSACTIONS SONT CHIFFRÉES ET PROTÉGÉES, QUEL QUE SOIT VOTRE MOYEN DE PAIEMENT."
+            "title": "Paiement 100% Sécurisé",
+            "text": "Toutes les transactions sont chiffrées et protégées, quel que soit votre moyen de paiement."
           }
         },
-        "feature_item_dc01f": {
-          "type": "feature_item",
+        "card_dc01f": {
+          "type": "benefit_card",
           "settings": {
             "icon_type": "truck",
-            "title": "EXPÉDIÉE SOUS 24-48H",
-            "text": "COMMANDE PRÉPARÉE RAPIDEMENT, AVEC NUMÉRO DE SUIVI COMMUNIQUÉ DÈS L'ENVOI."
+            "title": "Expédiée Sous 24-48h",
+            "text": "Commande préparée rapidement, avec numéro de suivi communiqué dès l'envoi."
           }
         }
       },
-      "block_order": ["feature_item_dc01d", "feature_item_dc01e", "feature_item_dc01f"],
-      "settings": {}
+      "block_order": ["card_dc01d", "card_dc01e", "card_dc01f"],
+      "settings": {
+        "image": "",
+        "fallback_color": "#201E50",
+        "min_height": 480,
+        "eyebrow": "VELIN",
+        "heading": "Pourquoi Choisir Velin Douce ?"
+      }
     },
     "reviews_dc01": {
       "type": "apps",

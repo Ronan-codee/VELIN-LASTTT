@@ -1,0 +1,257 @@
+{% comment %} Velin - Comparison table (us vs. traditional), styled after the competitor's chart layout {% endcomment %}
+
+<section class="velin-comptable">
+  <div class="velin-comptable__intro">
+    {% if section.settings.eyebrow != blank %}
+      <p class="velin-comptable__eyebrow">{{ section.settings.eyebrow }}</p>
+    {% endif %}
+    {% if section.settings.heading != blank %}
+      <h2 class="velin-comptable__heading">{{ section.settings.heading }}</h2>
+    {% endif %}
+    {% if section.settings.text != blank %}
+      <p class="velin-comptable__text">{{ section.settings.text }}</p>
+    {% endif %}
+  </div>
+
+  <div class="velin-comptable__grid">
+    <div class="velin-comptable__col velin-comptable__col--labels">
+      <div class="velin-comptable__cell velin-comptable__cell--head"></div>
+      {% for block in section.blocks %}
+        {% if block.type == 'comparison_row' %}
+          <div class="velin-comptable__cell" {{ block.shopify_attributes }}>{{ block.settings.label }}</div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <div class="velin-comptable__col velin-comptable__col--ours">
+      <div class="velin-comptable__cell velin-comptable__cell--head">
+        <span class="velin-comptable__brand">{{ section.settings.ours_label }}</span>
+      </div>
+      {% for block in section.blocks %}
+        {% if block.type == 'comparison_row' %}
+          <div class="velin-comptable__cell">
+            <span class="velin-comptable__mark velin-comptable__mark--check">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 12.5l5 5L20 6.5" stroke="#201E50" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <div class="velin-comptable__col velin-comptable__col--theirs">
+      <div class="velin-comptable__cell velin-comptable__cell--head">
+        <span class="velin-comptable__brand velin-comptable__brand--muted">{{ section.settings.theirs_label }}</span>
+      </div>
+      {% for block in section.blocks %}
+        {% if block.type == 'comparison_row' %}
+          <div class="velin-comptable__cell">
+            {% if block.settings.theirs_state == 'check' %}
+              <span class="velin-comptable__mark velin-comptable__mark--muted-check">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+            {% else %}
+              <span class="velin-comptable__mark velin-comptable__mark--cross">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+              </span>
+            {% endif %}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<style>
+  .velin-comptable {
+    max-width: 1234px;
+    margin: 0 auto;
+    padding: 80px 20px;
+    box-sizing: border-box;
+    text-align: center;
+    font-family: 'Merriweather', serif;
+  }
+
+  .velin-comptable__intro {
+    max-width: 640px;
+    margin: 0 auto 40px;
+  }
+
+  .velin-comptable__eyebrow {
+    display: inline-block;
+    margin: 0 0 16px;
+    padding: 6px 16px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 999px;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #201E50;
+  }
+
+  .velin-comptable__heading {
+    margin: 0 0 12px;
+    font-family: 'Lusitana', serif;
+    font-weight: 400;
+    font-size: 30px;
+    color: #000;
+  }
+
+  .velin-comptable__text {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: rgba(0, 0, 0, 0.65);
+  }
+
+  .velin-comptable__grid {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    gap: 0;
+    max-width: 620px;
+    margin: 0 auto;
+  }
+
+  .velin-comptable__col {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .velin-comptable__col--labels {
+    flex: 1 1 auto;
+    text-align: left;
+    padding-right: 16px;
+  }
+
+  .velin-comptable__col--ours {
+    flex: 0 0 120px;
+    background: #201E50;
+    border-radius: 16px;
+    padding: 0 12px;
+  }
+
+  .velin-comptable__col--theirs {
+    flex: 0 0 70px;
+  }
+
+  .velin-comptable__cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    font-size: 14px;
+    color: #000;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  }
+
+  .velin-comptable__col--labels .velin-comptable__cell {
+    justify-content: flex-start;
+  }
+
+  .velin-comptable__col--ours .velin-comptable__cell {
+    border-bottom-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .velin-comptable__col--theirs .velin-comptable__cell {
+    border-bottom-color: rgba(0, 0, 0, 0.06);
+  }
+
+  .velin-comptable__cell--head {
+    height: 64px;
+    border-bottom: none;
+  }
+
+  .velin-comptable__brand {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+
+  .velin-comptable__brand--muted {
+    color: rgba(0, 0, 0, 0.4);
+  }
+
+  .velin-comptable__mark--check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #F7CF46;
+  }
+
+  .velin-comptable__mark--muted-check {
+    color: rgba(0, 0, 0, 0.35);
+  }
+
+  .velin-comptable__mark--cross {
+    color: rgba(0, 0, 0, 0.25);
+  }
+
+  @media screen and (max-width: 749px) {
+    .velin-comptable {
+      padding: 48px 16px;
+    }
+    .velin-comptable__grid {
+      max-width: 100%;
+    }
+    .velin-comptable__col--ours {
+      flex-basis: 90px;
+    }
+    .velin-comptable__col--theirs {
+      flex-basis: 50px;
+    }
+    .velin-comptable__cell {
+      font-size: 12px;
+      height: 42px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Velin Comparison Table",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow pill", "default": "LA COUETTE VELIN DOUCE" },
+    { "type": "textarea", "id": "heading", "label": "Heading", "default": "Gagnez Du Temps, Tous Les Jours" },
+    { "type": "textarea", "id": "text", "label": "Intro text", "default": "Avec Velin Douce, vous faites votre lit en un geste et ne gérez plus jamais de housse à part." },
+    { "type": "text", "id": "ours_label", "label": "Our column label", "default": "Velin Douce" },
+    { "type": "text", "id": "theirs_label", "label": "Their column label", "default": "Housse classique" }
+  ],
+  "blocks": [
+    {
+      "type": "comparison_row",
+      "name": "Comparison row",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Row label", "default": "Gain de temps" },
+        {
+          "type": "select",
+          "id": "theirs_state",
+          "label": "Traditional side",
+          "options": [
+            { "value": "check", "label": "Check" },
+            { "value": "cross", "label": "Cross" }
+          ],
+          "default": "cross"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Velin Comparison Table",
+      "blocks": [
+        { "type": "comparison_row", "settings": { "label": "Gain de temps" } },
+        { "type": "comparison_row", "settings": { "label": "Couette fixée à la housse" } },
+        { "type": "comparison_row", "settings": { "label": "Lavable en une fois" } },
+        { "type": "comparison_row", "settings": { "label": "Moins d'acariens" } },
+        { "type": "comparison_row", "settings": { "label": "Séchage rapide" } },
+        { "type": "comparison_row", "settings": { "label": "Plusieurs tailles", "theirs_state": "check" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

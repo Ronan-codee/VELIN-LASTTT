@@ -42,7 +42,7 @@
         "faq_item_dc01b": {
           "type": "faq_item",
           "settings": {
-            "question": "Quel entretien pour Velin Douce ?",
+            "question": "Quel entretien pour Velin ?",
             "answer": "L'ensemble se lave en machine à 30°C. Nous recommandons un cycle délicat et un séchage à basse température pour préserver le gonflant et la douceur du coton sur la durée."
           }
         },
@@ -128,7 +128,7 @@
         "guarantee_image": "",
         "guarantee_heading": "Satisfait Ou Remboursé Sous 30 Jours",
         "guarantee_text": "Achetez en toute confiance. Si cette housse de couette ne répond pas à vos attentes en matière de qualité ou de confort, vous pouvez nous la retourner sous 30 jours après la livraison.",
-        "approved_heading": "Ils Ont Adopté Velin Douce",
+        "approved_heading": "Ils Ont Adopté Velin",
         "video_card_width": 160,
         "video_card_height": 250,
         "video_gap": 16,
@@ -165,8 +165,8 @@
       "settings": {
         "eyebrow": "LE COMPARATIF",
         "heading": "Gagnez Du Temps, Tous Les Jours",
-        "text": "Avec Velin Douce, vous faites votre lit en un geste et ne gérez plus jamais de housse à part.",
-        "ours_label": "Velin Douce",
+        "text": "Avec Velin, vous faites votre lit en un geste et ne gérez plus jamais de housse à part.",
+        "ours_label": "Velin",
         "theirs_label": "Housse classique"
       }
     },
@@ -195,7 +195,7 @@
         "price_tag_enabled": false,
         "price_before": "",
         "price_after": "",
-        "text": "Velin Douce remplace la couette et la housse séparées par un seul ensemble : une enveloppe en coton doux directement fixée à la couette. Plus besoin de la réinsérer à chaque lavage, ni de multiplier les lessives — l'ensemble passe en machine d'un coup, et ressort aussi frais que doux.",
+        "text": "Velin remplace la couette et la housse séparées par un seul ensemble : une enveloppe en coton doux directement fixée à la couette. Plus besoin de la réinsérer à chaque lavage, ni de multiplier les lessives — l'ensemble passe en machine d'un coup, et ressort aussi frais que doux.",
         "button_label": "",
         "button_link": ""
       }
@@ -301,7 +301,7 @@
         "fallback_color": "#201E50",
         "min_height": 480,
         "eyebrow": "VELIN",
-        "heading": "Pourquoi Choisir Velin Douce ?"
+        "heading": "Pourquoi Choisir Velin ?"
       }
     },
     "reviews_dc01": {

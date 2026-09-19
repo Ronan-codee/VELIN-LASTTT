@@ -1710,6 +1710,9 @@
           if (buyForm.nextElementSibling !== guaranteeEl) {
             parent.insertBefore(buyForm, guaranteeEl);
           }
+          // Cancels out the bundle widget's own bottom spacing so this
+          // block sits close under it instead of leaving a large gap.
+          if (freeShippingEl) freeShippingEl.style.marginTop = "-40px";
         };
         setTimeout(placeBuyBoxAboveGuarantee, 800);
         setTimeout(placeBuyBoxAboveGuarantee, 1800);

@@ -59,48 +59,6 @@
             "question": "Retours et remboursements",
             "answer": "Vous disposez d'un délai de 30 jours après réception de votre commande pour exercer votre droit de rétractation. Le produit doit être retourné dans son état d'origine, non utilisé et dans son emballage d'origine. Le remboursement est effectué selon le mode de paiement utilisé lors de l'achat."
           }
-        },
-        "offer_dc01a": {
-          "type": "offer",
-          "settings": {
-            "title": "1 Housse De Couette",
-            "quantity": 1,
-            "price_text": "",
-            "sub_label": "",
-            "sub_price": "",
-            "perks": "+ 2 Taies D'oreiller Offertes",
-            "badge_text": "",
-            "show_variant_picker": true,
-            "preselected": true
-          }
-        },
-        "offer_dc01b": {
-          "type": "offer",
-          "settings": {
-            "title": "2 Housses De Couette",
-            "quantity": 2,
-            "price_text": "",
-            "sub_label": "",
-            "sub_price": "",
-            "perks": "+ 4 Taies D'oreiller Offertes",
-            "badge_text": "Pack Duo",
-            "show_variant_picker": false,
-            "preselected": false
-          }
-        },
-        "offer_dc01c": {
-          "type": "offer",
-          "settings": {
-            "title": "3 Housses De Couette",
-            "quantity": 3,
-            "price_text": "",
-            "sub_label": "",
-            "sub_price": "",
-            "perks": "+ 6 Taies D'oreiller Offertes",
-            "badge_text": "Le Plus Choisi",
-            "show_variant_picker": false,
-            "preselected": false
-          }
         }
       },
       "block_order": [
@@ -111,10 +69,7 @@
         "faq_item_dc01a",
         "faq_item_dc01b",
         "faq_item_dc01c",
-        "faq_item_dc01d",
-        "offer_dc01a",
-        "offer_dc01b",
-        "offer_dc01c"
+        "faq_item_dc01d"
       ],
       "name": "Velin Product Page",
       "settings": {

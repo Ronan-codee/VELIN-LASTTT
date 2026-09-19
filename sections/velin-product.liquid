@@ -159,8 +159,38 @@
       </div>
 
       {% if section.settings.launch_offer_text != blank %}
+        {%- liquid
+          assign velin_offer_month_num = 'now' | date: '%-m'
+          case velin_offer_month_num
+            when '1'
+              assign velin_offer_month_fr = 'janvier'
+            when '2'
+              assign velin_offer_month_fr = 'février'
+            when '3'
+              assign velin_offer_month_fr = 'mars'
+            when '4'
+              assign velin_offer_month_fr = 'avril'
+            when '5'
+              assign velin_offer_month_fr = 'mai'
+            when '6'
+              assign velin_offer_month_fr = 'juin'
+            when '7'
+              assign velin_offer_month_fr = 'juillet'
+            when '8'
+              assign velin_offer_month_fr = 'août'
+            when '9'
+              assign velin_offer_month_fr = 'septembre'
+            when '10'
+              assign velin_offer_month_fr = 'octobre'
+            when '11'
+              assign velin_offer_month_fr = 'novembre'
+            when '12'
+              assign velin_offer_month_fr = 'décembre'
+          endcase
+          assign velin_offer_day = 'now' | date: '%-d'
+        -%}
         <p class="velin-pdp__launch-badge" style="background: {{ section.settings.launch_offer_bg }}; color: {{ section.settings.launch_offer_color }};">
-          {{ section.settings.launch_offer_text }}
+          {{ section.settings.launch_offer_text }} {{ velin_offer_day }} {{ velin_offer_month_fr }}
         </p>
       {% endif %}
     </div>
@@ -2098,8 +2128,8 @@ if (compareEl) {
       "type": "text",
       "id": "launch_offer_text",
       "label": "Launch urgency text",
-      "info": "Small badge shown under the price. Leave empty to hide it.",
-      "default": "Offre Promo Rentrée · Valable jusqu'au 17 septembre"
+      "info": "Small badge shown under the price. The current day's date (in French) is appended automatically — do not include a date here. Leave empty to hide the badge.",
+      "default": "Offre Promo Rentrée · Valable jusqu'au"
     },
     { "type": "color", "id": "launch_offer_bg", "label": "Launch urgency badge background", "default": "#705744" },
     { "type": "color", "id": "launch_offer_color", "label": "Launch urgency badge text color", "default": "#ffffff" },

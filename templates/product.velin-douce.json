@@ -124,6 +124,7 @@
         "size_option_name": "taille",
         "hide_native_purchase": false,
         "hide_atc_button": true,
+        "revy_bundle_id": "416efce1-46d5-459a-ae0f-99db71bce9be",
         "show_free_shipping": false,
         "free_shipping_text": "Livraison gratuite",
         "atc_text": "AJOUTER AU PANIER",

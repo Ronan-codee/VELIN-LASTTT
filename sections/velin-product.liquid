@@ -448,6 +448,11 @@
       </div>
     {% endif %}
 
+    {%- comment -%} ---------- Revy Bundle (manual embed, from the app's "Embed this bundle manually in any page via HTML" option) ---------- {%- endcomment -%}
+    {% if section.settings.revy_bundle_id != blank %}
+      <div data-revy-bundle-id="{{ section.settings.revy_bundle_id }}"></div>
+    {% endif %}
+
     {%- comment -%} ---------- Free shipping line ---------- {%- endcomment -%}
     {% unless section.settings.hide_native_purchase %}
     {% if section.settings.show_free_shipping and section.settings.free_shipping_text != blank %}
@@ -2447,6 +2452,7 @@ if (compareEl) {
     { "type": "header", "content": "Add to cart" },
     { "type": "checkbox", "id": "hide_native_purchase", "label": "Hide native buy box (bundle app handles purchase)", "default": false },
     { "type": "checkbox", "id": "hide_atc_button", "label": "Hide button only (form stays, for bundle apps)", "default": false },
+    { "type": "text", "id": "revy_bundle_id", "label": "Revy Bundle ID (manual HTML embed)", "default": "" },
     { "type": "checkbox", "id": "show_free_shipping", "label": "Show free shipping line above the button", "default": true },
     { "type": "text", "id": "free_shipping_text", "label": "Free shipping text", "default": "Livraison gratuite" },
     { "type": "text", "id": "atc_text", "label": "Button text", "default": "AJOUTER AU PANIER" },

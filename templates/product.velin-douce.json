@@ -102,15 +102,12 @@
         "badge_text": "",
         "badge_bg": "#f8f8f8",
         "badge_size": 18,
-        "avatar_1": "",
-        "avatar_2": "",
-        "avatar_3": "",
         "social_text": "+3 000 clients dorment mieux avec Velin",
         "title_size": 32,
         "compare_color": "#999999",
         "compare_text": "",
         "launch_offer_text": "",
-        "launch_offer_bg": "#201E50",
+        "launch_offer_bg": "#201e50",
         "launch_offer_color": "#ffffff",
         "show_installments": true,
         "installment_count": 3,
@@ -121,10 +118,11 @@
         "color_label": "Couleur",
         "color_option_name": "couleur",
         "color_map": "Noir:#000000\nBrun:#AA8870\nVert:#026465\nBleu:#00475D\nRouge:#B3001B\nBeige:#D8C7B2\nBlanc:#FFFFFF\nGris:#8E8E8E",
-        "accent_color": "#201E50",
-        "accent_color_soft": "#00B77F",
+        "accent_color": "#201e50",
+        "accent_color_soft": "#00b77f",
         "size_label": "Taille",
         "size_option_name": "taille",
+        "hide_native_purchase": false,
         "hide_atc_button": true,
         "show_free_shipping": false,
         "free_shipping_text": "Livraison gratuite",
@@ -136,13 +134,15 @@
         "stock_sub": "Forte Demande, Quantités Limitées",
         "sold_percent": 89,
         "sold_label": "Vendus",
-        "stock_bar_color": "#201E50",
+        "stock_bar_color": "#201e50",
         "countdown_label": "Fin Dans",
         "countdown_hours": 47,
         "trust_item_1": "30 Nuits Pour Changer d'Avis",
         "trust_item_2": "",
         "trust_item_3": "Lit Fait En Un Geste",
         "trust_item_4": "Livraison Gratuite",
+        "guarantee_heading": "Satisfait Ou  Remboursé Sous 30  Jours",
+        "guarantee_text": "Achetez En Toute Confiance. Si Votre Sac En Cuir Ne Répond Pas À Vos Attentes En Matière De Qualité, De Fabrication Ou De Durabilité, Vous Pouvez Nous Le Retourner Sous 30 Jours Après La Livraison.",
         "approved_heading": "Ils Ont Adopté Velin",
         "video_card_width": 160,
         "video_card_height": 250,
@@ -154,7 +154,7 @@
     "video_hero_dc01": {
       "type": "video-banner",
       "settings": {
-        "fallback_color": "#201E50",
+        "fallback_color": "#201e50",
         "overlay_opacity": 30,
         "banner_height": 500
       }
@@ -230,7 +230,6 @@
     "material_story_dc01": {
       "type": "image-with-text",
       "settings": {
-        "image": "",
         "image_position": "right",
         "image_fit": "crop",
         "image_width": 505,
@@ -245,7 +244,7 @@
         "text_padding": 0,
         "text_gap": 0,
         "eyebrow": "LE CONCEPT",
-        "eyebrow_color": "#201E50",
+        "eyebrow_color": "#201e50",
         "heading": "Un Seul Ensemble, Pas Deux Pièces À Gérer",
         "heading_nowrap": false,
         "heading_line_height": 150,
@@ -291,8 +290,7 @@
         "card_dc01c"
       ],
       "settings": {
-        "image": "",
-        "fallback_color": "#201E50",
+        "fallback_color": "#201e50",
         "min_height": 480,
         "eyebrow": "VELIN",
         "heading": "Le Confort Pensé Pour Durer"
@@ -301,7 +299,6 @@
     "freshness_dc01": {
       "type": "image-with-text",
       "settings": {
-        "image": "",
         "image_position": "left",
         "image_fit": "crop",
         "image_width": 505,
@@ -316,7 +313,7 @@
         "text_padding": 0,
         "text_gap": 0,
         "eyebrow": "L'ENTRETIEN",
-        "eyebrow_color": "#201E50",
+        "eyebrow_color": "#201e50",
         "heading": "Un Lit Frais, Sans Effort Chaque Semaine",
         "heading_nowrap": false,
         "heading_line_height": 150,
@@ -362,8 +359,7 @@
         "card_dc01f"
       ],
       "settings": {
-        "image": "",
-        "fallback_color": "#201E50",
+        "fallback_color": "#201e50",
         "min_height": 480,
         "eyebrow": "VELIN",
         "heading": "Pourquoi Choisir Velin ?"
@@ -386,11 +382,27 @@
         "ag_product_reviews_app_block_review_list_dc01"
       ],
       "settings": {}
+    },
+    "17899222886bf9ab21": {
+      "type": "apps",
+      "blocks": {
+        "ag_product_reviews_app_carousel_review_list_gfqJi3": {
+          "type": "shopify://apps/ag-product-reviews/blocks/app-carousel-review-list/c4e1e9ca-4d46-4e76-bc39-7e42417cb327",
+          "settings": {
+            "air_carouselreviews_carouselHeading": "See what our customers said"
+          }
+        }
+      },
+      "block_order": [
+        "ag_product_reviews_app_carousel_review_list_gfqJi3"
+      ],
+      "settings": {}
     }
   },
   "order": [
     "main",
     "velin_product_dc01",
+    "17899222886bf9ab21",
     "video_hero_dc01",
     "ugc_dc01",
     "compare_dc01",

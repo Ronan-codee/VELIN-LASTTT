@@ -20,25 +20,29 @@
         "chip_dc01a": {
           "type": "chip",
           "settings": {
-            "text": "100% Coton Doux"
+            "text": "Ultra Doux Au Toucher",
+            "icon_type": "soft"
           }
         },
         "chip_dc01b": {
           "type": "chip",
           "settings": {
-            "text": "Couette Intégrée"
+            "text": "Couette Intégrée",
+            "icon_type": "bed"
           }
         },
         "chip_dc01c": {
           "type": "chip",
           "settings": {
-            "text": "Lavable En Machine"
+            "text": "Lavable En Machine",
+            "icon_type": "washer"
           }
         },
         "chip_dc01d": {
           "type": "chip",
           "settings": {
-            "text": "Fermeture Zip Invisible"
+            "text": "Multisaison",
+            "icon_type": "season"
           }
         },
         "faq_item_dc01a": {
@@ -52,7 +56,7 @@
           "type": "faq_item",
           "settings": {
             "question": "Quel entretien pour Velin ?",
-            "answer": "L'ensemble se lave en machine à 30°C. Nous recommandons un cycle délicat et un séchage à basse température pour préserver le gonflant et la douceur du coton sur la durée."
+            "answer": "L'ensemble se lave en machine à 30°C. Nous recommandons un cycle délicat et un séchage à basse température pour préserver le gonflant et la douceur de la couette sur la durée."
           }
         },
         "faq_item_dc01c": {
@@ -238,7 +242,7 @@
         "text_max_width": 0,
         "text_padding": 0,
         "text_gap": 0,
-        "eyebrow": "LA MATIÈRE",
+        "eyebrow": "LE CONCEPT",
         "eyebrow_color": "#201E50",
         "heading": "Un Seul Ensemble, Pas Deux Pièces À Gérer",
         "heading_nowrap": false,
@@ -246,7 +250,7 @@
         "price_tag_enabled": false,
         "price_before": "",
         "price_after": "",
-        "text": "Velin remplace la couette et la housse séparées par un seul ensemble : une enveloppe en coton doux directement fixée à la couette. Plus besoin de la réinsérer à chaque lavage, ni de multiplier les lessives — l'ensemble passe en machine d'un coup, et ressort aussi frais que doux.",
+        "text": "Velin remplace la couette et la housse séparées par un seul ensemble : une enveloppe douce directement fixée à la couette. Plus besoin de la réinsérer à chaque lavage, ni de multiplier les lessives — l'ensemble passe en machine d'un coup, et ressort aussi frais que doux.",
         "button_label": "",
         "button_link": ""
       }
@@ -257,9 +261,9 @@
         "card_dc01a": {
           "type": "benefit_card",
           "settings": {
-            "icon_type": "leaf",
-            "title": "100% Coton Véritable",
-            "text": "Doux, respirant et naturel — la matière de votre linge de lit, pas un textile synthétique."
+            "icon_type": "thumbs",
+            "title": "Une Douceur Qui Dure",
+            "text": "Une matière choisie pour son confort et sa résistance, pensée pour un usage quotidien."
           }
         },
         "card_dc01b": {
@@ -289,7 +293,7 @@
         "fallback_color": "#201E50",
         "min_height": 480,
         "eyebrow": "VELIN",
-        "heading": "Le Coton Véritable, En Version Pratique"
+        "heading": "Le Confort Pensé Pour Durer"
       }
     },
     "freshness_dc01": {

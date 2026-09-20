@@ -61,16 +61,8 @@
           "type": "faq_item",
           "settings": {
             "question": "Quel entretien pour Velin ?",
-            "answer": "L'ensemble se lave en machine à 30°C. Nous recommandons un cycle délicat et un séchage à basse température pour préserver le gonflant et la douceur de la couette sur la durée.",
+            "answer": "L'ensemble se lave en machine à 30 ou 40°C. Nous recommandons un cycle délicat et un séchage à l'air libre.",
             "icon_type": "washer"
-          }
-        },
-        "faq_item_dc01c": {
-          "type": "faq_item",
-          "settings": {
-            "question": "Expédition et livraison",
-            "answer": "Nous préparons votre commande avec soin sous 24 à 48 heures ouvrées. Le délai de livraison varie ensuite selon votre lieu de résidence. Un numéro de suivi vous est communiqué dès l'expédition afin de pouvoir suivre votre colis.",
-            "icon_type": "truck"
           }
         },
         "faq_item_dc01d": {
@@ -89,7 +81,6 @@
         "chip_dc01d",
         "faq_item_dc01a",
         "faq_item_dc01b",
-        "faq_item_dc01c",
         "faq_item_dc01d"
       ],
       "name": "Velin Product Page",
@@ -111,6 +102,9 @@
         "badge_text": "",
         "badge_bg": "#f8f8f8",
         "badge_size": 18,
+        "avatar_1": "shopify://shop_images/d8211dcff55f756bd70813bac90496ccffc9dbf3.png",
+        "avatar_2": "shopify://shop_images/205fa380cb4171bfc62248112a13bb04baf89faf.png",
+        "avatar_3": "shopify://shop_images/storii-1.png",
         "social_text": "+3 000 clients dorment mieux avec Velin",
         "title_size": 32,
         "compare_color": "#999999",
@@ -131,7 +125,7 @@
         "accent_color_soft": "#00b77f",
         "size_label": "Taille",
         "size_option_name": "taille",
-        "hide_native_purchase": false,
+        "hide_native_purchase": true,
         "hide_atc_button": true,
         "revy_bundle_id": "416efce1-46d5-459a-ae0f-99db71bce9be",
         "show_free_shipping": false,

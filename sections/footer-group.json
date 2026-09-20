@@ -34,9 +34,9 @@
         "link_menu_JnMbmm"
       ],
       "settings": {
-        "bg_color": "#201E4D",
+        "bg_color": "#201e4d",
         "text_color": "#ffffff",
-        "logo_image": "shopify://shop_images/ChatGPT_Image_2_aout_2026_14_53_35.png",
+        "logo_image": "shopify://shop_images/ChatGPT_Image_20_sept._2026_22_37_13.png",
         "logo_height": 160,
         "logo_offset": -30,
         "about_text": "Velin réinvente le linge de lit avec des solutions pensées pour simplifier le quotidien. Notre couette 2 en 1 associe confort et praticité : plus besoin de retirer une housse séparément, elle se lave facilement en machine pour un linge propre et frais en toute simplicité. Douce, confortable et facile à entretenir, elle vous permet de gagner du temps tout en profitant d’un lit toujours agréable et soigné.",
@@ -45,7 +45,7 @@
         "btn1_link": "shopify://collections/nos-produits",
         "btn2_text": "S'ENREGISTRER",
         "btn2_link": "",
-        "btn_bg_color": "#FFE791",
+        "btn_bg_color": "#ffe791",
         "buttons_offset": -65,
         "contact_heading": "CONTACT",
         "phone_text": "",

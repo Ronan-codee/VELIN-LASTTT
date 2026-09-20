@@ -23,7 +23,7 @@
             "message_3": "<p>Service client disponible 7j/7</p>",
             "message_4": "<p>Livraison offerte</p>",
             "rotation_interval": 2,
-            "background_color": "#201E4D",
+            "background_color": "#201e4d",
             "text_color": "#f1eae0",
             "link_color": "#f1eae0",
             "font_size": 14,
@@ -41,8 +41,8 @@
     "header": {
       "type": "header",
       "settings": {
-        "logo": "shopify://shop_images/ChatGPT_Image_2_aout_2026_14_53_35.png",
-        "logo_width": 100,
+        "logo": "shopify://shop_images/ChatGPT_Image_20_sept._2026_19_38_33.png",
+        "logo_width": 160,
         "menu": "main-menu",
         "nav_text_size": 16,
         "icon_size": 22

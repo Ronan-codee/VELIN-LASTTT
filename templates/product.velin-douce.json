@@ -169,7 +169,7 @@
     "video_hero_dc01": {
       "type": "video-banner",
       "settings": {
-        "banner_video": "shopify://files/videos/0920.mp4",
+        "banner_video": "shopify://files/videos/1080p.mp4",
         "fallback_color": "#201e50",
         "overlay_opacity": 30,
         "banner_height": 500

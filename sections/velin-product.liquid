@@ -7,7 +7,7 @@
     if opt_down == section.settings.color_option_name or opt_down == 'couleur' or opt_down == 'color'
       assign color_option_index = forloop.index0
       assign color_option = option
-    endif
+    endif 
   endfor
   assign map_lines = section.settings.color_map | strip | newline_to_br | split: '<br />'
 

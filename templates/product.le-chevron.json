@@ -48,25 +48,29 @@
         "chip_9FexCF": {
           "type": "chip",
           "settings": {
-            "text": "Cuir  de vachette"
+            "text": "Cuir  de vachette",
+            "icon_type": "none"
           }
         },
         "chip_KQYBrR": {
           "type": "chip",
           "settings": {
-            "text": "Doublé Et Renforcé"
+            "text": "Doublé Et Renforcé",
+            "icon_type": "none"
           }
         },
         "chip_WMxMAF": {
           "type": "chip",
           "settings": {
-            "text": "Conçu Pour Durer"
+            "text": "Conçu Pour Durer",
+            "icon_type": "none"
           }
         },
         "chip_BjzDHJ": {
           "type": "chip",
           "settings": {
-            "text": "Coutures renforcées"
+            "text": "Coutures renforcées",
+            "icon_type": "none"
           }
         },
         "offer_UpdcTA": {
@@ -78,6 +82,7 @@
             "sub_label": "Prix Régulier",
             "sub_price": "",
             "perks": "",
+            "badge_text": "",
             "show_variant_picker": true,
             "preselected": true
           }
@@ -159,6 +164,12 @@
         "color_label": "Couleur",
         "color_option_name": "couleur",
         "color_map": "Noir:#000000\nBrun:#AA8870\nVert:#026465\nBleu:#00475D\nRouge:#B3001B\nBeige:#D8C7B2\nBlanc:#FFFFFF\nGris:#8E8E8E\nRose:#E8B4C4\nMarron:#6B4A2F\nMarron clair:#A9876B\nCamel:#C19A6B\nTaupe:#8B7E74\nTaupe clair:#B0A69B\nGrège:#B7AC9C\nBlack:#000000\nBrown:#6B4A2F\nStone Grey:#C4BFB5\nStone Gray:#C4BFB5\nGray:#8E8E8E\nSilver:#C4BFB5\nIvoire:#F3EEE3\nBleu Glacier:#C6D2DC\nMarron Camel:#A9713E\nBeige Crème:#EFE3D0\nMarron Chocolat:#3B2216\nJaune Doré:#D4A017\nBlanc Cassé:#F2ECDF\nVert Citron:#C9D94A",
+        "accent_color": "#705744",
+        "accent_color_soft": "#aa8870",
+        "size_label": "Taille",
+        "size_option_name": "taille",
+        "hide_native_purchase": false,
+        "hide_atc_button": false,
         "show_free_shipping": true,
         "free_shipping_text": "Livraison gratuite",
         "atc_text": "AJOUTER AU PANIER",
@@ -172,6 +183,10 @@
         "stock_bar_color": "#705744",
         "countdown_label": "Fin Dans",
         "countdown_hours": 47,
+        "trust_item_1": "",
+        "trust_item_2": "",
+        "trust_item_3": "",
+        "trust_item_4": "",
         "guarantee_image": "shopify://shop_images/0d0928f4c4c145b72f310058bf32366dfaa4cab6.png",
         "guarantee_heading": "Satisfait Ou Remboursé sous 30 jours",
         "guarantee_text": "Achetez en toute confiance. Si cet article en cuir ne répond pas à vos attentes en matière de qualité, de fabrication ou de durabilité, vous pouvez nous le retourner sous 30 jours après la livraison.",
@@ -216,6 +231,7 @@
         "text_padding": 0,
         "text_gap": 0,
         "eyebrow": "LA MATIÈRE",
+        "eyebrow_color": "",
         "heading": "Le Cuir de Vachette Véritable, Notre Seul Choix",
         "heading_nowrap": false,
         "heading_line_height": 150,
@@ -232,6 +248,7 @@
       "settings": {
         "background": "beige",
         "eyebrow": "CUIR VÉRITABLE VS SIMILI CUIR",
+        "eyebrow_color": "",
         "heading": "Pourquoi Choisir Du Cuir Véritable ?",
         "text": "En boutique, la différence ne se voit pas toujours. Après quelques mois d'usage, elle devient évidente.",
         "real_image": "shopify://shop_images/cuir-veritable-macro.png",
@@ -414,6 +431,17 @@
     },
     "1787762900210c2365": {
       "type": "apps",
+      "blocks": {
+        "ag_product_reviews_app_carousel_review_list_BqaPKA": {
+          "type": "shopify://apps/ag-product-reviews/blocks/app-carousel-review-list/c4e1e9ca-4d46-4e76-bc39-7e42417cb327",
+          "settings": {
+            "air_carouselreviews_carouselHeading": "See what our customers said"
+          }
+        }
+      },
+      "block_order": [
+        "ag_product_reviews_app_carousel_review_list_BqaPKA"
+      ],
       "settings": {}
     }
   },

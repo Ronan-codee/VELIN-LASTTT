@@ -14,6 +14,10 @@
       "disabled": true,
       "settings": {}
     },
+    "178992380573ac12ec": {
+      "type": "apps",
+      "settings": {}
+    },
     "velin_product_dc01": {
       "type": "velin-product",
       "blocks": {
@@ -173,12 +177,6 @@
         "fallback_color": "#201e50",
         "overlay_opacity": 30,
         "banner_height": 500
-      }
-    },
-    "ugc_dc01": {
-      "type": "video-stories",
-      "settings": {
-        "title": "Vu Sur Les Réseaux"
       }
     },
     "compare_dc01": {
@@ -398,19 +396,24 @@
         "ag_product_reviews_app_block_review_list_dc01"
       ],
       "settings": {}
+    },
+    "17899235353106eda4": {
+      "type": "apps",
+      "settings": {}
     }
   },
   "order": [
     "main",
+    "178992380573ac12ec",
     "velin_product_dc01",
     "17899222886bf9ab21",
     "video_hero_dc01",
-    "ugc_dc01",
     "compare_dc01",
     "material_story_dc01",
     "benefits_coton_dc01",
     "freshness_dc01",
     "benefits_pourquoi_dc01",
-    "reviews_dc01"
+    "reviews_dc01",
+    "17899235353106eda4"
   ]
 }

@@ -1,0 +1,91 @@
+{% doc %}
+  @prompt
+    Créer un bloc pour la page produit qui masque uniquement sur ordinateur le carrousel de miniatures de la galerie photo de la section produit « Velin Product Page », tout en conservant la galerie principale et l’affichage mobile totalement inchangés. Le masquage doit s’appliquer proprement aux écrans d’ordinateur, sans laisser d’espace vide à la place des miniatures et sans modifier les autres éléments de la page., j'ai encore le carroussel
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-hide-product-thumbnails-{{ ai_gen_id }} {
+    display: block;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    height: 0;
+    overflow: hidden;
+  }
+
+  @media screen and (min-width: 750px) {
+    .ai-product-thumbnails-hidden-{{ ai_gen_id }} .ai-thumbnail-target-{{ ai_gen_id }} {
+      display: none !important;
+    }
+  }
+{% endstyle %}
+
+<product-thumbnail-visibility-{{ ai_gen_id }}
+  class="ai-hide-product-thumbnails-{{ ai_gen_id }}"
+  style="width: {{ block.settings.desktop_width_percent }}%;"
+  {{ block.shopify_attributes }}
+></product-thumbnail-visibility-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class ProductThumbnailVisibility{{ ai_gen_id }} extends HTMLElement {
+      connectedCallback() {
+        this.section = this.closest('.shopify-section');
+        if (!this.section) return;
+        this.section.classList.add('ai-product-thumbnails-hidden-{{ ai_gen_id }}');
+        this.findThumbnails();
+        this.observer = new MutationObserver(() => this.findThumbnails());
+        this.observer.observe(this.section, { childList: true, subtree: true });
+      }
+
+      disconnectedCallback() {
+        if (this.observer) this.observer.disconnect();
+      }
+
+      findThumbnails() {
+        const elements = this.section.querySelectorAll('[class], [id], [data-thumbnail], [data-media-id]');
+        elements.forEach((element) => {
+          if (element === this || element.contains(this)) return;
+          const identity = ((element.className && element.className.toString()) + ' ' + (element.id || '')).toLowerCase();
+          const isThumbnail = identity.includes('thumbnail') || identity.includes('thumb-') || identity.includes('thumb_');
+          const isInsideGallery = element.closest('.product__media-wrapper, .product-media-wrapper, [class*="media-wrapper"], [class*="gallery"], [data-media-gallery]');
+          const isMainMedia = identity.includes('media-list') || identity.includes('media-gallery') || identity.includes('main-media');
+
+          if (isThumbnail && isInsideGallery && !isMainMedia) {
+            const target = element.matches('li, ol, ul, button') ? element : element.closest('li, ol, ul') || element;
+            target.classList.add('ai-thumbnail-target-{{ ai_gen_id }}');
+          }
+        });
+      }
+    }
+
+    if (!customElements.get('product-thumbnail-visibility-{{ ai_gen_id }}')) {
+      customElements.define('product-thumbnail-visibility-{{ ai_gen_id }}', ProductThumbnailVisibility{{ ai_gen_id }});
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Masquer les miniatures",
+  "settings": [
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Largeur ordinateur",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    }
+  ],
+  "presets": [
+    {
+      "name": "Masquer les miniatures"
+    }
+  ],
+  "tag": null,
+  "class": "ai-product-thumbnail-visibility-block"
+}
+{% endschema %}

@@ -449,6 +449,7 @@
     {% endif %}
 
     {%- comment -%} ---------- Free shipping line ---------- {%- endcomment -%}
+    {% unless section.settings.hide_native_purchase %}
     {% if section.settings.show_free_shipping and section.settings.free_shipping_text != blank %}
       <div class="velin-pdp__free-shipping" data-free-shipping>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -476,6 +477,7 @@
         {% if product.selected_or_first_available_variant.available %}{{ section.settings.atc_text }}{% else %}{{ 'products.product.sold_out' | t }}{% endif %}
       </button>
     {%- endform -%}
+    {% endunless %}
 
     {%- comment -%} ---------- Stock bar ---------- {%- endcomment -%}
     {% if section.settings.show_stock %}
@@ -493,7 +495,7 @@
     {% endif %}
 
     {%- comment -%} ---------- Trust strip (3 icons) — used when trust_item_* are set ---------- {%- endcomment -%}
-    {% if section.settings.trust_item_1 != blank or section.settings.trust_item_2 != blank or section.settings.trust_item_3 != blank %}
+    {% if section.settings.trust_item_1 != blank or section.settings.trust_item_2 != blank or section.settings.trust_item_3 != blank or section.settings.trust_item_4 != blank %}
       <div class="velin-pdp__trust-strip">
         {% if section.settings.trust_item_1 != blank %}
           <div class="velin-pdp__trust-item">
@@ -511,6 +513,12 @@
           <div class="velin-pdp__trust-item">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5"></path><path d="M2 18v2M22 18v2"></path><path d="M4 11V8a2 2 0 0 1 2-2h5a2 2 0 0 1 2 2v3"></path><path d="M13 11V9.5a1.5 1.5 0 0 1 1.5-1.5H18a2 2 0 0 1 2 2v1"></path></svg>
             <span>{{ section.settings.trust_item_3 }}</span>
+          </div>
+        {% endif %}
+        {% if section.settings.trust_item_4 != blank %}
+          <div class="velin-pdp__trust-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+            <span>{{ section.settings.trust_item_4 }}</span>
           </div>
         {% endif %}
       </div>
@@ -651,6 +659,7 @@
   <script type="application/json" data-pdp-color-media>{{ color_media_map }}</script>
 </div>
 
+{% unless section.settings.hide_native_purchase %}
 <div class="velin-pdp__sticky-atc" data-sticky-atc>
   <div class="velin-pdp__sticky-atc-inner">
     <div class="velin-pdp__sticky-atc-info">
@@ -670,6 +679,7 @@
     >{{ section.settings.atc_text }}</button>
   </div>
 </div>
+{% endunless %}
 
 <style>
   .velin-pdp {
@@ -2435,6 +2445,7 @@ if (compareEl) {
     { "type": "text", "id": "size_label", "label": "Size label", "default": "Taille" },
     { "type": "text", "id": "size_option_name", "label": "Product option name (lowercase)", "default": "taille" },
     { "type": "header", "content": "Add to cart" },
+    { "type": "checkbox", "id": "hide_native_purchase", "label": "Hide native buy box (bundle app handles purchase)", "default": false },
     { "type": "checkbox", "id": "show_free_shipping", "label": "Show free shipping line above the button", "default": true },
     { "type": "text", "id": "free_shipping_text", "label": "Free shipping text", "default": "Livraison gratuite" },
     { "type": "text", "id": "atc_text", "label": "Button text", "default": "AJOUTER AU PANIER" },
@@ -2453,6 +2464,7 @@ if (compareEl) {
     { "type": "text", "id": "trust_item_1", "label": "Item 1" },
     { "type": "text", "id": "trust_item_2", "label": "Item 2" },
     { "type": "text", "id": "trust_item_3", "label": "Item 3" },
+    { "type": "text", "id": "trust_item_4", "label": "Item 4" },
     { "type": "header", "content": "Guarantee" },
     { "type": "image_picker", "id": "guarantee_image", "label": "Badge image" },
     { "type": "text", "id": "guarantee_heading", "label": "Heading", "default": "Satisfait Ou  Remboursé Sous 30  Jours" },

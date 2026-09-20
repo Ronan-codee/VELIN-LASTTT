@@ -14,6 +14,10 @@
       "disabled": true,
       "settings": {}
     },
+    "178992380573ac12ec": {
+      "type": "apps",
+      "settings": {}
+    },
     "velin_product_dc01": {
       "type": "velin-product",
       "blocks": {
@@ -170,16 +174,10 @@
     "video_hero_dc01": {
       "type": "video-banner",
       "settings": {
-        "banner_video": "shopify://files/videos/0920.mp4",
+        "banner_video": "shopify://files/videos/1080p.mp4",
         "fallback_color": "#201e50",
         "overlay_opacity": 30,
         "banner_height": 500
-      }
-    },
-    "ugc_dc01": {
-      "type": "video-stories",
-      "settings": {
-        "title": "Vu Sur Les Réseaux"
       }
     },
     "compare_dc01": {
@@ -247,6 +245,7 @@
     "material_story_dc01": {
       "type": "image-with-text",
       "settings": {
+        "image": "shopify://shop_images/ChatGPT_Image_20_sept._2026_15_59_03.png",
         "image_position": "right",
         "image_fit": "crop",
         "image_width": 505,
@@ -307,6 +306,7 @@
         "card_dc01c"
       ],
       "settings": {
+        "image": "shopify://shop_images/ChatGPT-Image-20-sept.-2026_-16_08_03.webp",
         "fallback_color": "#201e50",
         "min_height": 480,
         "eyebrow": "VELIN",
@@ -316,6 +316,7 @@
     "freshness_dc01": {
       "type": "image-with-text",
       "settings": {
+        "image": "shopify://shop_images/ChatGPT_Image_20_sept._2026_15_59_14.png",
         "image_position": "left",
         "image_fit": "crop",
         "image_width": 505,
@@ -376,6 +377,7 @@
         "card_dc01f"
       ],
       "settings": {
+        "image": "shopify://shop_images/ChatGPT_Image_20_sept._2026_16_00_57.png",
         "fallback_color": "#201e50",
         "min_height": 480,
         "eyebrow": "VELIN",
@@ -399,19 +401,24 @@
         "ag_product_reviews_app_block_review_list_dc01"
       ],
       "settings": {}
+    },
+    "17899235353106eda4": {
+      "type": "apps",
+      "settings": {}
     }
   },
   "order": [
     "main",
+    "178992380573ac12ec",
     "velin_product_dc01",
     "17899222886bf9ab21",
     "video_hero_dc01",
-    "ugc_dc01",
     "compare_dc01",
     "material_story_dc01",
     "benefits_coton_dc01",
     "freshness_dc01",
     "benefits_pourquoi_dc01",
-    "reviews_dc01"
+    "reviews_dc01",
+    "17899235353106eda4"
   ]
 }

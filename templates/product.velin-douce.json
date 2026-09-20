@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
@@ -99,8 +108,6 @@
         "launch_offer_text": "",
         "launch_offer_bg": "#201E50",
         "launch_offer_color": "#ffffff",
-        "accent_color": "#201E50",
-        "accent_color_soft": "#00B77F",
         "show_installments": true,
         "installment_count": 3,
         "payment_icon_size": 24,
@@ -110,6 +117,8 @@
         "color_label": "Couleur",
         "color_option_name": "couleur",
         "color_map": "Noir:#000000\nBrun:#AA8870\nVert:#026465\nBleu:#00475D\nRouge:#B3001B\nBeige:#D8C7B2\nBlanc:#FFFFFF\nGris:#8E8E8E",
+        "accent_color": "#201E50",
+        "accent_color_soft": "#00B77F",
         "size_label": "Taille",
         "size_option_name": "taille",
         "show_free_shipping": true,
@@ -125,9 +134,6 @@
         "stock_bar_color": "#201E50",
         "countdown_label": "Fin Dans",
         "countdown_hours": 47,
-        "trust_item_1": "30 Jours Pour Changer d'Avis",
-        "trust_item_2": "Expédiée Sous 24-48h",
-        "trust_item_3": "Lit Fait En Un Geste",
         "approved_heading": "Ils Ont Adopté Velin",
         "video_card_width": 160,
         "video_card_height": 250,
@@ -139,7 +145,6 @@
     "video_hero_dc01": {
       "type": "video-banner",
       "settings": {
-        "banner_video": "",
         "fallback_color": "#201E50",
         "overlay_opacity": 30,
         "banner_height": 500
@@ -154,14 +159,57 @@
     "compare_dc01": {
       "type": "velin-comparison-table",
       "blocks": {
-        "row_dc01a": { "type": "comparison_row", "settings": { "label": "Gain de temps au quotidien", "theirs_state": "cross" } },
-        "row_dc01b": { "type": "comparison_row", "settings": { "label": "Couette fixée à la housse", "theirs_state": "cross" } },
-        "row_dc01c": { "type": "comparison_row", "settings": { "label": "Lavable en une seule fois", "theirs_state": "cross" } },
-        "row_dc01d": { "type": "comparison_row", "settings": { "label": "Moins d'acariens et d'odeurs", "theirs_state": "cross" } },
-        "row_dc01e": { "type": "comparison_row", "settings": { "label": "Séchage plus rapide", "theirs_state": "cross" } },
-        "row_dc01f": { "type": "comparison_row", "settings": { "label": "Plusieurs tailles disponibles", "theirs_state": "check" } }
+        "row_dc01a": {
+          "type": "comparison_row",
+          "settings": {
+            "label": "Gain de temps au quotidien",
+            "theirs_state": "cross"
+          }
+        },
+        "row_dc01b": {
+          "type": "comparison_row",
+          "settings": {
+            "label": "Couette fixée à la housse",
+            "theirs_state": "cross"
+          }
+        },
+        "row_dc01c": {
+          "type": "comparison_row",
+          "settings": {
+            "label": "Lavable en une seule fois",
+            "theirs_state": "cross"
+          }
+        },
+        "row_dc01d": {
+          "type": "comparison_row",
+          "settings": {
+            "label": "Moins d'acariens et d'odeurs",
+            "theirs_state": "cross"
+          }
+        },
+        "row_dc01e": {
+          "type": "comparison_row",
+          "settings": {
+            "label": "Séchage plus rapide",
+            "theirs_state": "cross"
+          }
+        },
+        "row_dc01f": {
+          "type": "comparison_row",
+          "settings": {
+            "label": "Plusieurs tailles disponibles",
+            "theirs_state": "check"
+          }
+        }
       },
-      "block_order": ["row_dc01a", "row_dc01b", "row_dc01c", "row_dc01d", "row_dc01e", "row_dc01f"],
+      "block_order": [
+        "row_dc01a",
+        "row_dc01b",
+        "row_dc01c",
+        "row_dc01d",
+        "row_dc01e",
+        "row_dc01f"
+      ],
       "settings": {
         "eyebrow": "LE COMPARATIF",
         "heading": "Gagnez Du Temps, Tous Les Jours",
@@ -228,7 +276,11 @@
           }
         }
       },
-      "block_order": ["card_dc01a", "card_dc01b", "card_dc01c"],
+      "block_order": [
+        "card_dc01a",
+        "card_dc01b",
+        "card_dc01c"
+      ],
       "settings": {
         "image": "",
         "fallback_color": "#201E50",
@@ -295,7 +347,11 @@
           }
         }
       },
-      "block_order": ["card_dc01d", "card_dc01e", "card_dc01f"],
+      "block_order": [
+        "card_dc01d",
+        "card_dc01e",
+        "card_dc01f"
+      ],
       "settings": {
         "image": "",
         "fallback_color": "#201E50",

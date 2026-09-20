@@ -878,6 +878,12 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
     }
+
+    {% if section.settings.show_media_grid %}
+      .velin-pdp__thumbs {
+        display: none;
+      }
+    {% endif %}
   }
 
   .velin-pdp__media-grid-img {

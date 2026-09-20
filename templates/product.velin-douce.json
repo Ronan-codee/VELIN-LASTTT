@@ -61,16 +61,8 @@
           "type": "faq_item",
           "settings": {
             "question": "Quel entretien pour Velin ?",
-            "answer": "L'ensemble se lave en machine à 30°C. Nous recommandons un cycle délicat et un séchage à basse température pour préserver le gonflant et la douceur de la couette sur la durée.",
+            "answer": "L'ensemble se lave en machine à 30 ou 40°C. Nous recommandons un cycle délicat et un séchage à l'air libre.",
             "icon_type": "washer"
-          }
-        },
-        "faq_item_dc01c": {
-          "type": "faq_item",
-          "settings": {
-            "question": "Expédition et livraison",
-            "answer": "Nous préparons votre commande avec soin sous 24 à 48 heures ouvrées. Le délai de livraison varie ensuite selon votre lieu de résidence. Un numéro de suivi vous est communiqué dès l'expédition afin de pouvoir suivre votre colis.",
-            "icon_type": "truck"
           }
         },
         "faq_item_dc01d": {
@@ -89,7 +81,6 @@
         "chip_dc01d",
         "faq_item_dc01a",
         "faq_item_dc01b",
-        "faq_item_dc01c",
         "faq_item_dc01d"
       ],
       "name": "Velin Product Page",

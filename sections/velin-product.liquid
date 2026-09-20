@@ -8,7 +8,7 @@
       assign color_option_index = forloop.index0
       assign color_option = option
     endif
-  endfor f4f4
+  endfor
   assign map_lines = section.settings.color_map | strip | newline_to_br | split: '<br />'
 
   assign size_option_index = -1

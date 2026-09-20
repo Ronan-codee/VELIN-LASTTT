@@ -156,7 +156,7 @@
           <path fill="#1DA1F2" d="M12 0l2.3 1.6 2.8-.4 1.6 2.3 2.8.8.4 2.8 2.3 1.6-.8 2.8.8 2.8-2.3 1.6-.4 2.8-2.8.8-1.6 2.3-2.8-.4L12 24l-2.3-1.6-2.8.4-1.6-2.3-2.8-.8-.4-2.8L0 15.2l.8-2.8L0 9.6 2.3 8l.4-2.8 2.8-.8L7.1 2l2.8.4L12 0z"/>
           <path d="M8.8 12.3l2.1 2.1 4.6-4.6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        <span class="velin-pdp__social-text"><strong>+3 000 Clients</strong> dorment mieux avec Velin</span>
+        <span class="velin-pdp__social-text"><strong>+3 000 Clients</strong><span>dorment mieux avec Velin</span></span>
       </div>
     {% endif %}
 
@@ -936,6 +936,9 @@
   }
 
   .velin-pdp__social-text {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
     font-weight: 700;
     font-size: 16px;
     line-height: 100%;

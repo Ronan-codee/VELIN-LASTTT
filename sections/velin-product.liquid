@@ -636,12 +636,36 @@
     {%- assign show_description_faq = false -%}
     {% if section.settings.show_description_faq and product.description != blank %}{% assign show_description_faq = true %}{% endif %}
     {% if has_faq or show_description_faq %}
-      <div class="velin-faq">
+      <div class="velin-faq{% if section.settings.faq_pill_style %} velin-faq--pill{% endif %}">
         {% if show_description_faq %}
           <div class="velin-faq__item" data-faq-default-open>
             <button type="button" class="velin-faq__row" data-faq-toggle>
+              {% if section.settings.faq_pill_style %}
+                <span class="velin-faq__icon">
+                  {% case section.settings.description_faq_icon %}
+                    {% when 'book' %}
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                    {% when 'sliders' %}
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7"></path><path d="M4 10V3"></path><path d="M12 21v-9"></path><path d="M12 8V3"></path><path d="M20 21v-5"></path><path d="M20 12V3"></path><path d="M1 14h6"></path><path d="M9 8h6"></path><path d="M17 16h6"></path></svg>
+                    {% when 'washer' %}
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="2" width="18" height="20" rx="2"></rect><circle cx="12" cy="13" r="6"></circle></svg>
+                    {% when 'season' %}
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"></path></svg>
+                    {% when 'truck' %}
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                    {% when 'return' %}
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"></path><path d="M21 17a9 9 0 0 0-15-6.7L3 13"></path></svg>
+                    {% when 'star' %}
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                  {% endcase %}
+                </span>
+              {% endif %}
               <p class="velin-faq__question">{{ section.settings.description_faq_label }}</p>
-              <span class="velin-faq__plus" data-faq-plus></span>
+              {% if section.settings.faq_pill_style %}
+                <span class="velin-faq__chevron" data-faq-chevron><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+              {% else %}
+                <span class="velin-faq__plus" data-faq-plus></span>
+              {% endif %}
             </button>
             <div class="velin-faq__divider"></div>
             <div class="velin-faq__answer" data-faq-answer>
@@ -655,8 +679,32 @@
           {% if block.type == 'faq_item' %}
             <div class="velin-faq__item" {{ block.shopify_attributes }}>
               <button type="button" class="velin-faq__row" data-faq-toggle>
+                {% if section.settings.faq_pill_style %}
+                  <span class="velin-faq__icon">
+                    {% case block.settings.icon_type %}
+                      {% when 'book' %}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                      {% when 'sliders' %}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7"></path><path d="M4 10V3"></path><path d="M12 21v-9"></path><path d="M12 8V3"></path><path d="M20 21v-5"></path><path d="M20 12V3"></path><path d="M1 14h6"></path><path d="M9 8h6"></path><path d="M17 16h6"></path></svg>
+                      {% when 'washer' %}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="2" width="18" height="20" rx="2"></rect><circle cx="12" cy="13" r="6"></circle></svg>
+                      {% when 'season' %}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"></path></svg>
+                      {% when 'truck' %}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                      {% when 'return' %}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"></path><path d="M21 17a9 9 0 0 0-15-6.7L3 13"></path></svg>
+                      {% when 'star' %}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    {% endcase %}
+                  </span>
+                {% endif %}
                 <p class="velin-faq__question">{{ block.settings.question }}</p>
-                <span class="velin-faq__plus" data-faq-plus></span>
+                {% if section.settings.faq_pill_style %}
+                  <span class="velin-faq__chevron" data-faq-chevron><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                {% else %}
+                  <span class="velin-faq__plus" data-faq-plus></span>
+                {% endif %}
               </button>
               <div class="velin-faq__divider"></div>
               <div class="velin-faq__answer" data-faq-answer>
@@ -1711,6 +1759,69 @@
   opacity: 0;
 }
 
+.velin-faq__icon{
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  color: {{ section.settings.accent_color }};
+}
+
+.velin-faq__icon svg{
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.velin-faq__chevron{
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  color: {{ section.settings.accent_color }};
+  transition: transform 0.2s ease;
+}
+
+.velin-faq__chevron svg{
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.velin-faq__item.is-open .velin-faq__chevron{
+  transform: rotate(180deg);
+}
+
+.velin-faq--pill{
+  gap: 10px;
+}
+
+.velin-faq--pill .velin-faq__item{
+  border-radius: 12px;
+  background: #EEF1FB;
+  overflow: hidden;
+}
+
+.velin-faq--pill .velin-faq__row{
+  height: auto;
+  padding: 16px 18px;
+  gap: 12px;
+}
+
+.velin-faq--pill .velin-faq__question{
+  flex: 1 1 auto;
+  text-transform: none;
+  font-weight: 700;
+  color: {{ section.settings.accent_color }};
+  font-size: 15px;
+}
+
+.velin-faq--pill .velin-faq__divider{
+  display: none;
+}
+
+.velin-faq--pill .velin-faq__answer-inner{
+  padding: 0 18px 16px;
+}
+
 .velin-faq__divider{
   width: 100%;
   height: 0;
@@ -2515,7 +2626,23 @@ if (compareEl) {
 { "type": "range", "id": "video_gap", "label": "Gap between videos (px)", "min": 0, "max": 40, "step": 1, "default": 16 },
 { "type": "header", "content": "FAQ" },
 { "type": "checkbox", "id": "show_description_faq", "label": "Add a \"Description\" accordion item at the top", "default": true, "info": "Pulls the product's Description field automatically — edit it on the product page in Shopify admin and it updates here too." },
-{ "type": "text", "id": "description_faq_label", "label": "Description accordion label", "default": "Description" }
+{ "type": "text", "id": "description_faq_label", "label": "Description accordion label", "default": "Description" },
+{ "type": "checkbox", "id": "faq_pill_style", "label": "Show FAQ as icon pills instead of a plain list", "default": false },
+{
+  "type": "select",
+  "id": "description_faq_icon",
+  "label": "Description item icon (pill style)",
+  "options": [
+    { "value": "book", "label": "Book" },
+    { "value": "sliders", "label": "Sliders" },
+    { "value": "washer", "label": "Washer" },
+    { "value": "season", "label": "Thermometer" },
+    { "value": "truck", "label": "Truck" },
+    { "value": "return", "label": "Return arrow" },
+    { "value": "star", "label": "Star" }
+  ],
+  "default": "book"
+}
   ],
   "blocks": [
     {
@@ -2579,7 +2706,23 @@ if (compareEl) {
   "name": "FAQ item",
   "settings": [
     { "type": "text", "id": "question", "label": "Question", "default": "Comment ce sac est-il fabriqué ?" },
-    { "type": "textarea", "id": "answer", "label": "Answer", "default": "Chaque sac est fabriqué à la main avec un cuir premium sélectionné avec soin." }
+    { "type": "textarea", "id": "answer", "label": "Answer", "default": "Chaque sac est fabriqué à la main avec un cuir premium sélectionné avec soin." },
+    {
+      "type": "select",
+      "id": "icon_type",
+      "label": "Icon (pill style)",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "book", "label": "Book" },
+        { "value": "sliders", "label": "Sliders" },
+        { "value": "washer", "label": "Washer" },
+        { "value": "season", "label": "Thermometer" },
+        { "value": "truck", "label": "Truck" },
+        { "value": "return", "label": "Return arrow" },
+        { "value": "star", "label": "Star" }
+      ],
+      "default": "none"
+    }
   ]
 }
 

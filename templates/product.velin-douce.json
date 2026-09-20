@@ -53,28 +53,32 @@
           "type": "faq_item",
           "settings": {
             "question": "Comment fonctionne la housse de couette 2-en-1 ?",
-            "answer": "La couette est intégrée directement à l'intérieur de la housse et fixée par des attaches internes, pour ne plus jamais avoir à emboîter une couette dans sa housse. Un coup pour l'étaler, et c'est fait."
+            "answer": "La couette est intégrée directement à l'intérieur de la housse et fixée par des attaches internes, pour ne plus jamais avoir à emboîter une couette dans sa housse. Un coup pour l'étaler, et c'est fait.",
+            "icon_type": "sliders"
           }
         },
         "faq_item_dc01b": {
           "type": "faq_item",
           "settings": {
             "question": "Quel entretien pour Velin ?",
-            "answer": "L'ensemble se lave en machine à 30°C. Nous recommandons un cycle délicat et un séchage à basse température pour préserver le gonflant et la douceur de la couette sur la durée."
+            "answer": "L'ensemble se lave en machine à 30°C. Nous recommandons un cycle délicat et un séchage à basse température pour préserver le gonflant et la douceur de la couette sur la durée.",
+            "icon_type": "washer"
           }
         },
         "faq_item_dc01c": {
           "type": "faq_item",
           "settings": {
             "question": "Expédition et livraison",
-            "answer": "Nous préparons votre commande avec soin sous 24 à 48 heures ouvrées. Le délai de livraison varie ensuite selon votre lieu de résidence. Un numéro de suivi vous est communiqué dès l'expédition afin de pouvoir suivre votre colis."
+            "answer": "Nous préparons votre commande avec soin sous 24 à 48 heures ouvrées. Le délai de livraison varie ensuite selon votre lieu de résidence. Un numéro de suivi vous est communiqué dès l'expédition afin de pouvoir suivre votre colis.",
+            "icon_type": "truck"
           }
         },
         "faq_item_dc01d": {
           "type": "faq_item",
           "settings": {
             "question": "Retours et remboursements",
-            "answer": "Vous disposez d'un délai de 30 jours après réception de votre commande pour exercer votre droit de rétractation. Le produit doit être retourné dans son état d'origine, non utilisé et dans son emballage d'origine. Le remboursement est effectué selon le mode de paiement utilisé lors de l'achat."
+            "answer": "Vous disposez d'un délai de 30 jours après réception de votre commande pour exercer votre droit de rétractation. Le produit doit être retourné dans son état d'origine, non utilisé et dans son emballage d'origine. Le remboursement est effectué selon le mode de paiement utilisé lors de l'achat.",
+            "icon_type": "return"
           }
         }
       },
@@ -154,7 +158,9 @@
         "video_card_height": 250,
         "video_gap": 16,
         "show_description_faq": true,
-        "description_faq_label": "Description"
+        "description_faq_label": "Description",
+        "faq_pill_style": true,
+        "description_faq_icon": "book"
       }
     },
     "17899222886bf9ab21": {

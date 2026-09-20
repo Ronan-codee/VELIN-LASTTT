@@ -123,6 +123,17 @@
         {% endif %}
       {% endfor %}
     </div>
+
+    {%- comment -%} ---------- Extra photos grid (desktop only), shown below the main image as the page scrolls ---------- {%- endcomment -%}
+    {% if section.settings.show_media_grid and product.media.size > 1 %}
+      <div class="velin-pdp__media-grid" style="gap: {{ section.settings.media_gap }}px;">
+        {% for media in product.media offset: 1 %}
+          {% if media.media_type == 'image' %}
+            <img src="{{ media | image_url: width: 1200 }}" alt="{{ media.alt | escape }}" loading="lazy" class="velin-pdp__media-grid-img">
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
   </div>
 
   {%- comment -%} ---------- RIGHT: info ---------- {%- endcomment -%}
@@ -812,6 +823,25 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
+  }
+
+  .velin-pdp__media-grid {
+    display: none;
+  }
+
+  @media screen and (min-width: 1101px) {
+    .velin-pdp__media-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .velin-pdp__media-grid-img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 8px;
     display: block;
   }
 
@@ -2395,6 +2425,7 @@ if (compareEl) {
     { "type": "range", "id": "media_gap", "label": "Gap image to thumbnails (px)", "min": 0, "max": 80, "step": 2, "default": 40 },
     { "type": "range", "id": "thumbs_height", "label": "Thumbnails height (px)", "min": 60, "max": 200, "step": 5, "default": 105 },
     { "type": "range", "id": "thumbs_gap", "label": "Gap between thumbnails (px)", "min": 0, "max": 60, "step": 1, "default": 21 },
+    { "type": "checkbox", "id": "show_media_grid", "label": "Show extra photos in a grid below (desktop)", "default": false },
     { "type": "header", "content": "Text column (right)" },
     { "type": "range", "id": "info_width", "label": "Text column width (px)", "min": 300, "max": 800, "step": 5, "default": 610 },
     { "type": "range", "id": "info_gap", "label": "Gap between elements (px)", "min": 0, "max": 80, "step": 2, "default": 14 },

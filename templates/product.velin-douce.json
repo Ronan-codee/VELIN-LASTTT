@@ -125,7 +125,6 @@
         "accent_color_soft": "#00B77F",
         "size_label": "Taille",
         "size_option_name": "taille",
-        "hide_atc_button": true,
         "show_free_shipping": false,
         "free_shipping_text": "Livraison gratuite",
         "atc_text": "AJOUTER AU PANIER",

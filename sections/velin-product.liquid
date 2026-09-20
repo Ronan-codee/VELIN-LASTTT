@@ -8,7 +8,7 @@
       assign color_option_index = forloop.index0
       assign color_option = option
     endif
-  endfor
+  endfor f4f4
   assign map_lines = section.settings.color_map | strip | newline_to_br | split: '<br />'
 
   assign size_option_index = -1
@@ -469,7 +469,7 @@
       <button
         type="submit"
         class="velin-pdp__atc"
-        style="background: {{ section.settings.atc_bg }}; color: {{ section.settings.atc_color }};{% if section.settings.hide_atc_button %} display: none;{% endif %}"
+        style="background: {{ section.settings.atc_bg }}; color: {{ section.settings.atc_color }};"
         data-atc-text="{{ section.settings.atc_text | escape }}"
         data-sold-out-text="{{ 'products.product.sold_out' | t | escape }}"
         {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %}
@@ -2446,7 +2446,6 @@ if (compareEl) {
     { "type": "text", "id": "size_option_name", "label": "Product option name (lowercase)", "default": "taille" },
     { "type": "header", "content": "Add to cart" },
     { "type": "checkbox", "id": "hide_native_purchase", "label": "Hide native buy box (bundle app handles purchase)", "default": false },
-    { "type": "checkbox", "id": "hide_atc_button", "label": "Hide Add to cart button only (keeps the form for bundle apps that hook into it)", "default": false },
     { "type": "checkbox", "id": "show_free_shipping", "label": "Show free shipping line above the button", "default": true },
     { "type": "text", "id": "free_shipping_text", "label": "Free shipping text", "default": "Livraison gratuite" },
     { "type": "text", "id": "atc_text", "label": "Button text", "default": "AJOUTER AU PANIER" },

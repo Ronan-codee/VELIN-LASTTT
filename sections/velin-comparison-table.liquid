@@ -1,6 +1,15 @@
 {% comment %} Velin - Comparison table (us vs. traditional), styled after the competitor's chart layout {% endcomment %}
 
 <section class="velin-comptable">
+  <img
+    class="velin-comptable__watermark"
+    src="{{ 'velin-wordmark-watermark.webp' | asset_url }}"
+    alt=""
+    loading="lazy"
+    width="2000"
+    height="667"
+  >
+
   <div class="velin-comptable__intro">
     {% if section.settings.eyebrow != blank %}
       <p class="velin-comptable__eyebrow">{{ section.settings.eyebrow }}</p>
@@ -25,7 +34,14 @@
 
     <div class="velin-comptable__col velin-comptable__col--ours">
       <div class="velin-comptable__cell velin-comptable__cell--head">
-        <span class="velin-comptable__brand">{{ section.settings.ours_label }}</span>
+        <img
+          class="velin-comptable__brand-logo"
+          src="{{ 'velin-logo-white.png' | asset_url }}"
+          alt="{{ section.settings.ours_label }}"
+          loading="lazy"
+          width="99"
+          height="33"
+        >
       </div>
       {% for block in section.blocks %}
         {% if block.type == 'comparison_row' %}
@@ -63,15 +79,32 @@
 
 <style>
   .velin-comptable {
+    position: relative;
     max-width: 1234px;
     margin: 0 auto;
     padding: 80px 20px;
     box-sizing: border-box;
     text-align: center;
     font-family: 'Merriweather', serif;
+    overflow: hidden;
+  }
+
+  .velin-comptable__watermark {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 900px;
+    height: auto;
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
   }
 
   .velin-comptable__intro {
+    position: relative;
+    z-index: 1;
     max-width: 640px;
     margin: 0 auto 40px;
   }
@@ -104,6 +137,8 @@
   }
 
   .velin-comptable__grid {
+    position: relative;
+    z-index: 1;
     display: flex;
     justify-content: center;
     align-items: stretch;
@@ -166,11 +201,16 @@
     font-weight: 700;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: #fff;
   }
 
   .velin-comptable__brand--muted {
     color: rgba(0, 0, 0, 0.4);
+  }
+
+  .velin-comptable__brand-logo {
+    display: block;
+    width: auto;
+    height: 18px;
   }
 
   .velin-comptable__mark--check {
@@ -207,6 +247,13 @@
     .velin-comptable__cell {
       font-size: 12px;
       height: 42px;
+    }
+    .velin-comptable__watermark {
+      width: 140%;
+      max-width: none;
+    }
+    .velin-comptable__brand-logo {
+      height: 15px;
     }
   }
 </style>

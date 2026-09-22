@@ -1954,7 +1954,13 @@
           }
           // Cancels out the bundle widget's own bottom spacing so this
           // block sits close under it instead of leaving a large gap.
-          if (freeShippingEl) freeShippingEl.style.marginTop = "-40px";
+          // Falls back to the buy form itself when there's no separate
+          // free-shipping line to carry the negative margin.
+          if (freeShippingEl) {
+            freeShippingEl.style.marginTop = "-40px";
+          } else {
+            buyForm.style.marginTop = "-40px";
+          }
         };
         setTimeout(placeBuyBoxAboveGuarantee, 800);
         setTimeout(placeBuyBoxAboveGuarantee, 1800);

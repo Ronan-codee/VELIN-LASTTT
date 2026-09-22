@@ -2341,6 +2341,14 @@
       });
       root.querySelectorAll("[data-color-select]").forEach(function (sel) { sel.value = value; });
 
+      // Swap the photo for this color independently of variant lookup below — the photo
+      // only needs the color value, not a resolved variant, so a variant-matching problem
+      // (unmatched size, stale option data, etc.) can never block the image from updating.
+      var hasColorPhoto = colorMedia[value] && colorMedia[value].length;
+      if (hasColorPhoto) {
+        showColorMedia(value);
+      }
+
       if (colorIndex >= 0) {
         var optionKey = "option" + (colorIndex + 1);
         var sizeValueForColor = sizeIndex >= 0 ? getActiveSizeValue() : null;
@@ -2372,10 +2380,8 @@ if (compareEl) {
             el.textContent = formatMoney(variant.price * qty);
           });
 
-          // Prefer this color's full photo set (grouped by image alt text); fall back to the single variant image
-          if (colorMedia[value] && colorMedia[value].length) {
-            showColorMedia(value);
-          } else if (mainImg && variant.featured_image && variant.featured_image.src) {
+          // Fall back to the variant's own image only when this color has no dedicated photo set
+          if (!hasColorPhoto && mainImg && variant.featured_image && variant.featured_image.src) {
             showMainImage(variant.featured_image.src);
             root.querySelectorAll(".velin-pdp__thumb").forEach(function (t) { t.classList.remove("is-active"); });
           }

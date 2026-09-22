@@ -120,7 +120,7 @@
         "chip_gap": 16,
         "color_label": "Couleur",
         "color_option_name": "couleur",
-        "color_map": "Noir:#000000\nBrun:#AA8870\nVert:#026465\nBleu:#00475D\nRouge:#B3001B\nBeige:#D8C7B2\nBlanc:#FFFFFF\nGris:#8E8E8E",
+        "color_map": "Noir:#000000\nBrun:#AA8870\nMarron:#6B4A2F\nVert:#026465\nBleu:#00475D\nRouge:#B3001B\nBeige:#D8C7B2\nBlanc:#FFFFFF\nGris:#8E8E8E",
         "accent_color": "#201e50",
         "accent_color_soft": "#00b77f",
         "size_label": "Taille",

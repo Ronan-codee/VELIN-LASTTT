@@ -226,8 +226,16 @@
       <div class="velin-pdp__chips" style="gap: {{ section.settings.chip_gap }}px;">
         {% for block in section.blocks %}
           {% if block.type == 'chip' %}
-            <div class="velin-pdp__chip" style="background: {{ section.settings.chip_bg }}; font-size: {{ section.settings.chip_size }}px; width: calc(50% - {{ section.settings.chip_gap | divided_by: 2.0 }}px);" {{ block.shopify_attributes }}>
-              {{ block.settings.text }}
+            {%- assign chip_state = block.settings.state | default: 'positive' -%}
+            <div class="velin-pdp__chip velin-pdp__chip--{{ chip_state }}" style="font-size: {{ section.settings.chip_size }}px;" {{ block.shopify_attributes }}>
+              <span class="velin-pdp__chip-icon">
+                {% if chip_state == 'negative' %}
+                  <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="12" fill="#E7E9F6"/><path d="M7 12h10" stroke="#4A4E78" stroke-width="2" stroke-linecap="round"/></svg>
+                {% else %}
+                  <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="12" fill="#DCEFE1"/><path d="M12 7v10M7 12h10" stroke="#1F6D3B" stroke-width="2" stroke-linecap="round"/></svg>
+                {% endif %}
+              </span>
+              <span class="velin-pdp__chip-text">{{ block.settings.text }}</span>
             </div>
           {% endif %}
         {% endfor %}
@@ -935,17 +943,27 @@
 
   .velin-pdp__chips {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
   }
 
   .velin-pdp__chip {
-    max-width: 100%;
-    box-sizing: border-box;
-    padding: 16px 14px;
-    border-radius: 8px;
-    line-height: 100%;
-    text-transform: capitalize;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    line-height: 1.4;
+    color: #201E50;
+  }
+
+  .velin-pdp__chip-icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+  }
+
+  .velin-pdp__chip-icon svg {
+    display: block;
+    width: 100%;
+    height: 100%;
   }
 
   .velin-pdp__colors {
@@ -1288,8 +1306,12 @@
     }
 
     .velin-pdp__chip {
-      padding: 10px 8px !important;
-      font-size: 12px !important;
+      font-size: 13px !important;
+    }
+
+    .velin-pdp__chip-icon {
+      width: 20px;
+      height: 20px;
     }
   }
 
@@ -2395,8 +2417,7 @@ if (compareEl) {
     { "type": "range", "id": "installment_count", "label": "Number of installments", "min": 2, "max": 12, "step": 1, "default": 3, "info": "Amount shown is the current product price divided by this number." },
     { "type": "range", "id": "payment_icon_size", "label": "Klarna badge height (px)", "min": 14, "max": 60, "step": 1, "default": 24 },
     { "type": "header", "content": "Feature chips" },
-    { "type": "color", "id": "chip_bg", "label": "Chip background", "default": "#F7F7F7" },
-    { "type": "range", "id": "chip_size", "label": "Chip text size (px)", "min": 10, "max": 22, "step": 1, "default": 14 },
+    { "type": "range", "id": "chip_size", "label": "Chip text size (px)", "min": 10, "max": 22, "step": 1, "default": 16 },
     { "type": "range", "id": "chip_gap", "label": "Gap between chips (px)", "min": 0, "max": 40, "step": 2, "default": 16 },
     { "type": "header", "content": "Colors" },
     { "type": "text", "id": "color_label", "label": "Color label", "default": "Couleur" },
@@ -2451,7 +2472,17 @@ if (compareEl) {
       "type": "chip",
       "name": "Feature chip",
       "settings": [
-        { "type": "text", "id": "text", "label": "Text", "default": "Cuir de qualité supérieure" }
+        { "type": "text", "id": "text", "label": "Text", "default": "Cuir de qualité supérieure" },
+        {
+          "type": "select",
+          "id": "state",
+          "label": "État",
+          "options": [
+            { "value": "positive", "label": "Inclus (+)" },
+            { "value": "negative", "label": "Non inclus (−)" }
+          ],
+          "default": "positive"
+        }
       ]
     },
     {

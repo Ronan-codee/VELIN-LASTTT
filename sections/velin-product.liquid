@@ -458,6 +458,91 @@
       <div data-revy-bundle-id="{{ section.settings.revy_bundle_id }}"></div>
     {% endif %}
 
+    {%- comment -%} ---------- Size guide (bed match) ---------- {%- endcomment -%}
+    {%- assign has_size_guide = false -%}
+    {%- if section.settings.show_size_guide and size_option_index >= 0 -%}
+      {%- assign has_size_guide = true -%}
+    {%- endif -%}
+    {% if has_size_guide %}
+      <button type="button" class="velin-pdp__size-guide-trigger" data-size-guide-open>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="2" y="7" width="20" height="10" rx="1.5" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M6 7v3M10 7v2M14 7v3M18 7v2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        <span>{{ section.settings.size_guide_link_text | default: "Quelle taille me faut-il ?" }}</span>
+      </button>
+
+      <div class="velin-size-guide" data-size-guide-modal hidden>
+        <div class="velin-size-guide__overlay" data-size-guide-close></div>
+        <div class="velin-size-guide__panel" role="dialog" aria-modal="true" aria-labelledby="VelinSizeGuideTitle-{{ section.id }}">
+          <button type="button" class="velin-size-guide__close" data-size-guide-close aria-label="Fermer">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 4l16 16M20 4L4 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+          <h3 id="VelinSizeGuideTitle-{{ section.id }}" class="velin-size-guide__title">{{ section.settings.size_guide_heading | default: "Guide des tailles" }}</h3>
+          {% if section.settings.size_guide_intro != blank %}
+            <p class="velin-size-guide__intro">{{ section.settings.size_guide_intro }}</p>
+          {% endif %}
+          <div class="velin-size-guide__table-wrap">
+            <table class="velin-size-guide__table">
+              <thead>
+                <tr>
+                  <th>Taille</th>
+                  <th>Convient pour</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for value in size_option.values %}
+                  {%- liquid
+                    assign guide_key = value | remove: ' ' | downcase
+                    assign guide_bed = ''
+                    assign guide_width = ''
+                    assign guide_persons = ''
+                    case guide_key
+                      when '140x200cm'
+                        assign guide_bed = 'Lit simple'
+                        assign guide_width = '90–140 cm de large'
+                        assign guide_persons = '1 personne'
+                      when '160x210cm'
+                        assign guide_bed = 'Lit simple XL'
+                        assign guide_width = '140–160 cm de large'
+                        assign guide_persons = '1 personne'
+                      when '200x200cm'
+                        assign guide_bed = 'Lit double'
+                        assign guide_width = '140–160 cm de large'
+                        assign guide_persons = '2 personnes'
+                      when '220x240cm'
+                        assign guide_bed = 'Grand lit double'
+                        assign guide_width = '160–180 cm de large'
+                        assign guide_persons = '2 personnes'
+                      when '230x230cm'
+                        assign guide_bed = 'Grand lit double'
+                        assign guide_width = '180–200 cm de large'
+                        assign guide_persons = '2 personnes'
+                      when '230x265cm'
+                        assign guide_bed = 'Très grand lit (King)'
+                        assign guide_width = '200 cm de large et plus'
+                        assign guide_persons = '2 personnes'
+                    endcase
+                  -%}
+                  <tr data-size-guide-row="{{ value | escape }}"{% if value == size_option.selected_value %} class="is-current"{% endif %}>
+                    <td class="velin-size-guide__size">{{ value }}</td>
+                    <td class="velin-size-guide__match">
+                      {% if guide_bed != '' %}
+                        <span class="velin-size-guide__bed">{{ guide_bed }}</span>
+                        <span class="velin-size-guide__meta">{{ guide_width }} · {{ guide_persons }}</span>
+                      {% else %}
+                        <span class="velin-size-guide__bed">—</span>
+                      {% endif %}
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
     {%- comment -%} ---------- Free shipping line ---------- {%- endcomment -%}
     {% unless section.settings.hide_native_purchase %}
     {% if section.settings.show_free_shipping and section.settings.free_shipping_text != blank %}
@@ -1894,6 +1979,165 @@
       white-space: normal;
     }
   }
+
+  .velin-pdp__size-guide-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    width: fit-content;
+    margin: 2px 0 0;
+    padding: 0;
+    border: none;
+    background: none;
+    font-family: 'Merriweather', serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #000;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+
+  .velin-pdp__size-guide-trigger svg {
+    flex: 0 0 auto;
+    color: {{ section.settings.accent_color }};
+  }
+
+  .velin-size-guide {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .velin-size-guide[hidden] {
+    display: none;
+  }
+
+  .velin-size-guide__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(32, 30, 80, 0.45);
+  }
+
+  .velin-size-guide__panel {
+    position: relative;
+    width: 100%;
+    max-width: 560px;
+    max-height: 85vh;
+    overflow-y: auto;
+    background: #fff;
+    border-radius: 12px;
+    padding: 32px;
+    box-sizing: border-box;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+    font-family: 'Merriweather', serif;
+  }
+
+  .velin-size-guide__close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    background: {{ section.settings.size_guide_header_bg | default: '#201E50' }};
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .velin-size-guide__title {
+    margin: 0 0 8px;
+    font-family: 'Lusitana', serif;
+    font-weight: 400;
+    font-size: 24px;
+    text-transform: uppercase;
+    color: {{ section.settings.size_guide_header_bg | default: '#201E50' }};
+    padding-right: 32px;
+  }
+
+  .velin-size-guide__intro {
+    margin: 0 0 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: rgba(0, 0, 0, 0.7);
+  }
+
+  .velin-size-guide__table-wrap {
+    overflow-x: auto;
+    border-radius: 8px;
+    border: 1px solid rgba(32, 30, 80, 0.12);
+  }
+
+  .velin-size-guide__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  .velin-size-guide__table thead th {
+    background: {{ section.settings.size_guide_header_bg | default: '#201E50' }};
+    color: #fff;
+    text-align: left;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    padding: 12px 16px;
+    white-space: nowrap;
+  }
+
+  .velin-size-guide__table tbody tr {
+    background: #fff;
+  }
+
+  .velin-size-guide__table tbody tr:nth-child(even) {
+    background: rgba(32, 30, 80, 0.05);
+  }
+
+  .velin-size-guide__table tbody tr.is-current {
+    background: {{ section.settings.size_guide_highlight | default: '#D9A441' }}26;
+    box-shadow: inset 3px 0 0 {{ section.settings.size_guide_highlight | default: '#D9A441' }};
+  }
+
+  .velin-size-guide__table td {
+    padding: 12px 16px;
+    vertical-align: top;
+    border-top: 1px solid rgba(32, 30, 80, 0.1);
+  }
+
+  .velin-size-guide__size {
+    font-weight: 700;
+    white-space: nowrap;
+    color: {{ section.settings.size_guide_header_bg | default: '#201E50' }};
+  }
+
+  .velin-size-guide__bed {
+    display: block;
+    font-weight: 600;
+  }
+
+  .velin-size-guide__meta {
+    display: block;
+    margin-top: 2px;
+    font-size: 12.5px;
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  @media (max-width: 749px) {
+    .velin-size-guide {
+      padding: 12px;
+    }
+
+    .velin-size-guide__panel {
+      padding: 24px 20px;
+    }
+  }
 </style>
 
 <script>
@@ -2182,6 +2426,7 @@ if (compareEl) {
         p.classList.toggle("is-active", p.getAttribute("data-size-value") === value);
       });
       root.querySelectorAll("[data-size-select]").forEach(function (sel) { sel.value = value; });
+      highlightSizeGuideRow(value);
 
       if (sizeIndex < 0) return;
       var sizeKey = "option" + (sizeIndex + 1);
@@ -2233,6 +2478,34 @@ if (compareEl) {
 
     var initialSizePill = root.querySelector(".velin-pdp__size-pill.is-active") || root.querySelector(".velin-pdp__size-pill");
     if (initialSizePill) selectSize(initialSizePill.getAttribute("data-size-value"));
+
+    // Size guide modal
+    function highlightSizeGuideRow(value) {
+      root.querySelectorAll("[data-size-guide-row]").forEach(function (row) {
+        row.classList.toggle("is-current", row.getAttribute("data-size-guide-row") === value);
+      });
+    }
+
+    var sizeGuideModal = root.querySelector("[data-size-guide-modal]");
+    if (sizeGuideModal) {
+      var openSizeGuide = function () {
+        sizeGuideModal.hidden = false;
+        document.body.style.overflow = "hidden";
+      };
+      var closeSizeGuide = function () {
+        sizeGuideModal.hidden = true;
+        document.body.style.overflow = "";
+      };
+      root.querySelectorAll("[data-size-guide-open]").forEach(function (btn) {
+        btn.addEventListener("click", openSizeGuide);
+      });
+      sizeGuideModal.querySelectorAll("[data-size-guide-close]").forEach(function (el) {
+        el.addEventListener("click", closeSizeGuide);
+      });
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && !sizeGuideModal.hidden) closeSizeGuide();
+      });
+    }
 
     // Offers → quantity
     root.querySelectorAll("[data-offer]").forEach(function (offer) {
@@ -2607,6 +2880,13 @@ if (compareEl) {
     { "type": "header", "content": "Sizes" },
     { "type": "text", "id": "size_label", "label": "Size label", "default": "Taille" },
     { "type": "text", "id": "size_option_name", "label": "Product option name (lowercase)", "default": "taille" },
+    { "type": "header", "content": "Guide des tailles" },
+    { "type": "checkbox", "id": "show_size_guide", "label": "Afficher le lien \"Quelle taille me faut-il ?\"", "info": "Ouvre une fenêtre qui associe chaque taille du produit à la taille de lit correspondante.", "default": false },
+    { "type": "text", "id": "size_guide_link_text", "label": "Texte du lien", "default": "Quelle taille me faut-il ?" },
+    { "type": "text", "id": "size_guide_heading", "label": "Titre de la fenêtre", "default": "Guide des tailles" },
+    { "type": "text", "id": "size_guide_intro", "label": "Texte d'intro (optionnel)", "default": "" },
+    { "type": "color", "id": "size_guide_header_bg", "label": "Couleur d'en-tête du tableau", "default": "#201E50" },
+    { "type": "color", "id": "size_guide_highlight", "label": "Couleur de la taille sélectionnée", "default": "#D9A441" },
     { "type": "header", "content": "Add to cart" },
     { "type": "checkbox", "id": "hide_native_purchase", "label": "Hide native buy box (bundle app handles purchase)", "default": false },
     { "type": "checkbox", "id": "hide_atc_button", "label": "Hide button only (form stays, for bundle apps)", "default": false },

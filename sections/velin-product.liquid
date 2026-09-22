@@ -7,9 +7,19 @@
     if opt_down == section.settings.color_option_name or opt_down == 'couleur' or opt_down == 'color'
       assign color_option_index = forloop.index0
       assign color_option = option
-    endif 
+    endif
   endfor
   assign map_lines = section.settings.color_map | strip | newline_to_br | split: '<br />'
+
+  assign color_option_key = ''
+  case color_option_index
+    when 0
+      assign color_option_key = 'option1'
+    when 1
+      assign color_option_key = 'option2'
+    when 2
+      assign color_option_key = 'option3'
+  endcase
 
   assign size_option_index = -1
   for option in product.options_with_values
@@ -277,7 +287,7 @@
     {% if color_coll != blank %}
       {%- comment -%} Colors from a collection: same bag as separate products, one per color {%- endcomment -%}
       <div class="velin-pdp__colors">
-        <p class="velin-pdp__colors-label">{{ section.settings.color_label }}</p>
+        <p class="velin-pdp__colors-label">{{ section.settings.color_label }} : <span class="velin-pdp__colors-value">{{ product.title }}</span></p>
         <div class="velin-pdp__swatches">
           {% for p in color_coll.products %}
             {%- assign p_color = '' -%}
@@ -303,13 +313,13 @@
               style="background: {{ swatch_hex }};"
               aria-label="{{ p_color | escape }}"
               title="{{ p_color | escape }}"
-            ></a>
+            >{% if p.featured_image != blank %}<img src="{{ p.featured_image | image_url: width: 160 }}" alt="" loading="lazy">{% endif %}</a>
           {% endfor %}
         </div>
       </div>
     {% elsif color_option_index >= 0 %}
       <div class="velin-pdp__colors">
-        <p class="velin-pdp__colors-label">{{ section.settings.color_label }}</p>
+        <p class="velin-pdp__colors-label">{{ section.settings.color_label }} : <span class="velin-pdp__colors-value">{{ color_option.selected_value }}</span></p>
         <div class="velin-pdp__swatches">
           {% for value in color_option.values %}
             {%- assign swatch_hex = '' -%}
@@ -320,13 +330,22 @@
               {%- if pair_name == val_down -%}{%- assign swatch_hex = pair[1] | strip -%}{%- endif -%}
             {%- endfor -%}
             {%- if swatch_hex == '' -%}{%- assign swatch_hex = '#cccccc' -%}{%- endif -%}
+            {%- assign swatch_image = blank -%}
+            {%- if color_option_key != '' -%}
+              {%- for v in product.variants -%}
+                {%- if v[color_option_key] == value -%}
+                  {%- assign swatch_image = v.featured_image | default: product.featured_image -%}
+                  {%- break -%}
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endif -%}
             <button
               type="button"
               class="velin-pdp__swatch{% if value == color_option.selected_value %} is-active{% endif %}"
               data-color-value="{{ value | escape }}"
               style="background: {{ swatch_hex }};"
               aria-label="{{ value | escape }}"
-            ></button>
+            >{% if swatch_image != blank %}<img src="{{ swatch_image | image_url: width: 160 }}" alt="" loading="lazy">{% endif %}</button>
           {% endfor %}
         </div>
       </div>
@@ -1075,44 +1094,47 @@
 
   .velin-pdp__colors-label {
     margin: 0;
-    font-weight: 500;
+    font-weight: 700;
     font-size: 16px;
     line-height: 100%;
     text-transform: capitalize;
   }
 
+  .velin-pdp__colors-value {
+    font-weight: 400;
+  }
+
   .velin-pdp__swatches {
     display: flex;
-    gap: 4px;
+    flex-wrap: wrap;
+    gap: 10px;
   }
 
   .velin-pdp__swatch {
     position: relative;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    border: 1px solid rgba(0, 0, 0, 0.15);
+    display: block;
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
     cursor: pointer;
     padding: 0;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .velin-pdp__swatch img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   .velin-pdp__swatch.is-active {
+    border-color: {{ section.settings.accent_color }};
     outline: 2px solid {{ section.settings.accent_color }};
     outline-offset: 2px;
-  }
-
-  /* Selected swatch shows a check mark */
-  .velin-pdp__swatch.is-active::after {
-    content: "\2713";
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-size: 15px;
-    font-weight: 700;
-    text-shadow: 0 0 3px rgba(0, 0, 0, 0.7);
   }
 
   .velin-pdp__sizes {

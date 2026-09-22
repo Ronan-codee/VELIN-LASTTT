@@ -79,7 +79,11 @@
     </div>
     {% if product.media.size > 1 %}
       <div class="velin-pdp__thumbs" style="height: {{ section.settings.thumbs_height }}px; gap: {{ section.settings.thumbs_gap }}px;">
+        {%- assign is_first_thumb = true -%}
         {% for media in product.media %}
+          {%- if color_option_index >= 0 and media.media_type == 'image' and color_option.values contains media.alt -%}
+            {%- continue -%}
+          {%- endif -%}
           {%- liquid
             assign thumb_is_video = false
             if media.media_type == 'video' or media.media_type == 'external_video'
@@ -95,7 +99,7 @@
           -%}
           <button
             type="button"
-            class="velin-pdp__thumb{% if forloop.first %} is-active{% endif %}"
+            class="velin-pdp__thumb{% if is_first_thumb %} is-active{% endif %}"
             data-full="{{ thumb_full }}"
             {% if thumb_is_video %}data-video-id="{{ media.id }}"{% endif %}
             aria-label="{% if thumb_is_video %}Vidéo{% else %}Image{% endif %} {{ forloop.index }}"
@@ -107,6 +111,7 @@
               </span>
             {% endif %}
           </button>
+          {%- assign is_first_thumb = false -%}
         {% endfor %}
       </div>
     {% endif %}
@@ -128,6 +133,9 @@
     {% if section.settings.show_media_grid and product.media.size > 1 %}
       <div class="velin-pdp__media-grid" style="gap: {{ section.settings.media_gap }}px;">
         {% for media in product.media offset: 1 %}
+          {% if media.media_type == 'image' and color_option_index >= 0 and color_option.values contains media.alt %}
+            {% continue %}
+          {% endif %}
           {% if media.media_type == 'image' %}
             <img src="{{ media | image_url: width: 1200 }}" alt="{{ media.alt | escape }}" loading="lazy" class="velin-pdp__media-grid-img">
           {% endif %}

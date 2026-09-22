@@ -98,7 +98,7 @@
         "thumbs_gap": 16,
         "show_media_grid": true,
         "info_width": 480,
-        "info_gap": 14,
+        "info_gap": 6,
         "badge_text": "",
         "badge_bg": "#f8f8f8",
         "badge_size": 18,

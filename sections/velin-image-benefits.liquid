@@ -132,15 +132,10 @@
     position: relative;
     z-index: 2;
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     gap: 16px;
-    padding: 40px 24px 20px;
+    padding: 40px 24px 32px;
     margin-top: 140px;
-    max-width: 700px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
   }
 
   .velin-imgben__cards::-webkit-scrollbar {
@@ -148,7 +143,7 @@
   }
 
   .velin-imgben__card {
-    flex: 0 0 420px;
+    flex: 1 1 240px;
     scroll-snap-align: start;
     background: rgba(255, 255, 255, 0.92);
     backdrop-filter: blur(4px);
@@ -161,7 +156,7 @@
   .velin-imgben__dots {
     position: relative;
     z-index: 2;
-    display: flex;
+    display: none;
     justify-content: center;
     gap: 8px;
     padding: 0 24px 28px;
@@ -228,23 +223,23 @@
       border-radius: 0;
     }
     .velin-imgben__cards {
-      flex-direction: column;
-      flex-wrap: wrap;
-      gap: 8px;
-      padding: 28px 20px 24px;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      gap: 10px;
+      padding: 28px 20px 20px;
       margin-top: 150px;
-      max-width: 100%;
-      overflow-x: visible;
-      scroll-snap-type: none;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
     }
     .velin-imgben__card {
-      flex: 0 0 auto;
-      width: 100%;
-      scroll-snap-align: none;
+      flex: 0 0 85%;
+      scroll-snap-align: start;
       padding: 14px 16px;
     }
     .velin-imgben__dots {
-      display: none;
+      display: flex;
     }
     .velin-imgben__heading {
       font-size: 22px;
@@ -254,11 +249,11 @@
 </style>
 
 {%- comment -%}
-  Syncs the dot pagination with the desktop card carousel (mobile keeps the
-  plain stacked layout and hides the dots via CSS, so this only matters
-  above the 749px breakpoint). Guarded per-track with a data attribute since
-  this section can appear more than once on a page and this script runs
-  once per instance.
+  Syncs the dot pagination with the phone card carousel (desktop keeps the
+  plain wrapped row and hides the dots via CSS, so this only matters below
+  the 750px breakpoint). Guarded per-track with a data attribute since this
+  section can appear more than once on a page and this script runs once per
+  instance.
 {%- endcomment -%}
 <script>
   (function () {

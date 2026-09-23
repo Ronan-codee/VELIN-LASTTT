@@ -94,7 +94,7 @@
 
   {%- comment -%} ---------- LEFT: media ---------- {%- endcomment -%}
   <div class="velin-pdp__media" style="width: {{ section.settings.media_width }}px; gap: {{ section.settings.media_gap }}px;">
-    <div class="velin-pdp__main-image{% unless product.selected_or_first_available_variant.available %} is-sold-out{% endunless %}" style="height: {{ section.settings.image_height }}px; background: {{ section.settings.image_bg }};">
+    <div class="velin-pdp__main-image{% unless product.selected_or_first_available_variant.available %} is-sold-out{% endunless %}{% if section.settings.image_fit == 'cover' %} velin-pdp__main-image--cover-desktop{% endif %}" style="height: {{ section.settings.image_height }}px; background: {{ section.settings.image_bg }};">
       {% unless product.selected_or_first_available_variant.available %}
         <span class="velin-pdp__sold-out-badge">{{ 'products.product.sold_out' | t }}</span>
       {% endunless %}
@@ -918,6 +918,12 @@
 
   .velin-pdp__main-image img[hidden] {
     display: none;
+  }
+
+  @media screen and (min-width: 750px) {
+    .velin-pdp__main-image--cover-desktop img {
+      object-fit: cover;
+    }
   }
 
   .velin-pdp__main-video {
@@ -3055,6 +3061,17 @@ if (compareEl) {
     { "type": "range", "id": "media_width", "label": "Image column width (px)", "min": 300, "max": 800, "step": 5, "default": 610 },
     { "type": "range", "id": "image_height", "label": "Main image height (px)", "min": 200, "max": 800, "step": 10, "default": 480 },
     { "type": "color", "id": "image_bg", "label": "Image background", "default": "#F7F8F6" },
+    {
+      "type": "select",
+      "id": "image_fit",
+      "label": "Main image fit",
+      "info": "Cover fills the whole box edge-to-edge (cropping if needed) instead of showing the full photo with background bars.",
+      "options": [
+        { "value": "contain", "label": "Contain (show full photo, may show background bars)" },
+        { "value": "cover", "label": "Cover (fill the box completely, crop if needed)" }
+      ],
+      "default": "contain"
+    },
     { "type": "range", "id": "media_gap", "label": "Gap image to thumbnails (px)", "min": 0, "max": 80, "step": 2, "default": 40 },
     { "type": "range", "id": "thumbs_height", "label": "Thumbnails height (px)", "min": 60, "max": 200, "step": 5, "default": 105 },
     { "type": "range", "id": "thumbs_gap", "label": "Gap between thumbnails (px)", "min": 0, "max": 60, "step": 1, "default": 21 },

@@ -93,6 +93,7 @@
         "media_width": 680,
         "image_height": 460,
         "image_bg": "#ffffff",
+        "image_fit": "cover",
         "media_gap": 22,
         "thumbs_height": 105,
         "thumbs_gap": 16,

@@ -327,7 +327,9 @@
         "fallback_color": "#201e50",
         "min_height": 480,
         "eyebrow": "VELIN",
-        "heading": "Le Confort Pensé Pour Durer"
+        "heading": "Le Confort Pensé Pour Durer",
+        "show_top_wave": true,
+        "show_bottom_wave": true
       }
     },
     "freshness_dc01": {
@@ -399,6 +401,7 @@
         "min_height": 480,
         "eyebrow": "VELIN",
         "heading": "Pourquoi Choisir Velin ?",
+        "show_top_wave": true,
         "show_bottom_wave": true
       }
     },

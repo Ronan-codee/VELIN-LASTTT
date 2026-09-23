@@ -2198,7 +2198,9 @@
   }
 
   .velin-bundle-machine-note {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
     margin: 4px 0 0;
     padding: 3px 10px;
     border-radius: 999px;
@@ -2208,6 +2210,12 @@
     font-size: 12px;
     font-weight: 700;
     white-space: nowrap;
+  }
+
+  .velin-bundle-machine-note__icon {
+    flex-shrink: 0;
+    width: 13px;
+    height: 13px;
   }
 
   {%- comment -%}
@@ -2875,15 +2883,18 @@ if (compareEl) {
       return sizeToKg[normalize(opt ? opt.textContent : select.value)];
     }
 
+    var PILL_ICON_SVG = '<svg class="velin-bundle-machine-note__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="2" width="18" height="20" rx="2"></rect><circle cx="12" cy="13" r="6"></circle></svg><span data-pill-text></span>';
+
     function attachPill(select, kg) {
       var pill = select.nextElementSibling;
       if (!pill || pill.getAttribute(PILL_ATTR) !== "1") {
         pill = document.createElement("span");
         pill.setAttribute(PILL_ATTR, "1");
         pill.className = "velin-bundle-machine-note";
+        pill.innerHTML = PILL_ICON_SVG;
         select.insertAdjacentElement("afterend", pill);
       }
-      pill.textContent = "Machine " + kg;
+      pill.querySelector("[data-pill-text]").textContent = "Machine " + kg;
     }
 
     function removePill(select) {

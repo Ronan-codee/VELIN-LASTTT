@@ -195,7 +195,7 @@
           <path fill="#1DA1F2" d="M12 0l2.3 1.6 2.8-.4 1.6 2.3 2.8.8.4 2.8 2.3 1.6-.8 2.8.8 2.8-2.3 1.6-.4 2.8-2.8.8-1.6 2.3-2.8-.4L12 24l-2.3-1.6-2.8.4-1.6-2.3-2.8-.8-.4-2.8L0 15.2l.8-2.8L0 9.6 2.3 8l.4-2.8 2.8-.8L7.1 2l2.8.4L12 0z"/>
           <path d="M8.8 12.3l2.1 2.1 4.6-4.6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        <span class="velin-pdp__social-text"><span>+3 000 Clients</span><span>dorment mieux avec Velin</span></span>
+        <span class="velin-pdp__social-text"><span>+3 000 Clients</span> <span>dorment mieux avec Velin</span></span>
       </div>
     {% endif %}
 
@@ -848,6 +848,47 @@
       </div>
     {% endif %}
 
+    {%- comment -%} ---------- Size / washing-machine capacity guide ---------- {%- endcomment -%}
+    {%- if section.settings.show_size_weight_guide and size_option_index >= 0 -%}
+      <div class="velin-size-weight">
+        {% if section.settings.size_weight_heading != blank %}
+          <p class="velin-size-weight__heading">{{ section.settings.size_weight_heading }}</p>
+        {% endif %}
+        <div class="velin-size-weight__cols">
+          <div class="velin-size-weight__col">
+            <p class="velin-size-weight__col-title">Dimensions</p>
+            {% for value in size_option.values %}
+              <span class="velin-size-weight__pill">{{ value }}</span>
+            {% endfor %}
+          </div>
+          <div class="velin-size-weight__col">
+            <p class="velin-size-weight__col-title">Machine à laver</p>
+            {% for value in size_option.values %}
+              {%- liquid
+                assign guide_key = value | remove: ' ' | downcase
+                assign guide_kg = '—'
+                case guide_key
+                  when '140x200cm'
+                    assign guide_kg = '5 kg'
+                  when '160x210cm'
+                    assign guide_kg = '6 kg'
+                  when '200x200cm'
+                    assign guide_kg = '8 kg'
+                  when '220x240cm'
+                    assign guide_kg = '10 kg'
+                  when '230x230cm'
+                    assign guide_kg = '10 kg'
+                  when '230x265cm'
+                    assign guide_kg = '10 kg'
+                endcase
+              -%}
+              <span class="velin-size-weight__pill">{{ guide_kg }}</span>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    {%- endif -%}
+
   </div>
 
   <script type="application/json" data-pdp-product>{{ product | json }}</script>
@@ -1052,6 +1093,7 @@
   .velin-pdp__social {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 8px;
   }
 
@@ -1077,12 +1119,10 @@
   }
 
   .velin-pdp__social-text {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 4px;
+    display: inline;
     font-weight: 400;
     font-size: 16px;
-    line-height: 100%;
+    line-height: 1.3;
   }
 
   .velin-pdp__title-price-group {
@@ -2198,6 +2238,57 @@
     }
   }
 
+  .velin-size-weight {
+    border-radius: 18px;
+    padding: 24px 20px;
+    background: linear-gradient(180deg, #FFF3C4 0%, #FFE791 100%);
+  }
+
+  .velin-size-weight__heading {
+    margin: 0 0 16px;
+    font-family: 'Lusitana', serif;
+    font-weight: 700;
+    font-size: 20px;
+    text-align: center;
+    color: #201E50;
+  }
+
+  .velin-size-weight__cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .velin-size-weight__col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 18px 12px;
+    border-radius: 14px;
+    background: #fff;
+  }
+
+  .velin-size-weight__col-title {
+    margin: 0 0 4px;
+    font-weight: 700;
+    font-size: 14px;
+    color: #201E50;
+    text-align: center;
+  }
+
+  .velin-size-weight__pill {
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 999px;
+    background: #FFE791;
+    color: #201E50;
+    font-weight: 700;
+    font-size: 13px;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
   {%- comment -%}
     Unlimited Bundles app widget (the quantity/bundle picker mounted at
     [data-revy-bundle-id]) isn't theme markup — it's rendered by the app
@@ -3056,7 +3147,10 @@ if (compareEl) {
     { "value": "star", "label": "Star" }
   ],
   "default": "book"
-}
+},
+{ "type": "header", "content": "Guide taille / machine à laver" },
+{ "type": "checkbox", "id": "show_size_weight_guide", "label": "Afficher le bloc \"Choisissez votre taille\"", "info": "Affiche, sous la description, chaque taille avec la capacité de machine à laver recommandée (5 à 10 kg selon la taille).", "default": false },
+{ "type": "text", "id": "size_weight_heading", "label": "Titre du bloc", "default": "Choisissez Votre Taille" }
   ],
   "blocks": [
     {

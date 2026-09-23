@@ -593,6 +593,9 @@
     {%- comment -%} ---------- Revy Bundle (manual embed, from the app's "Embed this bundle manually in any page via HTML" option) ---------- {%- endcomment -%}
     {% if section.settings.revy_bundle_id != blank %}
       <div data-revy-bundle-id="{{ section.settings.revy_bundle_id }}"></div>
+      {% if size_option_index >= 0 %}
+        <p class="velin-bundle-machine-note" data-bundle-machine-note hidden></p>
+      {% endif %}
     {% endif %}
 
     {%- comment -%} ---------- Free shipping line ---------- {%- endcomment -%}
@@ -847,47 +850,6 @@
         {% endfor %}
       </div>
     {% endif %}
-
-    {%- comment -%} ---------- Size / washing-machine capacity guide ---------- {%- endcomment -%}
-    {%- if section.settings.show_size_weight_guide and size_option_index >= 0 -%}
-      <div class="velin-size-weight">
-        {% if section.settings.size_weight_heading != blank %}
-          <p class="velin-size-weight__heading">{{ section.settings.size_weight_heading }}</p>
-        {% endif %}
-        <div class="velin-size-weight__cols">
-          <div class="velin-size-weight__col">
-            <p class="velin-size-weight__col-title">Dimensions</p>
-            {% for value in size_option.values %}
-              <span class="velin-size-weight__pill">{{ value }}</span>
-            {% endfor %}
-          </div>
-          <div class="velin-size-weight__col">
-            <p class="velin-size-weight__col-title">Machine à laver</p>
-            {% for value in size_option.values %}
-              {%- liquid
-                assign guide_key = value | remove: ' ' | downcase
-                assign guide_kg = '—'
-                case guide_key
-                  when '140x200cm'
-                    assign guide_kg = '5 kg'
-                  when '160x210cm'
-                    assign guide_kg = '6 kg'
-                  when '200x200cm'
-                    assign guide_kg = '8 kg'
-                  when '220x240cm'
-                    assign guide_kg = '10 kg'
-                  when '230x230cm'
-                    assign guide_kg = '10 kg'
-                  when '230x265cm'
-                    assign guide_kg = '10 kg'
-                endcase
-              -%}
-              <span class="velin-size-weight__pill">{{ guide_kg }}</span>
-            {% endfor %}
-          </div>
-        </div>
-      </div>
-    {%- endif -%}
 
   </div>
 
@@ -2238,55 +2200,20 @@
     }
   }
 
-  .velin-size-weight {
-    border-radius: 18px;
-    padding: 24px 20px;
-    background: linear-gradient(180deg, #FFF3C4 0%, #FFE791 100%);
-  }
-
-  .velin-size-weight__heading {
-    margin: 0 0 16px;
-    font-family: 'Lusitana', serif;
-    font-weight: 700;
-    font-size: 20px;
-    text-align: center;
+  .velin-bundle-machine-note {
+    margin: 10px 0 0;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: #FFF3C4;
     color: #201E50;
-  }
-
-  .velin-size-weight__cols {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-
-  .velin-size-weight__col {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    padding: 18px 12px;
-    border-radius: 14px;
-    background: #fff;
-  }
-
-  .velin-size-weight__col-title {
-    margin: 0 0 4px;
-    font-weight: 700;
-    font-size: 14px;
-    color: #201E50;
-    text-align: center;
-  }
-
-  .velin-size-weight__pill {
-    width: 100%;
-    padding: 8px 10px;
-    border-radius: 999px;
-    background: #FFE791;
-    color: #201E50;
-    font-weight: 700;
+    font-family: 'Merriweather', serif;
     font-size: 13px;
+    font-weight: 700;
     text-align: center;
-    box-sizing: border-box;
+  }
+
+  .velin-bundle-machine-note[hidden] {
+    display: none;
   }
 
   {%- comment -%}
@@ -2920,6 +2847,76 @@ if (compareEl) {
 </script>
 
 {%- comment -%}
+  Shows "Convient pour une machine à laver de X kg" next to the Unlimited
+  Bundles picker once a size is chosen. The picker's own markup (selects,
+  pills, whatever it renders per size) belongs to that app, not this theme,
+  so this only watches it from the outside: it reads whichever option is
+  currently selected and never edits the app's own elements.
+{%- endcomment -%}
+<script>
+  (function () {
+    var bundleWrap = document.querySelector("[data-revy-bundle-id]");
+    var note = document.querySelector("[data-bundle-machine-note]");
+    if (!bundleWrap || !note) return;
+
+    var sizeToKg = {
+      "140x200cm": "5 kg",
+      "160x210cm": "6 kg",
+      "200x200cm": "8 kg",
+      "220x240cm": "10 kg",
+      "230x230cm": "10 kg",
+      "230x265cm": "10 kg"
+    };
+
+    function normalize(text) {
+      return (text || "").toLowerCase().replace(/×/g, "x").replace(/\s+/g, "");
+    }
+
+    function findSelectedSizes() {
+      var found = [];
+      bundleWrap.querySelectorAll("select").forEach(function (select) {
+        var opt = select.options[select.selectedIndex];
+        var key = normalize(opt ? opt.textContent : select.value);
+        if (sizeToKg[key] && found.indexOf(key) === -1) found.push(key);
+      });
+      if (!found.length) {
+        bundleWrap.querySelectorAll("button, span, div").forEach(function (el) {
+          if (el.children.length || found.length) return;
+          var key = normalize(el.textContent);
+          if (sizeToKg[key] && found.indexOf(key) === -1) found.push(key);
+        });
+      }
+      return found;
+    }
+
+    function renderNote() {
+      var sizes = findSelectedSizes();
+      if (!sizes.length) {
+        note.hidden = true;
+        return;
+      }
+      var kgValues = sizes.map(function (key) { return sizeToKg[key]; });
+      var uniqueKg = kgValues.filter(function (v, i) { return kgValues.indexOf(v) === i; });
+      note.textContent = "Convient pour une machine à laver de " + uniqueKg.join(" / ") + (uniqueKg.length > 1 ? " selon la taille choisie." : ".");
+      note.hidden = false;
+    }
+
+    bundleWrap.addEventListener("change", renderNote);
+
+    var pendingRender = null;
+    var observer = new MutationObserver(function () {
+      clearTimeout(pendingRender);
+      pendingRender = setTimeout(renderNote, 150);
+    });
+    observer.observe(bundleWrap, { childList: true, subtree: true, characterData: true });
+
+    // The app mounts its widget asynchronously after this script runs, so a
+    // first attempt shortly after load is needed on top of the observer.
+    setTimeout(renderNote, 500);
+  })();
+</script>
+
+{%- comment -%}
   Lazy-load the AirReviews review-carousel images (class "AirReviews-Carousel__Image").
   That carousel is injected client-side by the AirReviews app itself — its markup
   isn't part of this theme, so it can't be edited directly and none of its own
@@ -3147,10 +3144,7 @@ if (compareEl) {
     { "value": "star", "label": "Star" }
   ],
   "default": "book"
-},
-{ "type": "header", "content": "Guide taille / machine à laver" },
-{ "type": "checkbox", "id": "show_size_weight_guide", "label": "Afficher le bloc \"Choisissez votre taille\"", "info": "Affiche, sous la description, chaque taille avec la capacité de machine à laver recommandée (5 à 10 kg selon la taille).", "default": false },
-{ "type": "text", "id": "size_weight_heading", "label": "Titre du bloc", "default": "Choisissez Votre Taille" }
+}
   ],
   "blocks": [
     {

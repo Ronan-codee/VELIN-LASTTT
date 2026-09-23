@@ -2146,6 +2146,24 @@
       padding: 24px 20px;
     }
   }
+
+  {%- comment -%}
+    Unlimited Bundles app widget (the quantity/bundle picker mounted at
+    [data-revy-bundle-id]) isn't theme markup — it's rendered by the app
+    itself. It exposes its own colors as CSS custom properties (--rbu-gen-*),
+    so it's re-themed here to match the site's navy/gold accents without
+    touching the app's own code. Set at :root (matching how the app declares
+    its own defaults) so it still applies even if the app portals its widget
+    outside this section.
+  {%- endcomment -%}
+  :root {
+    --rbu-gen-disc-label-bg: {{ section.settings.accent_color }};
+    --rbu-gen-disc-label-text: #FFFFFF;
+    --rbu-gen-btn-bg-color: {{ section.settings.accent_color }};
+    --rbu-gen-btn-text-color: #FFFFFF;
+    --rbu-gen-badge-bg-color: {{ section.settings.size_guide_highlight | default: '#D9A441' }};
+    --rbu-gen-badge-text-color: {{ section.settings.accent_color }};
+  }
 </style>
 
 <script>

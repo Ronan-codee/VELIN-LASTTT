@@ -134,6 +134,7 @@
         "hide_native_purchase": true,
         "hide_atc_button": true,
         "revy_bundle_id": "416efce1-46d5-459a-ae0f-99db71bce9be",
+        "bundle_badge_color": "#FFE791",
         "show_free_shipping": false,
         "free_shipping_text": "Livraison gratuite",
         "atc_text": "AJOUTER AU PANIER",
@@ -257,7 +258,7 @@
         "image_fit": "crop",
         "image_width": 505,
         "image_height": 600,
-        "background": "beige",
+        "background": "white",
         "custom_background": "",
         "image_radius": 14,
         "full_width": false,
@@ -302,15 +303,24 @@
           "type": "benefit_card",
           "settings": {
             "icon_type": "ruler",
-            "title": "Quatre Tailles Disponibles",
-            "text": "De 140x200 à 240x200 cm, une taille adaptée à chaque lit."
+            "title": "Six Tailles Disponibles",
+            "text": "De 140x200 à 230x265 cm, une taille adaptée à chaque lit."
+          }
+        },
+        "card_dc01g": {
+          "type": "benefit_card",
+          "settings": {
+            "icon_type": "palette",
+            "title": "Plusieurs Coloris Disponibles",
+            "text": "Noir, Gris, Beige et plus encore : choisissez la teinte qui correspond à vos goûts."
           }
         }
       },
       "block_order": [
         "card_dc01a",
         "card_dc01b",
-        "card_dc01c"
+        "card_dc01c",
+        "card_dc01g"
       ],
       "settings": {
         "image": "shopify://shop_images/ChatGPT-Image-20-sept.-2026_-16_08_03.webp",
@@ -388,7 +398,8 @@
         "fallback_color": "#201e50",
         "min_height": 480,
         "eyebrow": "VELIN",
-        "heading": "Pourquoi Choisir Velin ?"
+        "heading": "Pourquoi Choisir Velin ?",
+        "show_bottom_wave": true
       }
     },
     "reviews_dc01": {

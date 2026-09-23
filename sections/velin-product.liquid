@@ -48,15 +48,36 @@
   matches that color's option value exactly (set alt text when uploading,
   e.g. "Black", "Stone Grey"). Used to swap the whole thumbnail strip when
   a swatch is clicked, not just the single featured image.
+
+  The color selected by default when the page loads also picks up every
+  UNTAGGED photo (blank alt, or alt that doesn't match any color value) —
+  most product shoots only dedicate extra photos to the non-default colors
+  and shoot the bulk of the gallery in the default one without bothering to
+  tag it, so without this the default color would show far fewer photos
+  than the others instead of the most.
 {%- endcomment -%}
 {%- capture color_media_map -%}
   {
     {%- if color_option_index >= 0 -%}
       {%- for value in color_option.values -%}
-        {%- assign color_group = product.images | where: 'alt', value -%}
         {{ value | json }}: [
-          {%- for img in color_group -%}
-            { "full": {{ img | image_url: width: 1200 | json }}, "thumb": {{ img | image_url: width: 240 | json }} }{% unless forloop.last %},{% endunless %}
+          {%- assign is_first_group_img = true -%}
+          {%- for img in product.images -%}
+            {%- assign img_is_color_tagged = false -%}
+            {%- if color_option.values contains img.alt -%}
+              {%- assign img_is_color_tagged = true -%}
+            {%- endif -%}
+            {%- assign include_img = false -%}
+            {%- if img.alt == value -%}
+              {%- assign include_img = true -%}
+            {%- elsif value == color_option.selected_value and img_is_color_tagged == false -%}
+              {%- assign include_img = true -%}
+            {%- endif -%}
+            {%- if include_img -%}
+              {%- unless is_first_group_img -%},{%- endunless -%}
+              { "full": {{ img | image_url: width: 1200 | json }}, "thumb": {{ img | image_url: width: 240 | json }} }
+              {%- assign is_first_group_img = false -%}
+            {%- endif -%}
           {%- endfor -%}
         ]{% unless forloop.last %},{% endunless %}
       {%- endfor -%}
@@ -400,6 +421,91 @@
       </div>
     {% endif %}
 
+    {%- comment -%} ---------- Size guide (bed match) — placed right above the bundle picker so shoppers can check sizing before choosing ---------- {%- endcomment -%}
+    {%- assign has_size_guide = false -%}
+    {%- if section.settings.show_size_guide and size_option_index >= 0 -%}
+      {%- assign has_size_guide = true -%}
+    {%- endif -%}
+    {% if has_size_guide %}
+      <button type="button" class="velin-pdp__size-guide-trigger" data-size-guide-open>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="2" y="7" width="20" height="10" rx="1.5" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M6 7v3M10 7v2M14 7v3M18 7v2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        <span>{{ section.settings.size_guide_link_text | default: "Quelle taille me faut-il ?" }}</span>
+      </button>
+
+      <div class="velin-size-guide" data-size-guide-modal hidden>
+        <div class="velin-size-guide__overlay" data-size-guide-close></div>
+        <div class="velin-size-guide__panel" role="dialog" aria-modal="true" aria-labelledby="VelinSizeGuideTitle-{{ section.id }}">
+          <button type="button" class="velin-size-guide__close" data-size-guide-close aria-label="Fermer">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 4l16 16M20 4L4 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+          <h3 id="VelinSizeGuideTitle-{{ section.id }}" class="velin-size-guide__title">{{ section.settings.size_guide_heading | default: "Guide des tailles" }}</h3>
+          {% if section.settings.size_guide_intro != blank %}
+            <p class="velin-size-guide__intro">{{ section.settings.size_guide_intro }}</p>
+          {% endif %}
+          <div class="velin-size-guide__table-wrap">
+            <table class="velin-size-guide__table">
+              <thead>
+                <tr>
+                  <th>Taille</th>
+                  <th>Convient pour</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for value in size_option.values %}
+                  {%- liquid
+                    assign guide_key = value | remove: ' ' | downcase
+                    assign guide_bed = ''
+                    assign guide_width = ''
+                    assign guide_persons = ''
+                    case guide_key
+                      when '140x200cm'
+                        assign guide_bed = 'Lit simple'
+                        assign guide_width = '90–140 cm de large'
+                        assign guide_persons = '1 personne'
+                      when '160x210cm'
+                        assign guide_bed = 'Lit simple XL'
+                        assign guide_width = '140–160 cm de large'
+                        assign guide_persons = '1 personne'
+                      when '200x200cm'
+                        assign guide_bed = 'Lit double'
+                        assign guide_width = '140–160 cm de large'
+                        assign guide_persons = '2 personnes'
+                      when '220x240cm'
+                        assign guide_bed = 'Grand lit double'
+                        assign guide_width = '160–180 cm de large'
+                        assign guide_persons = '2 personnes'
+                      when '230x230cm'
+                        assign guide_bed = 'Grand lit double'
+                        assign guide_width = '180–200 cm de large'
+                        assign guide_persons = '2 personnes'
+                      when '230x265cm'
+                        assign guide_bed = 'Très grand lit (King)'
+                        assign guide_width = '200 cm de large et plus'
+                        assign guide_persons = '2 personnes'
+                    endcase
+                  -%}
+                  <tr data-size-guide-row="{{ value | escape }}"{% if value == size_option.selected_value %} class="is-current"{% endif %}>
+                    <td class="velin-size-guide__size">{{ value }}</td>
+                    <td class="velin-size-guide__match">
+                      {% if guide_bed != '' %}
+                        <span class="velin-size-guide__bed">{{ guide_bed }}</span>
+                        <span class="velin-size-guide__meta">{{ guide_width }} · {{ guide_persons }}</span>
+                      {% else %}
+                        <span class="velin-size-guide__bed">—</span>
+                      {% endif %}
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
     {%- comment -%} ---------- Offers (1 Sac / 2 Sac) ---------- {%- endcomment -%}
     {%- assign has_offers = false -%}
     {% for block in section.blocks %}{% if block.type == 'offer' %}{% assign has_offers = true %}{% endif %}{% endfor %}
@@ -487,91 +593,6 @@
     {%- comment -%} ---------- Revy Bundle (manual embed, from the app's "Embed this bundle manually in any page via HTML" option) ---------- {%- endcomment -%}
     {% if section.settings.revy_bundle_id != blank %}
       <div data-revy-bundle-id="{{ section.settings.revy_bundle_id }}"></div>
-    {% endif %}
-
-    {%- comment -%} ---------- Size guide (bed match) ---------- {%- endcomment -%}
-    {%- assign has_size_guide = false -%}
-    {%- if section.settings.show_size_guide and size_option_index >= 0 -%}
-      {%- assign has_size_guide = true -%}
-    {%- endif -%}
-    {% if has_size_guide %}
-      <button type="button" class="velin-pdp__size-guide-trigger" data-size-guide-open>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <rect x="2" y="7" width="20" height="10" rx="1.5" stroke="currentColor" stroke-width="1.6"/>
-          <path d="M6 7v3M10 7v2M14 7v3M18 7v2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-        </svg>
-        <span>{{ section.settings.size_guide_link_text | default: "Quelle taille me faut-il ?" }}</span>
-      </button>
-
-      <div class="velin-size-guide" data-size-guide-modal hidden>
-        <div class="velin-size-guide__overlay" data-size-guide-close></div>
-        <div class="velin-size-guide__panel" role="dialog" aria-modal="true" aria-labelledby="VelinSizeGuideTitle-{{ section.id }}">
-          <button type="button" class="velin-size-guide__close" data-size-guide-close aria-label="Fermer">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 4l16 16M20 4L4 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          </button>
-          <h3 id="VelinSizeGuideTitle-{{ section.id }}" class="velin-size-guide__title">{{ section.settings.size_guide_heading | default: "Guide des tailles" }}</h3>
-          {% if section.settings.size_guide_intro != blank %}
-            <p class="velin-size-guide__intro">{{ section.settings.size_guide_intro }}</p>
-          {% endif %}
-          <div class="velin-size-guide__table-wrap">
-            <table class="velin-size-guide__table">
-              <thead>
-                <tr>
-                  <th>Taille</th>
-                  <th>Convient pour</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for value in size_option.values %}
-                  {%- liquid
-                    assign guide_key = value | remove: ' ' | downcase
-                    assign guide_bed = ''
-                    assign guide_width = ''
-                    assign guide_persons = ''
-                    case guide_key
-                      when '140x200cm'
-                        assign guide_bed = 'Lit simple'
-                        assign guide_width = '90–140 cm de large'
-                        assign guide_persons = '1 personne'
-                      when '160x210cm'
-                        assign guide_bed = 'Lit simple XL'
-                        assign guide_width = '140–160 cm de large'
-                        assign guide_persons = '1 personne'
-                      when '200x200cm'
-                        assign guide_bed = 'Lit double'
-                        assign guide_width = '140–160 cm de large'
-                        assign guide_persons = '2 personnes'
-                      when '220x240cm'
-                        assign guide_bed = 'Grand lit double'
-                        assign guide_width = '160–180 cm de large'
-                        assign guide_persons = '2 personnes'
-                      when '230x230cm'
-                        assign guide_bed = 'Grand lit double'
-                        assign guide_width = '180–200 cm de large'
-                        assign guide_persons = '2 personnes'
-                      when '230x265cm'
-                        assign guide_bed = 'Très grand lit (King)'
-                        assign guide_width = '200 cm de large et plus'
-                        assign guide_persons = '2 personnes'
-                    endcase
-                  -%}
-                  <tr data-size-guide-row="{{ value | escape }}"{% if value == size_option.selected_value %} class="is-current"{% endif %}>
-                    <td class="velin-size-guide__size">{{ value }}</td>
-                    <td class="velin-size-guide__match">
-                      {% if guide_bed != '' %}
-                        <span class="velin-size-guide__bed">{{ guide_bed }}</span>
-                        <span class="velin-size-guide__meta">{{ guide_width }} · {{ guide_persons }}</span>
-                      {% else %}
-                        <span class="velin-size-guide__bed">—</span>
-                      {% endif %}
-                    </td>
-                  </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
     {% endif %}
 
     {%- comment -%} ---------- Free shipping line ---------- {%- endcomment -%}
@@ -1187,6 +1208,10 @@
     display: flex;
     flex-direction: column;
     gap: 22px;
+  }
+
+  .velin-pdp__chips + .velin-pdp__colors {
+    margin-top: 10px;
   }
 
   .velin-pdp__colors-label {
@@ -2187,7 +2212,7 @@
     --rbu-gen-disc-label-text: #FFFFFF;
     --rbu-gen-btn-bg-color: {{ section.settings.accent_color }};
     --rbu-gen-btn-text-color: #FFFFFF;
-    --rbu-gen-badge-bg-color: {{ section.settings.size_guide_highlight | default: '#D9A441' }};
+    --rbu-gen-badge-bg-color: {{ section.settings.bundle_badge_color | default: '#FFE791' }};
     --rbu-gen-badge-text-color: {{ section.settings.accent_color }};
   }
 </style>
@@ -2320,6 +2345,41 @@
       });
     }
     root.querySelectorAll(".velin-pdp__thumb").forEach(bindThumb);
+
+    // Swipe on the main photo (phone/tablet) moves to the next/previous
+    // thumbnail, same as tapping it — the thumb strip already supports tap,
+    // this adds the gesture shoppers expect from a photo carousel on touch.
+    (function enableMainImageSwipe() {
+      if (!mainImageWrap) return;
+      var touchStartX = 0;
+      var touchStartY = 0;
+      var isTracking = false;
+
+      mainImageWrap.addEventListener("touchstart", function (e) {
+        if (e.touches.length !== 1) return;
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        isTracking = true;
+      }, { passive: true });
+
+      mainImageWrap.addEventListener("touchend", function (e) {
+        if (!isTracking) return;
+        isTracking = false;
+        var touch = e.changedTouches[0];
+        var deltaX = touch.clientX - touchStartX;
+        var deltaY = touch.clientY - touchStartY;
+        if (Math.abs(deltaX) < 40 || Math.abs(deltaX) < Math.abs(deltaY)) return;
+
+        var thumbs = Array.prototype.slice.call(root.querySelectorAll(".velin-pdp__thumb"));
+        if (thumbs.length < 2) return;
+        var activeIndex = thumbs.findIndex(function (t) { return t.classList.contains("is-active"); });
+        if (activeIndex === -1) activeIndex = 0;
+        var nextIndex = deltaX < 0
+          ? (activeIndex + 1) % thumbs.length
+          : (activeIndex - 1 + thumbs.length) % thumbs.length;
+        thumbs[nextIndex].click();
+      }, { passive: true });
+    })();
 
     // Video thumbnails, captured once before any color-based rebuild, so they
     // can be re-appended every time showColorMedia() replaces the strip with
@@ -2949,6 +3009,7 @@ if (compareEl) {
     { "type": "checkbox", "id": "hide_native_purchase", "label": "Hide native buy box (bundle app handles purchase)", "default": false },
     { "type": "checkbox", "id": "hide_atc_button", "label": "Hide button only (form stays, for bundle apps)", "default": false },
     { "type": "text", "id": "revy_bundle_id", "label": "Revy Bundle ID (manual HTML embed)" },
+    { "type": "color", "id": "bundle_badge_color", "label": "Couleur des étiquettes du bundle (ex: LE PLUS POPULAIRE)", "default": "#FFE791" },
     { "type": "checkbox", "id": "show_free_shipping", "label": "Show free shipping line above the button", "default": true },
     { "type": "text", "id": "free_shipping_text", "label": "Free shipping text", "default": "Livraison gratuite" },
     { "type": "text", "id": "atc_text", "label": "Button text", "default": "AJOUTER AU PANIER" },

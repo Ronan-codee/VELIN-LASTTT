@@ -592,10 +592,7 @@
 
     {%- comment -%} ---------- Revy Bundle (manual embed, from the app's "Embed this bundle manually in any page via HTML" option) ---------- {%- endcomment -%}
     {% if section.settings.revy_bundle_id != blank %}
-      <div data-revy-bundle-id="{{ section.settings.revy_bundle_id }}"></div>
-      {% if size_option_index >= 0 %}
-        <p class="velin-bundle-machine-note" data-bundle-machine-note hidden></p>
-      {% endif %}
+      <div data-revy-bundle-id="{{ section.settings.revy_bundle_id }}"{% if size_option_index >= 0 %} data-bundle-show-machine-kg{% endif %}></div>
     {% endif %}
 
     {%- comment -%} ---------- Free shipping line ---------- {%- endcomment -%}
@@ -2201,19 +2198,16 @@
   }
 
   .velin-bundle-machine-note {
-    margin: 10px 0 0;
-    padding: 10px 14px;
-    border-radius: 10px;
+    display: inline-block;
+    margin: 4px 0 0;
+    padding: 3px 10px;
+    border-radius: 999px;
     background: #FFF3C4;
     color: #201E50;
     font-family: 'Merriweather', serif;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
-    text-align: center;
-  }
-
-  .velin-bundle-machine-note[hidden] {
-    display: none;
+    white-space: nowrap;
   }
 
   {%- comment -%}
@@ -2847,17 +2841,20 @@ if (compareEl) {
 </script>
 
 {%- comment -%}
-  Shows "Convient pour une machine à laver de X kg" next to the Unlimited
-  Bundles picker once a size is chosen. The picker's own markup (selects,
-  pills, whatever it renders per size) belongs to that app, not this theme,
-  so this only watches it from the outside: it reads whichever option is
-  currently selected and never edits the app's own elements.
+  Inserts a "Convient pour une machine à laver de X kg" pill directly next to
+  each size field inside the Unlimited Bundles picker. That picker's own
+  markup (selects, pills, whatever it renders per size) belongs to the app,
+  not this theme, so nothing here edits the app's own elements — it only
+  reads whichever option is selected and appends a small element of its own
+  right after each size field. Because the app can re-render that markup at
+  any point (switching bundle tier, re-mounting after a price update, etc.),
+  a MutationObserver keeps re-attaching a pill wherever one goes missing
+  instead of inserting once and hoping the DOM stays put.
 {%- endcomment -%}
 <script>
   (function () {
-    var bundleWrap = document.querySelector("[data-revy-bundle-id]");
-    var note = document.querySelector("[data-bundle-machine-note]");
-    if (!bundleWrap || !note) return;
+    var bundleWrap = document.querySelector("[data-bundle-show-machine-kg]");
+    if (!bundleWrap) return;
 
     var sizeToKg = {
       "140x200cm": "5 kg",
@@ -2867,52 +2864,71 @@ if (compareEl) {
       "230x230cm": "10 kg",
       "230x265cm": "10 kg"
     };
+    var PILL_ATTR = "data-machine-kg-pill";
 
     function normalize(text) {
       return (text || "").toLowerCase().replace(/×/g, "x").replace(/\s+/g, "");
     }
 
-    function findSelectedSizes() {
-      var found = [];
-      bundleWrap.querySelectorAll("select").forEach(function (select) {
-        var opt = select.options[select.selectedIndex];
-        var key = normalize(opt ? opt.textContent : select.value);
-        if (sizeToKg[key] && found.indexOf(key) === -1) found.push(key);
-      });
-      if (!found.length) {
-        bundleWrap.querySelectorAll("button, span, div").forEach(function (el) {
-          if (el.children.length || found.length) return;
-          var key = normalize(el.textContent);
-          if (sizeToKg[key] && found.indexOf(key) === -1) found.push(key);
+    function kgForSelect(select) {
+      var opt = select.options[select.selectedIndex];
+      return sizeToKg[normalize(opt ? opt.textContent : select.value)];
+    }
+
+    function attachPill(select, kg) {
+      var pill = select.nextElementSibling;
+      if (!pill || pill.getAttribute(PILL_ATTR) !== "1") {
+        pill = document.createElement("span");
+        pill.setAttribute(PILL_ATTR, "1");
+        pill.className = "velin-bundle-machine-note";
+        select.insertAdjacentElement("afterend", pill);
+      }
+      pill.textContent = "Machine " + kg;
+    }
+
+    function removePill(select) {
+      var pill = select.nextElementSibling;
+      if (pill && pill.getAttribute(PILL_ATTR) === "1") pill.remove();
+    }
+
+    function syncSelect(select) {
+      var kg = kgForSelect(select);
+      if (kg) {
+        attachPill(select, kg);
+      } else {
+        removePill(select);
+      }
+    }
+
+    function syncAll() {
+      bundleWrap.querySelectorAll("select").forEach(syncSelect);
+    }
+
+    bundleWrap.addEventListener("change", function (e) {
+      if (e.target.tagName === "SELECT") syncSelect(e.target);
+    });
+
+    var pendingSync = null;
+    var observer = new MutationObserver(function (mutations) {
+      // Skip mutations that are only this script inserting/updating its own
+      // pills, so it doesn't observe itself into an infinite render loop.
+      var onlyOwnPills = mutations.every(function (m) {
+        return [].concat(
+          Array.prototype.slice.call(m.addedNodes),
+          Array.prototype.slice.call(m.removedNodes)
+        ).every(function (n) {
+          return n.nodeType === 1 && n.getAttribute(PILL_ATTR) === "1";
         });
-      }
-      return found;
-    }
-
-    function renderNote() {
-      var sizes = findSelectedSizes();
-      if (!sizes.length) {
-        note.hidden = true;
-        return;
-      }
-      var kgValues = sizes.map(function (key) { return sizeToKg[key]; });
-      var uniqueKg = kgValues.filter(function (v, i) { return kgValues.indexOf(v) === i; });
-      note.textContent = "Convient pour une machine à laver de " + uniqueKg.join(" / ") + (uniqueKg.length > 1 ? " selon la taille choisie." : ".");
-      note.hidden = false;
-    }
-
-    bundleWrap.addEventListener("change", renderNote);
-
-    var pendingRender = null;
-    var observer = new MutationObserver(function () {
-      clearTimeout(pendingRender);
-      pendingRender = setTimeout(renderNote, 150);
+      });
+      if (onlyOwnPills) return;
+      clearTimeout(pendingSync);
+      pendingSync = setTimeout(syncAll, 150);
     });
     observer.observe(bundleWrap, { childList: true, subtree: true, characterData: true });
 
     // The app mounts its widget asynchronously after this script runs, so a
     // first attempt shortly after load is needed on top of the observer.
-    setTimeout(renderNote, 500);
+    setTimeout(syncAll, 500);
   })();
 </script>
 

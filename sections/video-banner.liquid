@@ -13,6 +13,14 @@
   {% elsif request.design_mode %}
     <p class="velin-video-banner__placeholder">Select a video in the theme customizer</p>
   {% endif %}
+
+  {%- comment -%} Wavy top/bottom edges instead of a hard rectangular seam with the sections above/below {%- endcomment -%}
+  <svg class="velin-video-banner__wave velin-video-banner__wave--top" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,58 C 220,10 420,88 720,62 C 1020,34 1220,82 1440,52 L1440,0 L0,0 Z" fill="#ffffff"></path>
+  </svg>
+  <svg class="velin-video-banner__wave velin-video-banner__wave--bottom" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,32 C 220,80 420,0 720,28 C 1020,56 1220,8 1440,40 L1440,90 L0,90 Z" fill="#EFEDFA"></path>
+  </svg>
 </div>
 
 <style>
@@ -58,9 +66,32 @@
     object-fit: cover;
   }
 
+  .velin-video-banner__wave {
+    position: absolute;
+    z-index: 3;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 60px;
+    display: block;
+    pointer-events: none;
+  }
+
+  .velin-video-banner__wave--top {
+    top: -1px;
+  }
+
+  .velin-video-banner__wave--bottom {
+    bottom: -1px;
+  }
+
   @media screen and (max-width: 749px) {
     .velin-video-banner {
       height: 320px !important;
+    }
+
+    .velin-video-banner__wave {
+      height: 36px;
     }
   }
 </style>

@@ -7,6 +7,12 @@
 
   <div class="velin-imgben__scrim"></div>
 
+  {%- if section.settings.show_top_wave -%}
+    <svg class="velin-imgben__wave velin-imgben__wave--top" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0,60 C 220,12 420,82 720,54 C 1020,26 1220,74 1440,52 L1440,0 L0,0 Z" fill="#ffffff"></path>
+    </svg>
+  {%- endif -%}
+
   {% if section.settings.eyebrow != blank or section.settings.heading != blank %}
     <div class="velin-imgben__intro">
       {% if section.settings.eyebrow != blank %}
@@ -19,12 +25,18 @@
   {% endif %}
 
   {%- assign has_cards = false -%}
-  {% for block in section.blocks %}{% if block.type == 'benefit_card' %}{% assign has_cards = true %}{% endif %}{% endfor %}
+  {%- assign card_count = 0 -%}
+  {% for block in section.blocks %}
+    {% if block.type == 'benefit_card' %}
+      {% assign has_cards = true %}
+      {% assign card_count = card_count | plus: 1 %}
+    {% endif %}
+  {% endfor %}
   {% if has_cards %}
-    <div class="velin-imgben__cards">
+    <div class="velin-imgben__cards" data-imgben-cards>
       {% for block in section.blocks %}
         {% if block.type == 'benefit_card' %}
-          <div class="velin-imgben__card" {{ block.shopify_attributes }}>
+          <div class="velin-imgben__card" data-imgben-card {{ block.shopify_attributes }}>
             <span class="velin-imgben__card-icon">
               {% case block.settings.icon_type %}
                 {% when 'leaf' %}
@@ -49,10 +61,17 @@
         {% endif %}
       {% endfor %}
     </div>
+    {% if card_count > 1 %}
+      <div class="velin-imgben__dots" data-imgben-dots>
+        {% for i in (1..card_count) %}
+          <button type="button" class="velin-imgben__dot" data-imgben-dot aria-label="Aller à la carte {{ i }}"></button>
+        {% endfor %}
+      </div>
+    {% endif %}
   {% endif %}
 
   {%- if section.settings.show_bottom_wave -%}
-    <svg class="velin-imgben__wave" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true">
+    <svg class="velin-imgben__wave velin-imgben__wave--bottom" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true">
       <path d="M0,30 C 220,78 420,-2 720,26 C 1020,54 1220,6 1440,38 L1440,90 L0,90 Z" fill="#ffffff"></path>
     </svg>
   {%- endif -%}
@@ -119,14 +138,45 @@
     margin-top: 140px;
   }
 
+  .velin-imgben__cards::-webkit-scrollbar {
+    display: none;
+  }
+
   .velin-imgben__card {
     flex: 1 1 240px;
+    scroll-snap-align: start;
     background: rgba(255, 255, 255, 0.92);
     backdrop-filter: blur(4px);
     border-radius: 12px;
     padding: 18px 20px;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
     box-sizing: border-box;
+  }
+
+  .velin-imgben__dots {
+    position: relative;
+    z-index: 2;
+    display: none;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 24px 28px;
+  }
+
+  .velin-imgben__dot {
+    width: 8px;
+    height: 8px;
+    flex-shrink: 0;
+    border: none;
+    border-radius: 50%;
+    padding: 0;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+
+  .velin-imgben__dot.is-active {
+    background: #ffffff;
+    transform: scale(1.3);
   }
 
   .velin-imgben__card-icon {
@@ -155,10 +205,17 @@
     z-index: 2;
     left: 0;
     right: 0;
-    bottom: -1px;
     width: 100%;
     height: 60px;
     display: block;
+  }
+
+  .velin-imgben__wave--bottom {
+    bottom: -1px;
+  }
+
+  .velin-imgben__wave--top {
+    top: -1px;
   }
 
   @media screen and (max-width: 749px) {
@@ -166,14 +223,23 @@
       border-radius: 0;
     }
     .velin-imgben__cards {
-      flex-direction: column;
-      gap: 8px;
-      padding: 28px 20px 24px;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      gap: 10px;
+      padding: 28px 20px 20px;
       margin-top: 150px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
     }
     .velin-imgben__card {
-      flex: 0 0 auto;
+      flex: 0 0 85%;
+      scroll-snap-align: start;
       padding: 14px 16px;
+    }
+    .velin-imgben__dots {
+      display: flex;
     }
     .velin-imgben__heading {
       font-size: 22px;
@@ -181,6 +247,60 @@
     }
   }
 </style>
+
+{%- comment -%}
+  Syncs the dot pagination with the phone card carousel (desktop keeps the
+  plain wrapped row and hides the dots via CSS, so this only matters below
+  the 750px breakpoint). Guarded per-track with a data attribute since this
+  section can appear more than once on a page and this script runs once per
+  instance.
+{%- endcomment -%}
+<script>
+  (function () {
+    document.querySelectorAll("[data-imgben-cards]").forEach(function (track) {
+      if (track.hasAttribute("data-imgben-inited")) return;
+      track.setAttribute("data-imgben-inited", "1");
+
+      var wrap = track.closest(".velin-imgben");
+      var dotsWrap = wrap ? wrap.querySelector("[data-imgben-dots]") : null;
+      var cards = Array.prototype.slice.call(track.querySelectorAll("[data-imgben-card]"));
+      var dots = dotsWrap ? Array.prototype.slice.call(dotsWrap.querySelectorAll("[data-imgben-dot]")) : [];
+      if (!dots.length || cards.length < 2) return;
+
+      function setActive(index) {
+        dots.forEach(function (dot, i) { dot.classList.toggle("is-active", i === index); });
+      }
+
+      dots.forEach(function (dot, i) {
+        dot.addEventListener("click", function () {
+          cards[i].scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" });
+        });
+      });
+
+      var ticking = false;
+      track.addEventListener("scroll", function () {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(function () {
+          var trackLeft = track.getBoundingClientRect().left;
+          var closestIndex = 0;
+          var closestDist = Infinity;
+          cards.forEach(function (card, i) {
+            var dist = Math.abs(card.getBoundingClientRect().left - trackLeft);
+            if (dist < closestDist) {
+              closestDist = dist;
+              closestIndex = i;
+            }
+          });
+          setActive(closestIndex);
+          ticking = false;
+        });
+      }, { passive: true });
+
+      setActive(0);
+    });
+  })();
+</script>
 
 {% schema %}
 {
@@ -191,7 +311,8 @@
     { "type": "range", "id": "min_height", "label": "Minimum height (px)", "min": 300, "max": 800, "step": 10, "default": 520 },
     { "type": "text", "id": "eyebrow", "label": "Small brand label", "default": "VELIN" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "Pourquoi Velin ?" },
-    { "type": "checkbox", "id": "show_bottom_wave", "label": "Wavy bottom edge", "info": "Softens the hard rectangular seam into the next section.", "default": false }
+    { "type": "checkbox", "id": "show_bottom_wave", "label": "Wavy bottom edge", "info": "Softens the hard rectangular seam into the next section.", "default": false },
+    { "type": "checkbox", "id": "show_top_wave", "label": "Wavy top edge", "info": "Softens the hard rectangular seam with the previous section.", "default": false }
   ],
   "blocks": [
     {

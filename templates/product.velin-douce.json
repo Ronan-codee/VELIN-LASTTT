@@ -161,7 +161,9 @@
         "show_description_faq": true,
         "description_faq_label": "Description",
         "faq_pill_style": true,
-        "description_faq_icon": "book"
+        "description_faq_icon": "book",
+        "show_size_weight_guide": true,
+        "size_weight_heading": "Choisissez Votre Taille"
       }
     },
     "17899222886bf9ab21": {

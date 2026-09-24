@@ -48,6 +48,11 @@
                 {% if item.variant.title != 'Default Title' %}
                   <p class="cart-drawer__item-variant">{{ item.variant.title }}</p>
                 {% endif %}
+                {% unless cd_is_gift %}
+                  {% if item.product.handle == 'velin-housse-de-couette-2-en-1' %}
+                    <p class="cart-drawer__item-included">🎁 {{ item.quantity | times: 2 }} taies d'oreiller offertes incluses</p>
+                  {% endif %}
+                {% endunless %}
                 <div class="cart-drawer__item-foot">
                   {% if cd_is_gift %}
                     <span class="cart-drawer__gift-label">Cadeau offert · Qté {{ item.quantity }}</span>
@@ -340,6 +345,13 @@
     margin: 0;
     font-size: 12px;
     color: rgba(0, 0, 0, 0.6);
+  }
+
+  .cart-drawer__item-included {
+    margin: 4px 0 0;
+    font-size: 12px;
+    font-weight: 600;
+    color: #201e50;
   }
 
   .cart-drawer__item-foot {

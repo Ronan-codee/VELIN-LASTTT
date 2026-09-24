@@ -21,7 +21,6 @@
         "heading_text": "Votre Panier",
         "heading_size": 42,
         "continue_text": "Continuer Vos Achats",
-        "continue_size": 20,
         "continue_link": "/collections/nos-produits",
         "empty_text": "Votre panier est vide.",
         "image_width": 204,

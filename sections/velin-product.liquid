@@ -584,7 +584,6 @@
     {% if section.settings.show_installments %}
       {%- liquid
         assign velin_installment_count = section.settings.installment_count | default: 3
-        assign velin_installment_amount = product.price | times: 1.0 | divided_by: velin_installment_count
         assign velin_klarna_h = section.settings.payment_icon_size | default: 24
         assign velin_klarna_w = velin_klarna_h | times: 64 | divided_by: 27.0 | round
       -%}
@@ -593,7 +592,7 @@
           <rect width="64" height="27" rx="6" fill="#FFB3C7"></rect>
           <text x="32" y="18.5" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="700" font-size="13" fill="#17120F">Klarna.</text>
         </svg>
-        <span class="velin-pdp__installments-text">Achetez maintenant, payez en {{ velin_installment_count }} versements de <span id="VelinPDPInstallment-{{ section.id }}">{{ velin_installment_amount | money }}</span></span>
+        <span class="velin-pdp__installments-text">Achetez maintenant, payez en {{ velin_installment_count }} versements</span>
       </div>
     {% endif %}
 
@@ -2257,8 +2256,6 @@
     var variantInput = root.querySelector("[data-variant-id]");
     var qtyInput = root.querySelector("[data-qty-input]");
     var priceEl = document.getElementById("VelinPDPPrice-{{ section.id }}");
-    var installmentEl = document.getElementById("VelinPDPInstallment-{{ section.id }}");
-    var installmentCount = {{ velin_installment_count | default: 3 }};
     var mainImg = document.getElementById("VelinPDPMainImg-{{ section.id }}");
     var mainVideo = document.getElementById("VelinPDPMainVideo-{{ section.id }}");
     var thumbsRow = root.querySelector(".velin-pdp__thumbs");
@@ -2494,7 +2491,6 @@
           setAvailability(variant.available);
           if (stickyAtcPrice) stickyAtcPrice.textContent = formatMoney(variant.price);
           if (priceEl) priceEl.textContent = formatMoney(variant.price);
-          if (installmentEl) installmentEl.textContent = formatMoney(variant.price / installmentCount);
 var compareEl = root.querySelector(".velin-pdp__compare");
 
 if (compareEl) {
@@ -2588,7 +2584,6 @@ if (compareEl) {
       setAvailability(variant.available);
       if (stickyAtcPrice) stickyAtcPrice.textContent = formatMoney(variant.price);
       if (priceEl) priceEl.textContent = formatMoney(variant.price);
-      if (installmentEl) installmentEl.textContent = formatMoney(variant.price / installmentCount);
 
       var compareEl = root.querySelector(".velin-pdp__compare");
       if (compareEl) {

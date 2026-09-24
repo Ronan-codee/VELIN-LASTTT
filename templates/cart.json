@@ -60,92 +60,12 @@
         "total_label": "TOTAL",
         "taxes_note": "Taxes incluses",
         "checkout_text": "Finaliser ma commande",
-        "checkout_bg": "#D9A441",
-        "checkout_color": "#201e50"
-      }
-    },
-    "featured_products_AwGfVL": {
-      "type": "featured-products",
-      "blocks": {
-        "product_FEBLEB": {
-          "type": "product",
-          "settings": {
-            "product": "le-sac-hobo-croissant-cuir",
-            "option_1_label": "",
-            "option_1_has_dropdown": true,
-            "option_2_label": "",
-            "option_2_has_dropdown": true
-          }
-        },
-        "product_UzPyNB": {
-          "type": "product",
-          "settings": {
-            "product": "le-chevron-sac-cuir-lisse",
-            "option_1_label": "",
-            "option_1_has_dropdown": true,
-            "option_2_label": "",
-            "option_2_has_dropdown": true
-          }
-        },
-        "product_NkfNKT": {
-          "type": "product",
-          "settings": {
-            "product": "le-trapeze-sac-hobo-cuir",
-            "option_1_label": "",
-            "option_1_has_dropdown": true,
-            "option_2_label": "",
-            "option_2_has_dropdown": true
-          }
-        },
-        "product_m3cNV9": {
-          "type": "product",
-          "settings": {
-            "product": "le-tote-cabas-cuir",
-            "option_1_label": "",
-            "option_1_has_dropdown": true,
-            "option_2_label": "",
-            "option_2_has_dropdown": true
-          }
-        },
-        "product_leCroco1": {
-          "type": "product",
-          "settings": {
-            "product": "le-croco-portefeuille-cuir-verni",
-            "option_1_label": "",
-            "option_1_has_dropdown": true,
-            "option_2_label": "",
-            "option_2_has_dropdown": true
-          }
-        }
-      },
-      "block_order": [
-        "product_FEBLEB",
-        "product_UzPyNB",
-        "product_NkfNKT",
-        "product_m3cNV9",
-        "product_leCroco1"
-      ],
-      "name": "Velin Featured Products",
-      "settings": {
-        "heading": "Nos produits",
-        "collection": "nos-produits",
-        "cta_text": "Voir toute la collection",
-        "cta_link": "",
-        "heading_size": 28,
-        "bg_color": "#f4f1ec",
-        "section_padding": 50,
-        "card_gap": 20,
-        "card_width": 295,
-        "image_height": 275,
-        "title_size": 15,
-        "rating_size": 13,
-        "option_size": 13,
-        "price_size": 14
+        "checkout_bg": "#201E4D",
+        "checkout_color": "#FFFFFF"
       }
     }
   },
   "order": [
-    "main",
-    "featured_products_AwGfVL"
+    "main"
   ]
 }

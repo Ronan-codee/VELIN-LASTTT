@@ -203,12 +203,14 @@
       <h1 class="velin-pdp__title" style="font-size: {{ section.settings.title_size }}px;">{{ product.title }}</h1>
 
       <div class="velin-pdp__price-row">
-        {% if product.compare_at_price > product.price %}
-          <s class="velin-pdp__compare" style="color: {{ section.settings.compare_color }};">{{ product.compare_at_price | money }}</s>
-        {% elsif section.settings.compare_text != blank %}
-          <s class="velin-pdp__compare" style="color: {{ section.settings.compare_color }};">{{ section.settings.compare_text }}</s>
+        {% if section.settings.revy_bundle_id == blank %}
+          {% if product.compare_at_price > product.price %}
+            <s class="velin-pdp__compare" style="color: {{ section.settings.compare_color }};">{{ product.compare_at_price | money }}</s>
+          {% elsif section.settings.compare_text != blank %}
+            <s class="velin-pdp__compare" style="color: {{ section.settings.compare_color }};">{{ section.settings.compare_text }}</s>
+          {% endif %}
+          <span class="velin-pdp__price" id="VelinPDPPrice-{{ section.id }}">{{ product.price | money }}</span>
         {% endif %}
-        <span class="velin-pdp__price" id="VelinPDPPrice-{{ section.id }}">{{ product.price | money }}</span>
         <!-- Air reviews star rating -->
         <div class="AirReviews-Widget AirReviews-Widget--Stars"></div>
       </div>

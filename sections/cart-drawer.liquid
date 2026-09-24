@@ -112,12 +112,21 @@
             Support disponible 24/7
           </p>
         </div>
+        {% if cart.total_discount > 0 %}
+          <div class="cart-drawer__summary-row">
+            <span>Remise</span>
+            <span class="cart-drawer__discount-amount">−{{ cart.total_discount | money }}</span>
+          </div>
+        {% endif %}
+        <div class="cart-drawer__summary-row">
+          <span>Expédition</span>
+          <span class="cart-drawer__shipping-free">Gratuite</span>
+        </div>
         <div class="cart-drawer__subtotal-row">
           <span>Sous-total</span>
           <span>{{ cart.total_price | money }}</span>
         </div>
-        <p class="cart-drawer__taxes-note">Taxes incluses. Livraison gratuite.</p>
-        <a href="{{ routes.cart_url }}" class="cart-drawer__view-cart" data-cart-drawer-close>Voir mon panier</a>
+        <p class="cart-drawer__taxes-note">Taxes incluses.</p>
         <form action="/cart" method="post">
           <button type="submit" name="checkout" class="cart-drawer__checkout-btn">Acheter maintenant</button>
         </form>
@@ -482,6 +491,23 @@
     flex: 0 0 auto;
   }
 
+  .cart-drawer__summary-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #201e50;
+  }
+
+  .cart-drawer__discount-amount {
+    font-weight: 600;
+  }
+
+  .cart-drawer__shipping-free {
+    font-weight: 700;
+    color: #1F6D3B;
+  }
+
   .cart-drawer__subtotal-row {
     display: flex;
     align-items: center;
@@ -505,13 +531,6 @@
     color: #FFFFFF;
     font-size: 15px;
     text-transform: uppercase;
-  }
-
-  .cart-drawer__view-cart {
-    text-align: center;
-    font-size: 13px;
-    text-decoration: underline;
-    color: #000;
   }
 
   @media screen and (max-width: 480px) {

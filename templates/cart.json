@@ -60,8 +60,8 @@
         "total_label": "TOTAL",
         "taxes_note": "Taxes incluses",
         "checkout_text": "Finaliser ma commande",
-        "checkout_bg": "#674E35",
-        "checkout_color": "#ffffff"
+        "checkout_bg": "#FFE791",
+        "checkout_color": "#201e50"
       }
     },
     "featured_products_AwGfVL": {

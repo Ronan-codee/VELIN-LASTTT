@@ -11,12 +11,6 @@
 
   <div class="velin-cart__top">
     <h1 class="velin-cart__heading" style="font-size: {{ section.settings.heading_size }}px;">{{ section.settings.heading_text }}</h1>
-    <a href="{{ section.settings.continue_link | default: '/collections/all' }}" class="velin-cart__continue" style="font-size: {{ section.settings.continue_size }}px;">
-      {{ section.settings.continue_text }}
-      <span class="velin-cart__arrow">
-        <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 8L8 2M8 2H3M8 2V7" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </span>
-    </a>
   </div>
 
   {% if cart.item_count == 0 %}
@@ -186,8 +180,8 @@
     display: inline-block;
     padding: 8px 20px;
     border-radius: 999px;
-    background: {{ section.settings.checkout_bg }};
-    color: #fff;
+    background: #FFE791;
+    color: #201e50;
     font-family: 'Merriweather', serif;
     font-size: 13px;
     font-weight: 700;
@@ -200,7 +194,7 @@
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: rgba(0, 0, 0, 0.55);
+    color: #201e50;
   }
 
   .velin-cart__top {
@@ -217,23 +211,6 @@
     letter-spacing: -0.02em;
     text-transform: uppercase;
     color: #000;
-  }
-
-  .velin-cart__continue {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    text-decoration: underline;
-    text-transform: uppercase;
-    color: rgba(0,0,0,0.7);
-  }
-
-  .velin-cart__arrow {
-    display: inline-flex;
-    width: 24px;
-    height: 24px;
-    align-items: center;
-    justify-content: center;
   }
 
   .velin-cart__empty {
@@ -726,7 +703,6 @@
     { "type": "text", "id": "heading_text", "label": "Heading", "default": "Votre Panier" },
     { "type": "range", "id": "heading_size", "label": "Heading size (px)", "min": 20, "max": 60, "step": 1, "default": 42 },
     { "type": "text", "id": "continue_text", "label": "Continue shopping text", "default": "Continuer Vos Achats" },
-    { "type": "range", "id": "continue_size", "label": "Continue text size (px)", "min": 12, "max": 26, "step": 1, "default": 20 },
     { "type": "url", "id": "continue_link", "label": "Continue shopping link" },
     { "type": "header", "content": "Empty cart" },
     { "type": "text", "id": "empty_text", "label": "Empty cart text", "default": "Votre panier est vide." },

@@ -252,22 +252,6 @@
       {% endif %}
     </div>
 
-    {% if section.settings.show_installments %}
-      {%- liquid
-        assign velin_installment_count = section.settings.installment_count | default: 3
-        assign velin_installment_amount = product.price | times: 1.0 | divided_by: velin_installment_count
-        assign velin_klarna_h = section.settings.payment_icon_size | default: 24
-        assign velin_klarna_w = velin_klarna_h | times: 64 | divided_by: 27.0 | round
-      -%}
-      <div class="velin-pdp__installments">
-        <svg class="velin-pdp__klarna" width="{{ velin_klarna_w }}" height="{{ velin_klarna_h }}" viewBox="0 0 64 27" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Klarna">
-          <rect width="64" height="27" rx="6" fill="#FFB3C7"></rect>
-          <text x="32" y="18.5" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="700" font-size="13" fill="#17120F">Klarna.</text>
-        </svg>
-        <span class="velin-pdp__installments-text">Achetez maintenant, payez en {{ velin_installment_count }} versements de <span id="VelinPDPInstallment-{{ section.id }}">{{ velin_installment_amount | money }}</span></span>
-      </div>
-    {% endif %}
-
     {%- assign has_chips = false -%}
     {% for block in section.blocks %}{% if block.type == 'chip' %}{% assign has_chips = true %}{% endif %}{% endfor %}
     {% if has_chips %}
@@ -595,6 +579,22 @@
     {%- comment -%} ---------- Revy Bundle (manual embed, from the app's "Embed this bundle manually in any page via HTML" option) ---------- {%- endcomment -%}
     {% if section.settings.revy_bundle_id != blank %}
       <div data-revy-bundle-id="{{ section.settings.revy_bundle_id }}"{% if size_option_index >= 0 %} data-bundle-show-machine-kg{% endif %}></div>
+    {% endif %}
+
+    {% if section.settings.show_installments %}
+      {%- liquid
+        assign velin_installment_count = section.settings.installment_count | default: 3
+        assign velin_installment_amount = product.price | times: 1.0 | divided_by: velin_installment_count
+        assign velin_klarna_h = section.settings.payment_icon_size | default: 24
+        assign velin_klarna_w = velin_klarna_h | times: 64 | divided_by: 27.0 | round
+      -%}
+      <div class="velin-pdp__installments">
+        <svg class="velin-pdp__klarna" width="{{ velin_klarna_w }}" height="{{ velin_klarna_h }}" viewBox="0 0 64 27" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Klarna">
+          <rect width="64" height="27" rx="6" fill="#FFB3C7"></rect>
+          <text x="32" y="18.5" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="700" font-size="13" fill="#17120F">Klarna.</text>
+        </svg>
+        <span class="velin-pdp__installments-text">Achetez maintenant, payez en {{ velin_installment_count }} versements de <span id="VelinPDPInstallment-{{ section.id }}">{{ velin_installment_amount | money }}</span></span>
+      </div>
     {% endif %}
 
     {%- comment -%} ---------- Free shipping line ---------- {%- endcomment -%}

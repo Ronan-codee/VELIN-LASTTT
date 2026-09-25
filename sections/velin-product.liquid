@@ -200,6 +200,9 @@
     {% endif %}
 
     <div class="velin-pdp__title-price-group">
+      {% if section.settings.revy_bundle_id != blank %}
+        <p style="margin: 0 0 8px; color: #4A4E78; font-size: 15px;">Pour les foyers qui n'ont plus une minute à perdre le matin.</p>
+      {% endif %}
       <h1 class="velin-pdp__title" style="font-size: {{ section.settings.title_size }}px;">{{ product.title }}</h1>
 
       <div class="velin-pdp__price-row">
@@ -579,6 +582,7 @@
     {%- comment -%} ---------- Revy Bundle (manual embed, from the app's "Embed this bundle manually in any page via HTML" option) ---------- {%- endcomment -%}
     {% if section.settings.revy_bundle_id != blank %}
       <div data-revy-bundle-id="{{ section.settings.revy_bundle_id }}"{% if size_option_index >= 0 %} data-bundle-show-machine-kg{% endif %}></div>
+      <p style="margin: 4px 0 0; color: #4A4E78; font-size: 13px;">79,95€ pour l'ensemble couette + housse + livraison gratuite — pas 79,95€ pour une housse.</p>
     {% endif %}
 
     {% if section.settings.show_installments %}

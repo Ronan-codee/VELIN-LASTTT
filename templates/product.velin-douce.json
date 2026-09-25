@@ -24,28 +24,28 @@
         "chip_dc01a": {
           "type": "chip",
           "settings": {
-            "text": "Ultra Doux Au Toucher",
+            "text": "Une Douceur Qui Dure",
             "icon_type": "soft"
           }
         },
         "chip_dc01b": {
           "type": "chip",
           "settings": {
-            "text": "Couette Intégrée",
+            "text": "Fini Les Coins Qui S'échappent",
             "icon_type": "bed"
           }
         },
         "chip_dc01c": {
           "type": "chip",
           "settings": {
-            "text": "Lavable En Machine",
+            "text": "Lavable En Machine, Même En Grande Taille",
             "icon_type": "washer"
           }
         },
         "chip_dc01d": {
           "type": "chip",
           "settings": {
-            "text": "Multisaison",
+            "text": "Jamais Trop Chaud, Jamais Trop Froid",
             "icon_type": "season"
           }
         },
@@ -65,11 +65,19 @@
             "icon_type": "washer"
           }
         },
+        "faq_item_heat": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Fait-elle trop chaud en été ?",
+            "answer": "Non — la matière régule la température toute l'année : fraîche l'été, chaude l'hiver, sans avoir à changer de couette au fil des saisons.",
+            "icon_type": "season"
+          }
+        },
         "faq_item_dc01d": {
           "type": "faq_item",
           "settings": {
             "question": "Retours et remboursements",
-            "answer": "Vous disposez d'un délai de 30 jours après réception de votre commande pour exercer votre droit de rétractation. Le produit doit être retourné dans son état d'origine, non utilisé et dans son emballage d'origine. Le remboursement est effectué selon le mode de paiement utilisé lors de l'achat.",
+            "answer": "Vous avez 30 nuits pour tester votre housse de couette Velin chez vous — vraiment l'utiliser, pas seulement l'essayer du bout des doigts. Si elle ne vous convient pas, renvoyez-la : aucun justificatif à fournir, aucune question posée. Le remboursement est effectué selon le mode de paiement utilisé lors de l'achat, dès réception du retour.",
             "icon_type": "return"
           }
         }
@@ -81,6 +89,7 @@
         "chip_dc01d",
         "faq_item_dc01a",
         "faq_item_dc01b",
+        "faq_item_heat",
         "faq_item_dc01d"
       ],
       "name": "Velin Product Page",

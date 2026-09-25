@@ -98,7 +98,7 @@
         "bg_color": "#ffffff",
         "padding_v": 80,
         "padding_h": 100,
-        "column_gap": 122,
+        "column_gap": 56,
         "media_width": 680,
         "image_height": 680,
         "image_bg": "#ffffff",

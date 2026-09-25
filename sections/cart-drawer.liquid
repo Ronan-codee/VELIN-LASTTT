@@ -682,6 +682,25 @@
     });
 
     window.VelinCartDrawer = { open: open, close: close, refresh: refresh };
+
+    // Opens the drawer after ANY successful /cart/add call, including ones
+    // triggered by third-party apps (e.g. the bundle picker) that don't know
+    // about window.VelinCartDrawer. Our own quick-add flows already call
+    // open()/refresh() directly; this just adds a safety net for the rest.
+    var nativeFetch = window.fetch;
+    window.fetch = function (input, init) {
+      var url = typeof input === 'string' ? input : (input && input.url) || '';
+      var isCartAdd = url.indexOf('/cart/add') !== -1;
+      return nativeFetch.apply(this, arguments).then(function (response) {
+        if (isCartAdd && response.ok) {
+          fetch('/cart.js')
+            .then(function (r) { return r.json(); })
+            .then(function (cart) { return refresh(cart); })
+            .then(open);
+        }
+        return response;
+      });
+    };
   })();
 </script>
 

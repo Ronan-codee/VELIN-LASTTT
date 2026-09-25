@@ -2017,12 +2017,16 @@
 
     .velin-pdp__social {
       justify-content: flex-start;
+      flex-wrap: nowrap;
     }
 
     .velin-pdp__social .velin-pdp__social-text {
-      display: block;
-      width: 100%;
-      text-align: left;
+      display: inline;
+      min-width: 0;
+      font-size: 13px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .velin-pdp__media {

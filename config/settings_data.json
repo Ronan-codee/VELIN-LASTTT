@@ -48,7 +48,7 @@
           "enable_reload_on_bundle_auto_match": true,
           "use_h2_header": true,
           "match_cart_discount_title": true,
-          "enable_checkout_trigger_functions": true
+          "enable_checkout_trigger_functions": false
         }
       },
       "2567389343055140935": {

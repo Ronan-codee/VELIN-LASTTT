@@ -68,8 +68,8 @@
         "faq_item_heat": {
           "type": "faq_item",
           "settings": {
-            "question": "Fait-elle trop chaud en été ?",
-            "answer": "Non — la matière régule la température toute l'année : fraîche l'été, chaude l'hiver, sans avoir à changer de couette au fil des saisons.",
+            "question": "Tient-elle bien chaud en hiver ?",
+            "answer": "Oui — le rembourrage 4 saisons est pensé pour garder la chaleur même par grand froid, sans avoir besoin d'ajouter une couverture supplémentaire.",
             "icon_type": "season"
           }
         },

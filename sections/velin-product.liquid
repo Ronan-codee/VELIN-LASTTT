@@ -2678,18 +2678,30 @@ if (compareEl) {
       }, 1000);
     }
     // FAQ accordion
+    function measureFaqAnswer(item, answer) {
+      answer.style.maxHeight = answer.scrollHeight + "px";
+      // Images inside the answer (e.g. the Description field) can still be
+      // loading when scrollHeight is measured above, locking max-height in
+      // at an under-measured value so the content looks cut off. Re-measure
+      // once each image has finished loading.
+      answer.querySelectorAll("img").forEach(function (img) {
+        if (!img.complete) {
+          img.addEventListener("load", function () {
+            if (item.classList.contains("is-open")) measureFaqAnswer(item, answer);
+          });
+        }
+      });
+    }
+
     var defaultOpenFaq = root.querySelector("[data-faq-default-open]");
     if (defaultOpenFaq) {
       var defaultOpenAnswer = defaultOpenFaq.querySelector("[data-faq-answer]");
       defaultOpenFaq.classList.add("is-open");
       if (defaultOpenAnswer) {
-        defaultOpenAnswer.style.maxHeight = defaultOpenAnswer.scrollHeight + "px";
-        // Images/fonts inside the answer can still be loading when the line above
-        // runs, locking max-height in at an under-measured value. Re-measure once
-        // everything has finished loading.
+        measureFaqAnswer(defaultOpenFaq, defaultOpenAnswer);
         window.addEventListener("load", function () {
           if (defaultOpenFaq.classList.contains("is-open")) {
-            defaultOpenAnswer.style.maxHeight = defaultOpenAnswer.scrollHeight + "px";
+            measureFaqAnswer(defaultOpenFaq, defaultOpenAnswer);
           }
         });
       }
@@ -2708,7 +2720,7 @@ if (compareEl) {
 
         if (!isOpen) {
           item.classList.add("is-open");
-          answer.style.maxHeight = answer.scrollHeight + "px";
+          measureFaqAnswer(item, answer);
         }
       });
     });

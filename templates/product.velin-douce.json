@@ -42,6 +42,13 @@
             "icon_type": "season"
           }
         },
+        "chip_dc01e": {
+          "type": "chip",
+          "settings": {
+            "text": "Jamais Trop Chaud, Jamais Trop Froid",
+            "icon_type": "season"
+          }
+        },
         "faq_item_dc01a": {
           "type": "faq_item",
           "settings": {
@@ -79,6 +86,7 @@
         "chip_dc01a",
         "chip_dc01c",
         "chip_dc01d",
+        "chip_dc01e",
         "faq_item_dc01a",
         "faq_item_dc01b",
         "faq_item_heat",

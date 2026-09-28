@@ -2276,6 +2276,7 @@
     var mainImageWrap = root.querySelector(".velin-pdp__main-image");
     var stickyAtc = document.querySelector("[data-sticky-atc]");
     var stickyAtcPrice = stickyAtc ? stickyAtc.querySelector("[data-sticky-atc-price]") : null;
+    var colorValueEl = root.querySelector(".velin-pdp__colors-value");
 
     // Places the free-shipping line immediately above the add-to-cart button.
     // One-shot (immediate + a single delayed retry in case the Unlimited
@@ -2499,6 +2500,7 @@
         }
       });
       root.querySelectorAll("[data-color-select]").forEach(function (sel) { sel.value = value; });
+      if (colorValueEl) colorValueEl.textContent = value;
 
       // Swap the photo for this color independently of variant lookup below — the photo
       // only needs the color value, not a resolved variant, so a variant-matching problem

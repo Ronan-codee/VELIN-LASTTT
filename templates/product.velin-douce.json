@@ -66,6 +66,14 @@
             "icon_type": "season"
           }
         },
+        "faq_item_pillow": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Quelle est la taille des taies d'oreiller offertes ?",
+            "answer": "Les taies d'oreiller offertes mesurent 51 x 76 cm.",
+            "icon_type": "star"
+          }
+        },
         "faq_item_dc01d": {
           "type": "faq_item",
           "settings": {
@@ -82,6 +90,7 @@
         "faq_item_dc01a",
         "faq_item_dc01b",
         "faq_item_heat",
+        "faq_item_pillow",
         "faq_item_dc01d"
       ],
       "name": "Velin Product Page",

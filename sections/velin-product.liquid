@@ -2347,6 +2347,18 @@
     }
 
     // Thumbnails
+    // Builds a srcset for a Shopify CDN image URL by swapping its width param —
+    // mirrors the widths rendered server-side for the initial image, so a color
+    // swap keeps the same responsive behavior instead of only setting `src`
+    // (which browsers ignore in favor of a stale `srcset` left over from the
+    // previous image).
+    function buildSrcset(url) {
+      if (!/[?&]width=\d+/.test(url)) return null;
+      return [400, 700, 1000, 1200].map(function (w) {
+        return url.replace(/([?&]width=)\d+/, "$1" + w) + " " + w + "w";
+      }).join(", ");
+    }
+
     // Stops/clears any playing video and shows the plain image again.
     function showMainImage(src) {
       if (mainVideo) {
@@ -2356,6 +2368,12 @@
       if (mainImg) {
         mainImg.hidden = false;
         mainImg.src = src;
+        var srcset = buildSrcset(src);
+        if (srcset) {
+          mainImg.srcset = srcset;
+        } else {
+          mainImg.removeAttribute("srcset");
+        }
       }
     }
 

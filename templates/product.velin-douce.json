@@ -24,22 +24,22 @@
         "chip_dc01a": {
           "type": "chip",
           "settings": {
-            "text": "Couette Intégrée Avec Fini Les Coins Qui S'échappent",
-            "icon_type": "bed"
+            "text": "Couette Intégrée, Fini Les Coins Qui S'échappent",
+            "state": "positive"
           }
         },
         "chip_dc01c": {
           "type": "chip",
           "settings": {
             "text": "Lavable En Machine, Même En Grande Taille",
-            "icon_type": "washer"
+            "state": "positive"
           }
         },
         "chip_dc01d": {
           "type": "chip",
           "settings": {
             "text": "Fibre Thermorégulante, Jamais Trop Chaud, Jamais Trop Froid",
-            "icon_type": "season"
+            "state": "positive"
           }
         },
         "faq_item_dc01a": {
@@ -117,7 +117,6 @@
         "show_installments": true,
         "installment_count": 3,
         "payment_icon_size": 24,
-        "chip_bg": "#f7f7f7",
         "chip_size": 14,
         "chip_gap": 16,
         "color_label": "Couleur",
@@ -132,11 +131,11 @@
         "size_guide_heading": "Guide des tailles",
         "size_guide_intro": "Retrouvez ci-dessous la taille de lit qui correspond à chaque format de housse de couette Velin.",
         "size_guide_header_bg": "#201e50",
-        "size_guide_highlight": "#D9A441",
+        "size_guide_highlight": "#d9a441",
         "hide_native_purchase": true,
         "hide_atc_button": true,
         "revy_bundle_id": "416efce1-46d5-459a-ae0f-99db71bce9be",
-        "bundle_badge_color": "#FFE791",
+        "bundle_badge_color": "#ffe791",
         "show_free_shipping": false,
         "free_shipping_text": "Livraison gratuite",
         "atc_text": "AJOUTER AU PANIER",
@@ -330,8 +329,8 @@
         "min_height": 480,
         "eyebrow": "VELIN",
         "heading": "Le Confort Pensé Pour Durer",
-        "show_top_wave": true,
-        "show_bottom_wave": true
+        "show_bottom_wave": true,
+        "show_top_wave": true
       }
     },
     "freshness_dc01": {
@@ -403,8 +402,8 @@
         "min_height": 480,
         "eyebrow": "VELIN",
         "heading": "Pourquoi Choisir Velin ?",
-        "show_top_wave": true,
-        "show_bottom_wave": true
+        "show_bottom_wave": true,
+        "show_top_wave": true
       }
     },
     "reviews_dc01": {

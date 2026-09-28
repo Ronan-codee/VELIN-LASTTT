@@ -102,8 +102,14 @@
         <img
           id="VelinPDPMainImg-{{ section.id }}"
           src="{{ product.featured_media | image_url: width: 1200 }}"
+          srcset="{{ product.featured_media | image_url: width: 400 }} 400w,
+                  {{ product.featured_media | image_url: width: 700 }} 700w,
+                  {{ product.featured_media | image_url: width: 1000 }} 1000w,
+                  {{ product.featured_media | image_url: width: 1200 }} 1200w"
+          sizes="(max-width: 1100px) 100vw, {{ section.settings.media_width }}px"
           alt="{{ product.featured_media.alt | escape }}"
           loading="eager"
+          fetchpriority="high"
         >
       {% endif %}
       <div class="velin-pdp__main-video" id="VelinPDPMainVideo-{{ section.id }}" hidden></div>

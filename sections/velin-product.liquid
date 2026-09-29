@@ -854,6 +854,9 @@
       {%- endif -%}
       <div class="velin-pdp__sticky-atc-text">
         <p class="velin-pdp__sticky-atc-title">{{ product.title }}</p>
+        {%- if section.settings.sticky_atc_label != blank -%}
+          <p class="velin-pdp__sticky-atc-label">{{ section.settings.sticky_atc_label }}</p>
+        {%- endif -%}
         <p class="velin-pdp__sticky-atc-price" data-sticky-atc-price>{{ product.selected_or_first_available_variant.price | money }}</p>
       </div>
     </div>
@@ -1508,6 +1511,14 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .velin-pdp__sticky-atc-label {
+    margin: 2px 0 0;
+    font-family: 'Merriweather', serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: #000;
   }
 
   .velin-pdp__sticky-atc-price {
@@ -3200,6 +3211,7 @@ if (compareEl) {
     { "type": "color", "id": "bundle_badge_color", "label": "Couleur des étiquettes du bundle (ex: LE PLUS POPULAIRE)", "default": "#FFE791" },
     { "type": "checkbox", "id": "show_free_shipping", "label": "Show free shipping line above the button", "default": true },
     { "type": "text", "id": "free_shipping_text", "label": "Free shipping text", "default": "Livraison gratuite" },
+    { "type": "text", "id": "sticky_atc_label", "label": "Texte de la barre sticky (ex: Lot de 2)", "default": "Lot de 2" },
     { "type": "text", "id": "atc_text", "label": "Button text", "default": "AJOUTER AU PANIER" },
     { "type": "color", "id": "atc_bg", "label": "Button background", "default": "#705744" },
     { "type": "color", "id": "atc_color", "label": "Button text color", "default": "#FFFFFF" },

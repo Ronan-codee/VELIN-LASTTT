@@ -567,6 +567,14 @@
       </div>
     {% endif %}
 
+    {%- comment -%} ---------- Pillowcase offer banner (real deadline only: countdown shows only when an end date is set) ---------- {%- endcomment -%}
+    {% if section.settings.pillow_offer_text != blank %}
+      <div class="velin-pdp__pillow-offer" data-pillow-offer data-end="{{ section.settings.pillow_offer_end | escape }}">
+        <p class="velin-pdp__pillow-offer-text">🎁 {{ section.settings.pillow_offer_text }}</p>
+        <p class="velin-pdp__pillow-offer-timer" data-pillow-offer-timer hidden>{{ section.settings.pillow_offer_timer_label }} <strong data-pillow-offer-clock>--:--:--</strong></p>
+      </div>
+    {% endif %}
+
     {%- comment -%} ---------- Revy Bundle (manual embed, from the app's "Embed this bundle manually in any page via HTML" option) ---------- {%- endcomment -%}
     {% if section.settings.revy_bundle_id != blank %}
       <div data-revy-bundle-id="{{ section.settings.revy_bundle_id }}"{% if size_option_index >= 0 %} data-bundle-show-machine-kg{% endif %}></div>
@@ -1456,6 +1464,34 @@
     cursor: not-allowed;
   }
 
+  .velin-pdp__pillow-offer {
+    margin: 0 0 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: #FFE791;
+    color: #201e50;
+    text-align: center;
+    font-family: 'Merriweather', serif;
+  }
+
+  .velin-pdp__pillow-offer p {
+    margin: 0;
+  }
+
+  .velin-pdp__pillow-offer-text {
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .velin-pdp__pillow-offer-timer {
+    margin-top: 4px !important;
+    font-size: 12px;
+  }
+
+  .velin-pdp__pillow-offer-timer strong {
+    font-variant-numeric: tabular-nums;
+  }
+
   .velin-pdp__sticky-atc {
     position: fixed;
     left: 0;
@@ -2307,6 +2343,28 @@
     var thumbsRow = root.querySelector(".velin-pdp__thumbs");
     var submitBtn = root.querySelector(".velin-pdp__atc");
     var mainImageWrap = root.querySelector(".velin-pdp__main-image");
+    // Pillowcase offer countdown: runs only when a valid end date is set in the section settings.
+    (function () {
+      var box = root.querySelector("[data-pillow-offer]");
+      if (!box) return;
+      var end = Date.parse(box.getAttribute("data-end") || "");
+      if (isNaN(end)) return;
+      var timer = box.querySelector("[data-pillow-offer-timer]");
+      var clock = box.querySelector("[data-pillow-offer-clock]");
+      function pad(n) { return n < 10 ? "0" + n : "" + n; }
+      function tick() {
+        var left = Math.floor((end - Date.now()) / 1000);
+        if (left <= 0) { box.hidden = true; return; }
+        var d = Math.floor(left / 86400);
+        var h = Math.floor((left % 86400) / 3600);
+        var m = Math.floor((left % 3600) / 60);
+        clock.textContent = (d > 0 ? d + "j " : "") + pad(h) + ":" + pad(m) + ":" + pad(left % 60);
+        timer.hidden = false;
+        window.setTimeout(tick, 1000);
+      }
+      tick();
+    })();
+
     var stickyAtc = document.querySelector("[data-sticky-atc]");
     var stickyAtcPrice = stickyAtc ? stickyAtc.querySelector("[data-sticky-atc-price]") : null;
     var colorValueEl = root.querySelector(".velin-pdp__colors-value");
@@ -3228,6 +3286,10 @@ if (compareEl) {
     { "type": "text", "id": "size_guide_intro", "label": "Texte d'intro (optionnel)" },
     { "type": "color", "id": "size_guide_header_bg", "label": "Couleur d'en-tête du tableau", "default": "#201E50" },
     { "type": "color", "id": "size_guide_highlight", "label": "Couleur de la taille sélectionnée", "default": "#D9A441" },
+    { "type": "header", "content": "Offre taies d'oreiller" },
+    { "type": "text", "id": "pillow_offer_text", "label": "Texte de l'offre (vide = masqué)", "default": "2 taies d'oreiller offertes pour toute commande" },
+    { "type": "text", "id": "pillow_offer_end", "label": "Fin de l'offre (compte à rebours)", "info": "Format 2026-10-05T23:59:00+02:00 (heure de Paris : +02:00 jusqu'au 25/10, +01:00 ensuite). Vide = pas de compte à rebours. Ne mettre qu'une vraie date de fin." },
+    { "type": "text", "id": "pillow_offer_timer_label", "label": "Texte du compte à rebours", "default": "Offre valable encore" },
     { "type": "header", "content": "Add to cart" },
     { "type": "checkbox", "id": "hide_native_purchase", "label": "Hide native buy box (bundle app handles purchase)", "default": false },
     { "type": "checkbox", "id": "hide_atc_button", "label": "Hide button only (form stays, for bundle apps)", "default": false },

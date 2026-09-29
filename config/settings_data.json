@@ -64,7 +64,7 @@
           "show_featured_products": true,
           "featured_products": [],
           "background_color": "#ffffff",
-          "font_color": "#000000",
+          "font_color": "#0B1644",
           "agent_invert_activator_colors": true,
           "button_color": "#000000",
           "button_icon": "chat_bubble",

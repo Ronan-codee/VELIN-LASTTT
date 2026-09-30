@@ -396,7 +396,7 @@
           "type": "benefit_card",
           "settings": {
             "icon_type": "truck",
-            "title": "Expédiée Sous 24-48h",
+            "title": "Expédiée Sous 72h",
             "text": "Commande préparée rapidement, avec numéro de suivi communiqué dès l'envoi."
           }
         }

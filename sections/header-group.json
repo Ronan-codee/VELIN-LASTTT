@@ -19,7 +19,10 @@
           "name": "Rotating announcement bar",
           "settings": {
             "message_1": "<p>Une couette 2-en-1 achetée = 2 taies d’oreiller offertes !</p>",
-            "message_2": "<p>Offre déstockage -50%</p>",
+            "promo_title": "DÉSTOCKAGE",
+            "promo_subtitle": "Jusqu'à -50% sur tout le site !",
+            "countdown_end": "",
+            "message_2": "",
             "message_3": "",
             "message_4": "<p>Livraison offerte</p>",
             "rotation_interval": 3,

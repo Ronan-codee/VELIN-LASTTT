@@ -29,8 +29,8 @@
             "background_color": "#201e4d",
             "text_color": "#f1eae0",
             "link_color": "#f1eae0",
-            "font_size": 14,
-            "padding": 6
+            "font_size": 13,
+            "padding": 5
           },
           "blocks": {}
         }

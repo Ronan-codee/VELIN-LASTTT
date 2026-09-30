@@ -2287,6 +2287,18 @@
     margin-top: -16px;
   }
 
+  {%- comment -%}
+    The app lays each row's selects out with repeat(auto-fill, minmax(140px, 1fr)).
+    Row #1 is 2px wider than rows #2/#3, so around ~1450px screens it tips into 3
+    columns while the others stay at 2 — hence mismatched widths. Forcing 2 columns
+    on wider screens keeps every row identical (mobile keeps the app's own layout).
+  {%- endcomment -%}
+  @media (min-width: 750px) {
+    [data-revy-bundle-id] .rbu-qb-single-options {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+  }
+
   :root {
     --rbu-gen-disc-label-bg: {{ section.settings.accent_color }};
     --rbu-gen-disc-label-text: #FFFFFF;

@@ -203,7 +203,7 @@
           <span class="velin-pdp__price" id="VelinPDPPrice-{{ section.id }}">{{ product.price | money }}</span>
         {% endif %}
         <!-- Air reviews star rating -->
-        <div class="AirReviews-Widget AirReviews-Widget--Stars"></div>
+        <div class="AirReviews-Widget AirReviews-Widget--Stars"></div><span>{{ product.metafields.air_reviews_product.review_avg }} {{ product.metafields.air_reviews_product.review_count }}</span>
       </div>
 
       {% if section.settings.launch_offer_text != blank %}

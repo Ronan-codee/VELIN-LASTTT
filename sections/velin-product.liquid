@@ -193,7 +193,7 @@
     <div class="velin-pdp__title-price-group">
       <h1 class="velin-pdp__title" style="font-size: {{ section.settings.title_size }}px;">{{ product.title }}</h1>
 
-      <div class="velin-pdp__price-row">
+      <div class="velin-pdp__price-row" style="gap: 8px;">
         {% if section.settings.revy_bundle_id == blank %}
           {% if product.compare_at_price > product.price %}
             <s class="velin-pdp__compare" style="color: {{ section.settings.compare_color }};">{{ product.compare_at_price | money }}</s>

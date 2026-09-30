@@ -19,10 +19,10 @@
           "name": "Rotating announcement bar",
           "settings": {
             "message_1": "<p>Une couette 2-en-1 achetée = 2 taies d’oreiller offertes !</p>",
-            "message_2": "<p>30 nuits pour changer d'avis</p>",
-            "message_3": "<p>Service client disponible 7j/7</p>",
+            "message_2": "<p>Offre déstockage -50%</p>",
+            "message_3": "",
             "message_4": "<p>Livraison offerte</p>",
-            "rotation_interval": 2,
+            "rotation_interval": 3,
             "background_color": "#201e4d",
             "text_color": "#f1eae0",
             "link_color": "#f1eae0",

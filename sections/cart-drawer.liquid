@@ -50,7 +50,7 @@
                 {% endif %}
                 {% unless cd_is_gift %}
                   {% if item.product.handle == 'velin-housse-de-couette-2-en-1' %}
-                    <p class="cart-drawer__item-included">🎁 {{ item.quantity | times: 2 }} taies d'oreiller offertes incluses</p>
+                    <p class="cart-drawer__item-included">🎁 {{ item.quantity | times: 2 }} taies d'oreiller offertes</p>
                   {% endif %}
                 {% endunless %}
                 <div class="cart-drawer__item-foot">
@@ -356,7 +356,11 @@
   }
 
   .cart-drawer__item-included {
-    margin: 4px 0 0;
+    display: inline-block;
+    margin: 6px 0 0;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #FFE791;
     font-size: 12px;
     font-weight: 600;
     color: #201e50;

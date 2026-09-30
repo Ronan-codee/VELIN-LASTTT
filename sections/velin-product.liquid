@@ -398,20 +398,12 @@
       </div>
     {% endif %}
 
-    {%- comment -%} ---------- Size guide (bed match) — placed right above the bundle picker so shoppers can check sizing before choosing ---------- {%- endcomment -%}
+    {%- comment -%} ---------- Size guide (bed match) modal — its trigger link sits right below the bundle picker ---------- {%- endcomment -%}
     {%- assign has_size_guide = false -%}
     {%- if section.settings.show_size_guide and size_option_index >= 0 -%}
       {%- assign has_size_guide = true -%}
     {%- endif -%}
     {% if has_size_guide %}
-      <button type="button" class="velin-pdp__size-guide-trigger" data-size-guide-open>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <rect x="2" y="7" width="20" height="10" rx="1.5" stroke="currentColor" stroke-width="1.6"/>
-          <path d="M6 7v3M10 7v2M14 7v3M18 7v2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-        </svg>
-        <span>{{ section.settings.size_guide_link_text | default: "Quelle taille me faut-il ?" }}</span>
-      </button>
-
       <div class="velin-size-guide" data-size-guide-modal hidden>
         <div class="velin-size-guide__overlay" data-size-guide-close></div>
         <div class="velin-size-guide__panel" role="dialog" aria-modal="true" aria-labelledby="VelinSizeGuideTitle-{{ section.id }}">
@@ -570,6 +562,17 @@
     {%- comment -%} ---------- Revy Bundle (manual embed, from the app's "Embed this bundle manually in any page via HTML" option) ---------- {%- endcomment -%}
     {% if section.settings.revy_bundle_id != blank %}
       <div data-revy-bundle-id="{{ section.settings.revy_bundle_id }}"{% if size_option_index >= 0 %} data-bundle-show-machine-kg{% endif %}></div>
+    {% endif %}
+
+    {%- comment -%} Size guide link — right below the bundle picker {%- endcomment -%}
+    {% if has_size_guide %}
+      <button type="button" class="velin-pdp__size-guide-trigger" data-size-guide-open>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="2" y="7" width="20" height="10" rx="1.5" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M6 7v3M10 7v2M14 7v3M18 7v2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        <span>{{ section.settings.size_guide_link_text | default: "Quelle taille me faut-il ?" }}</span>
+      </button>
     {% endif %}
 
     {% if section.settings.show_installments %}
@@ -2095,7 +2098,7 @@
     align-items: center;
     gap: 8px;
     width: fit-content;
-    margin: 2px 0 0;
+    margin: 12px 0 0;
     padding: 0;
     border: none;
     background: none;

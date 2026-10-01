@@ -1,0 +1,88 @@
+{%- comment -%}
+  Replaces "5 à 9 jours ouvrables" by real dates ("entre le jeu. 8 et le mer. 14 oct.") in every
+  element marked [data-velin-delivery]. The original text stays in place when JS is off and as the
+  fallback if parsing fails. Working days skip weekends and French public holidays; day 0 is today.
+{%- endcomment -%}
+<script>
+  (function () {
+    var RE = /(?:en\s+)?(\d+)\s*à\s*(\d+)\s*jours\s+ouvrables/i;
+    var DAYS = ["dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."];
+    var MONTHS = ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."];
+
+    function key(d) { return d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate(); }
+
+    function holidays(year) {
+      var set = {};
+      function add(m, d) { set[year + "-" + m + "-" + d] = 1; }
+      [[0, 1], [4, 1], [4, 8], [6, 14], [7, 15], [10, 1], [10, 11], [11, 25]].forEach(function (h) { add(h[0], h[1]); });
+      // Easter (Meeus/Jones/Butcher), then Easter Monday, Ascension (+39) and Whit Monday (+50).
+      var a = year % 19, b = Math.floor(year / 100), c = year % 100;
+      var d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25);
+      var g = Math.floor((b - f + 1) / 3), h = (19 * a + b - d - g + 15) % 30;
+      var i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7;
+      var m = Math.floor((a + 11 * h + 22 * l) / 451);
+      var month = Math.floor((h + l - 7 * m + 114) / 31) - 1;
+      var day = ((h + l - 7 * m + 114) % 31) + 1;
+      [1, 39, 50].forEach(function (offset) {
+        var x = new Date(year, month, day + offset);
+        set[key(x)] = 1;
+      });
+      return set;
+    }
+
+    function isWorkingDay(d, cache) {
+      var wd = d.getDay();
+      if (wd === 0 || wd === 6) return false;
+      var y = d.getFullYear();
+      if (!cache[y]) cache[y] = holidays(y);
+      return !cache[y][key(d)];
+    }
+
+    function addWorkingDays(from, n) {
+      var cache = {}, d = new Date(from.getFullYear(), from.getMonth(), from.getDate());
+      while (n > 0) {
+        d.setDate(d.getDate() + 1);
+        if (isWorkingDay(d, cache)) n--;
+      }
+      return d;
+    }
+
+    function label(d, withMonth) {
+      return DAYS[d.getDay()] + " " + d.getDate() + (withMonth ? " " + MONTHS[d.getMonth()] : "");
+    }
+
+    function apply(el) {
+      if (el.getAttribute("data-velin-delivery-done")) return;
+      var text = el.textContent;
+      var m = RE.exec(text);
+      if (!m) return;
+      var min = parseInt(m[1], 10), max = parseInt(m[2], 10);
+      if (!(min > 0 && max >= min && max < 40)) return;
+      var now = new Date();
+      var d1 = addWorkingDays(now, min), d2 = addWorkingDays(now, max);
+      var sameMonth = d1.getMonth() === d2.getMonth();
+      var range = "entre le " + label(d1, !sameMonth) + " et le " + label(d2, true);
+      el.setAttribute("data-velin-delivery-done", "1");
+      el.textContent = text.replace(RE, range);
+    }
+
+    function run() {
+      document.querySelectorAll("[data-velin-delivery]").forEach(apply);
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", run);
+    } else {
+      run();
+    }
+    // The cart drawer can be re-rendered by AJAX: apply again to nodes added later.
+    if ("MutationObserver" in window) {
+      var queued = false;
+      new MutationObserver(function () {
+        if (queued) return;
+        queued = true;
+        window.requestAnimationFrame(function () { queued = false; run(); });
+      }).observe(document.documentElement, { childList: true, subtree: true });
+    }
+  })();
+</script>

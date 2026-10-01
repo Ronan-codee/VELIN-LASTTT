@@ -6,9 +6,10 @@ SRC = "source.mp4"
 SEGS = [
     (0.0, 3.75, 1.30, "LAVABLE EN MACHINE"),
     (3.75, 6.80, 1.20, "SÈCHE À L'AIR LIBRE"),
-    (6.80, 9.85, 1.20, "SE FAIT EN UN GESTE"),
+    (6.80, 9.85, 1.00, "LIT FAIT EN 3 SECONDES"),
     (9.85, 12.9, 1.20, "DOUCEUR AU QUOTIDIEN"),
 ]
+CHRONO_SEG = 2  # plan du lit
 ZOOM = 0.12  # zoom progressif 100% -> 112% par plan
 ACCENT = "&H004FC1F2&"  # BGR : jaune doré
 WHITE = "&H00FFFFFF&"
@@ -43,6 +44,13 @@ for i, (a, b, sp, text) in enumerate(SEGS):
                 parts.append(f"{{\\alpha&HFF&}}{w}{{\\alpha&H00&}}")
         pop = "{\\fscx85\\fscy85\\t(0,110,\\fscx100\\fscy100)}"
         events.append(f"Dialogue: 0,{ts(s)},{ts(e)},Cap,,0,0,0,,{pop}{' '.join(parts)}")
+    if i == CHRONO_SEG:
+        steps = int(round(d * 10))
+        for c in range(steps + 1):
+            cs, ce = t0 + c / 10, t0 + (c + 1) / 10 if c < steps else t0 + d
+            val = min(c / 10, 3.0)
+            col = ACCENT if c == steps else WHITE
+            events.append(f"Dialogue: 1,{ts(cs)},{ts(ce)},Chrono,,0,0,0,,{{\\1c{col}}}\u23f1 {val:.1f} s")
     t0 += d
 
 ass = f"""[Script Info]
@@ -54,6 +62,7 @@ WrapStyle: 2
 [V4+ Styles]
 Format: Name,Fontname,Fontsize,PrimaryColour,SecondaryColour,OutlineColour,BackColour,Bold,Italic,Underline,StrikeOut,ScaleX,ScaleY,Spacing,Angle,BorderStyle,Outline,Shadow,Alignment,MarginL,MarginR,MarginV,Encoding
 Style: Cap,DejaVu Sans,78,{WHITE},{WHITE},&H00000000&,&H80000000&,-1,0,0,0,100,100,0,0,1,7,2,2,60,60,120,1
+Style: Chrono,DejaVu Sans Mono,70,{WHITE},{WHITE},&H99000000&,&H99000000&,-1,0,0,0,100,100,0,0,3,14,0,8,60,60,70,1
 
 [Events]
 Format: Layer,Start,End,Style,Name,MarginL,MarginR,MarginV,Effect,Text

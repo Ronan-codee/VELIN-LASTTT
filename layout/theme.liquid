@@ -44,6 +44,10 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    {%- if template.name == 'product' -%}
+      {%- comment -%} AirReviews bundles (JS/CSS) are fetched from this origin: warm the connection early (Lighthouse: ~300 ms LCP). {%- endcomment -%}
+      <link rel="preconnect" href="https://cdn-air-reviews.avada.io">
+    {%- endif -%}
     {%- comment -%}
       Loaded via preload+onload instead of a plain stylesheet link so this
       third-party CSS doesn't block the first paint. The noscript fallback

@@ -1,6 +1,10 @@
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+{%- comment -%}
+  Manrope loaded via preload+onload so this third-party CSS (a plain stylesheet link in <body>
+  is render-blocking) stays off the critical path. The preconnects to fonts.googleapis.com /
+  fonts.gstatic.com already live in layout/theme.liquid, so they are not repeated per section.
+{%- endcomment -%}
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet"></noscript>
 
 {%- capture section_style -%}
   {%- if section.settings.custom_background != blank -%}background: {{ section.settings.custom_background }};{%- endif -%}

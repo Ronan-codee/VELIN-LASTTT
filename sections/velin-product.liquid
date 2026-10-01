@@ -86,827 +86,7 @@
 {%- endcapture -%}
 
 {% render 'header-color-override', style: section.settings.header_style %}
-<div class="velin-pdp" id="VelinPDP-{{ section.id }}" style="
-  background: {{ section.settings.bg_color }};
-  padding: {{ section.settings.padding_v }}px {{ section.settings.padding_h }}px;
-  gap: {{ section.settings.column_gap }}px;
-">
-
-  {%- comment -%} ---------- LEFT: media ---------- {%- endcomment -%}
-  <div class="velin-pdp__media" style="width: {{ section.settings.media_width }}px; gap: {{ section.settings.media_gap }}px;">
-    <div class="velin-pdp__main-image{% unless product.selected_or_first_available_variant.available %} is-sold-out{% endunless %}{% if section.settings.image_fit == 'cover' %} velin-pdp__main-image--cover-desktop{% endif %}" style="height: {{ section.settings.image_height }}px; background: {{ section.settings.image_bg }};">
-      {% unless product.selected_or_first_available_variant.available %}
-        <span class="velin-pdp__sold-out-badge">{{ 'products.product.sold_out' | t }}</span>
-      {% endunless %}
-      {% if product.featured_media %}
-        <img
-          id="VelinPDPMainImg-{{ section.id }}"
-          src="{{ product.featured_media | image_url: width: 1200 }}"
-          srcset="{{ product.featured_media | image_url: width: 400 }} 400w,
-                  {{ product.featured_media | image_url: width: 700 }} 700w,
-                  {{ product.featured_media | image_url: width: 1000 }} 1000w,
-                  {{ product.featured_media | image_url: width: 1200 }} 1200w"
-          sizes="(max-width: 1100px) 100vw, {{ section.settings.media_width }}px"
-          alt="{{ product.featured_media.alt | escape }}"
-          loading="eager"
-          fetchpriority="high"
-        >
-      {% endif %}
-      <div class="velin-pdp__main-video" id="VelinPDPMainVideo-{{ section.id }}" hidden></div>
-    </div>
-    {% if product.media.size > 1 %}
-      <div class="velin-pdp__thumbs" style="height: {{ section.settings.thumbs_height }}px; gap: {{ section.settings.thumbs_gap }}px;">
-        {%- assign is_first_thumb = true -%}
-        {% for media in product.media %}
-          {%- if color_option_index >= 0 and media.media_type == 'image' and color_option.values contains media.alt -%}
-            {%- continue -%}
-          {%- endif -%}
-          {%- liquid
-            assign thumb_is_video = false
-            if media.media_type == 'video' or media.media_type == 'external_video'
-              assign thumb_is_video = true
-            endif
-            if thumb_is_video
-              assign thumb_full = media.preview_image | image_url: width: 1200
-              assign thumb_small = media.preview_image | image_url: width: 240
-            else
-              assign thumb_full = media | image_url: width: 1200
-              assign thumb_small = media | image_url: width: 240
-            endif
-          -%}
-          <button
-            type="button"
-            class="velin-pdp__thumb{% if is_first_thumb %} is-active{% endif %}"
-            data-full="{{ thumb_full }}"
-            {% if thumb_is_video %}data-video-id="{{ media.id }}"{% endif %}
-            aria-label="{% if thumb_is_video %}Vidéo{% else %}Image{% endif %} {{ forloop.index }}"
-          >
-            <img src="{{ thumb_small }}" alt="{{ media.alt | escape }}" loading="lazy">
-            {% if thumb_is_video %}
-              <span class="velin-pdp__thumb-play" aria-hidden="true">
-                <svg width="8" height="10" viewBox="0 0 10 12" fill="none"><path d="M10 6L0 12V0L10 6Z" fill="#fff"/></svg>
-              </span>
-            {% endif %}
-          </button>
-          {%- assign is_first_thumb = false -%}
-        {% endfor %}
-      </div>
-    {% endif %}
-    <div hidden aria-hidden="true">
-      {% for media in product.media %}
-        {% if media.media_type == 'video' %}
-          <template data-pdp-video-template="{{ media.id }}">
-            {{ media | video_tag: image_size: '1200x', autoplay: true, loop: true, controls: false, muted: true, playsinline: true, preload: 'metadata', class: 'velin-pdp__main-video-el' }}
-          </template>
-        {% elsif media.media_type == 'external_video' %}
-          <template data-pdp-video-template="{{ media.id }}">
-            {{ media | external_video_tag: autoplay: false, class: 'velin-pdp__main-video-el' }}
-          </template>
-        {% endif %}
-      {% endfor %}
-    </div>
-
-    {%- comment -%} ---------- Extra photos grid (desktop only), shown below the main image as the page scrolls ---------- {%- endcomment -%}
-    {% if section.settings.show_media_grid and product.media.size > 1 %}
-      <div class="velin-pdp__media-grid" style="gap: {{ section.settings.media_gap }}px;">
-        {%- comment -%} Product video(s): first cell of the grid = 2nd position after the main image. Muted, looped; played by the script below only when visible. {%- endcomment -%}
-        {% for media in product.media %}
-          {% if media.media_type == 'video' %}
-            <div class="velin-pdp__media-grid-video">
-              {{ media | video_tag: image_size: '1200x', autoplay: false, loop: true, controls: false, muted: true, playsinline: true, preload: 'none', class: 'velin-pdp__media-grid-video-el' }}
-            </div>
-          {% endif %}
-        {% endfor %}
-        {% for media in product.media offset: 1 %}
-          {% if media.media_type == 'image' and color_option_index >= 0 and color_option.values contains media.alt %}
-            {% continue %}
-          {% endif %}
-          {% if media.media_type == 'image' %}
-            <img data-src="{{ media | image_url: width: 1200 }}" alt="{{ media.alt | escape }}" loading="lazy" class="velin-pdp__media-grid-img">
-          {% endif %}
-        {% endfor %}
-      </div>
-      <script>
-        (function () {
-          // The grid is display:none under 1101px: only fetch its images on desktop.
-          if (!window.matchMedia("(min-width: 1101px)").matches) return;
-          document.querySelectorAll(".velin-pdp__media-grid-img[data-src]").forEach(function (img) {
-            img.src = img.getAttribute("data-src");
-          });
-          var vids = document.querySelectorAll(".velin-pdp__media-grid-video-el");
-          if (!vids.length) return;
-          if (!("IntersectionObserver" in window)) { vids.forEach(function (v) { v.play(); }); return; }
-          var io = new IntersectionObserver(function (entries) {
-            entries.forEach(function (e) {
-              if (e.isIntersecting) { e.target.play().catch(function () {}); } else { e.target.pause(); }
-            });
-          }, { threshold: 0.25 });
-          vids.forEach(function (v) { io.observe(v); });
-        })();
-      </script>
-    {% endif %}
-  </div>
-
-  {%- comment -%} ---------- RIGHT: info ---------- {%- endcomment -%}
-  <div class="velin-pdp__info" style="width: {{ section.settings.info_width }}px; gap: {{ section.settings.info_gap }}px;">
-
-    {% if section.settings.badge_text != blank %}
-      <div class="velin-pdp__badge" style="background: {{ section.settings.badge_bg }}; font-size: {{ section.settings.badge_size }}px;">
-        {{ section.settings.badge_text }}
-      </div>
-    {% endif %}
-
-    <div class="velin-pdp__title-price-group">
-      <h1 class="velin-pdp__title" style="font-size: {{ section.settings.title_size }}px;">{{ product.title }}</h1>
-
-      <div class="velin-pdp__price-row" style="gap: 8px;">
-        {% if section.settings.revy_bundle_id == blank %}
-          {% if product.compare_at_price > product.price %}
-            <s class="velin-pdp__compare" style="color: {{ section.settings.compare_color }};">{{ product.compare_at_price | money }}</s>
-          {% elsif section.settings.compare_text != blank %}
-            <s class="velin-pdp__compare" style="color: {{ section.settings.compare_color }};">{{ section.settings.compare_text }}</s>
-          {% endif %}
-          <span class="velin-pdp__price" id="VelinPDPPrice-{{ section.id }}">{{ product.price | money }}</span>
-        {% endif %}
-        <!-- Air reviews star rating -->
-        <div class="AirReviews-Widget AirReviews-Widget--Stars"></div><span>{{ product.metafields.air_reviews_product.review_avg }}/5  ({{ product.metafields.air_reviews_product.review_count }})</span>
-      </div>
-
-      {% if section.settings.launch_offer_text != blank %}
-        {%- liquid
-          assign velin_offer_month_num = 'now' | date: '%-m'
-          case velin_offer_month_num
-            when '1'
-              assign velin_offer_month_fr = 'janvier'
-            when '2'
-              assign velin_offer_month_fr = 'février'
-            when '3'
-              assign velin_offer_month_fr = 'mars'
-            when '4'
-              assign velin_offer_month_fr = 'avril'
-            when '5'
-              assign velin_offer_month_fr = 'mai'
-            when '6'
-              assign velin_offer_month_fr = 'juin'
-            when '7'
-              assign velin_offer_month_fr = 'juillet'
-            when '8'
-              assign velin_offer_month_fr = 'août'
-            when '9'
-              assign velin_offer_month_fr = 'septembre'
-            when '10'
-              assign velin_offer_month_fr = 'octobre'
-            when '11'
-              assign velin_offer_month_fr = 'novembre'
-            when '12'
-              assign velin_offer_month_fr = 'décembre'
-          endcase
-          assign velin_offer_day = 'now' | date: '%-d'
-        -%}
-        <p class="velin-pdp__launch-badge" style="background: {{ section.settings.launch_offer_bg }}; color: {{ section.settings.launch_offer_color }};">
-          {{ section.settings.launch_offer_text }} {{ velin_offer_day }} {{ velin_offer_month_fr }}
-        </p>
-      {% endif %}
-    </div>
-
-    {%- assign has_chips = false -%}
-    {% for block in section.blocks %}{% if block.type == 'chip' %}{% assign has_chips = true %}{% endif %}{% endfor %}
-    {% if has_chips %}
-      <div class="velin-pdp__chips" style="gap: {{ section.settings.chip_gap }}px;">
-        {% for block in section.blocks %}
-          {% if block.type == 'chip' %}
-            {%- assign chip_state = block.settings.state | default: 'positive' -%}
-            <div class="velin-pdp__chip velin-pdp__chip--{{ chip_state }}" style="font-size: {{ section.settings.chip_size }}px;" {{ block.shopify_attributes }}>
-              <span class="velin-pdp__chip-icon">
-                {% if chip_state == 'negative' %}
-                  <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="12" fill="#E7E9F6"/><path d="M7 12h10" stroke="#4A4E78" stroke-width="2" stroke-linecap="round"/></svg>
-                {% else %}
-                  <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="12" fill="#DCEFE1"/><path d="M12 7v10M7 12h10" stroke="#1F6D3B" stroke-width="2" stroke-linecap="round"/></svg>
-                {% endif %}
-              </span>
-              <span class="velin-pdp__chip-text">{{ block.settings.text }}</span>
-            </div>
-          {% endif %}
-        {% endfor %}
-      </div>
-    {% endif %}
-
-    {%- assign has_included_gifts = false -%}
-    {% for block in section.blocks %}{% if block.type == 'included_gift' %}{% assign has_included_gifts = true %}{% endif %}{% endfor %}
-    {% if has_included_gifts %}
-      <div class="velin-pdp__included-gifts">
-        {% for block in section.blocks %}
-          {% if block.type == 'included_gift' %}
-            <div class="velin-pdp__included-gift" {{ block.shopify_attributes }}>
-              {% if block.settings.image != blank %}
-                <img src="{{ block.settings.image | image_url: width: 200 }}" alt="{{ block.settings.title | escape }}" loading="lazy" class="velin-pdp__included-gift-img">
-              {% endif %}
-              <div class="velin-pdp__included-gift-text">
-                <p class="velin-pdp__included-gift-title">
-                  {{ block.settings.title }}
-                  <span class="velin-pdp__included-gift-tag">{{ block.settings.tag_text }}</span>
-                </p>
-                {% if block.settings.text != blank %}
-                  <p class="velin-pdp__included-gift-desc">{{ block.settings.text }}</p>
-                {% endif %}
-              </div>
-            </div>
-          {% endif %}
-        {% endfor %}
-      </div>
-    {% endif %}
-
-    {% if color_coll != blank %}
-      {%- comment -%} Colors from a collection: same bag as separate products, one per color {%- endcomment -%}
-      <div class="velin-pdp__colors">
-        <p class="velin-pdp__colors-label">{{ section.settings.color_label }} : <span class="velin-pdp__colors-value">{{ product.title }}</span></p>
-        <div class="velin-pdp__swatches">
-          {% for p in color_coll.products %}
-            {%- assign p_color = '' -%}
-            {%- for opt in p.options_with_values -%}
-              {%- assign od = opt.name | downcase -%}
-              {%- if od == section.settings.color_option_name or od == 'couleur' or od == 'color' -%}
-                {%- assign p_color = opt.values | first -%}
-              {%- endif -%}
-            {%- endfor -%}
-            {%- if p_color == '' -%}{%- assign p_color = p.title -%}{%- endif -%}
-            {%- assign swatch_hex = '' -%}
-            {%- for line in map_lines -%}
-              {%- assign pair = line | strip | split: ':' -%}
-              {%- assign pair_name = pair[0] | strip | downcase -%}
-              {%- assign val_down = p_color | downcase -%}
-              {%- if pair_name == val_down -%}{%- assign swatch_hex = pair[1] | strip -%}{%- endif -%}
-            {%- endfor -%}
-            {%- if swatch_hex == '' -%}{%- assign swatch_hex = '#cccccc' -%}{%- endif -%}
-            <a
-              href="{{ p.url }}"
-              class="velin-pdp__swatch{% if p.id == product.id %} is-active{% endif %}"
-              data-color-value="{{ p_color | escape }}"
-              style="background: {{ swatch_hex }};"
-              aria-label="{{ p_color | escape }}"
-              title="{{ p_color | escape }}"
-            >{% if p.featured_image != blank %}<img src="{{ p.featured_image | image_url: width: 160 }}" alt="" loading="lazy">{% endif %}</a>
-          {% endfor %}
-        </div>
-      </div>
-    {% elsif color_option_index >= 0 %}
-      <div class="velin-pdp__colors">
-        <p class="velin-pdp__colors-label">{{ section.settings.color_label }} : <span class="velin-pdp__colors-value">{{ color_option.selected_value }}</span></p>
-        <div class="velin-pdp__swatches">
-          {% for value in color_option.values %}
-            {%- assign swatch_hex = '' -%}
-            {%- for line in map_lines -%}
-              {%- assign pair = line | strip | split: ':' -%}
-              {%- assign pair_name = pair[0] | strip | downcase -%}
-              {%- assign val_down = value | downcase -%}
-              {%- if pair_name == val_down -%}{%- assign swatch_hex = pair[1] | strip -%}{%- endif -%}
-            {%- endfor -%}
-            {%- if swatch_hex == '' -%}{%- assign swatch_hex = '#cccccc' -%}{%- endif -%}
-            {%- comment -%} Prefer a photo tagged for this exact color (alt text) — the same match used to swap the main gallery — since variant images here are often assigned per size, not per color, and would show an identical thumbnail for every swatch. {%- endcomment -%}
-            {%- assign swatch_color_photo = product.images | where: 'alt', value | first -%}
-            {%- assign swatch_image = blank -%}
-            {%- if swatch_color_photo != blank -%}
-              {%- assign swatch_image = swatch_color_photo -%}
-            {%- elsif color_option_key != '' -%}
-              {%- for v in product.variants -%}
-                {%- if v[color_option_key] == value -%}
-                  {%- assign swatch_image = v.featured_image | default: product.featured_image -%}
-                  {%- break -%}
-                {%- endif -%}
-              {%- endfor -%}
-            {%- endif -%}
-            <button
-              type="button"
-              class="velin-pdp__swatch{% if value == color_option.selected_value %} is-active{% endif %}"
-              data-color-value="{{ value | escape }}"
-              style="background: {{ swatch_hex }};"
-              aria-label="{{ value | escape }}"
-            >{% if swatch_image != blank %}<img src="{{ swatch_image | image_url: width: 160 }}" alt="" loading="lazy">{% endif %}</button>
-          {% endfor %}
-        </div>
-      </div>
-    {% elsif product.metafields.shopify['color-pattern'].value != blank %}
-      {%- comment -%} This product's own color(s), tagged directly via Shopify's Category metafields (no sibling products / no variant option) {%- endcomment -%}
-      <div class="velin-pdp__colors">
-        <p class="velin-pdp__colors-label">{{ section.settings.color_label }}</p>
-        <div class="velin-pdp__swatches">
-          {% for color_ref in product.metafields.shopify['color-pattern'].value %}
-            <span
-              class="velin-pdp__swatch is-active"
-              style="background: {{ color_ref.color }};"
-              aria-label="{{ color_ref.label | escape }}"
-              title="{{ color_ref.label | escape }}"
-            ></span>
-          {% endfor %}
-        </div>
-      </div>
-    {% elsif product.metafields.custom.bag_color.value != blank %}
-      {%- comment -%} This product's own color, from the simple "Couleur du sac" text field {%- endcomment -%}
-      {%- assign own_color = product.metafields.custom.bag_color.value -%}
-      {%- assign own_color_down = own_color | downcase -%}
-      {%- assign swatch_hex = '' -%}
-      {%- for line in map_lines -%}
-        {%- assign pair = line | strip | split: ':' -%}
-        {%- assign pair_name = pair[0] | strip | downcase -%}
-        {%- if pair_name == own_color_down -%}{%- assign swatch_hex = pair[1] | strip -%}{%- endif -%}
-      {%- endfor -%}
-      {%- if swatch_hex == '' -%}{%- assign swatch_hex = '#cccccc' -%}{%- endif -%}
-      <div class="velin-pdp__colors">
-        <p class="velin-pdp__colors-label">{{ section.settings.color_label }}</p>
-        <div class="velin-pdp__swatches">
-          <span
-            class="velin-pdp__swatch is-active"
-            style="background: {{ swatch_hex }};"
-            aria-label="{{ own_color | escape }}"
-            title="{{ own_color | escape }}"
-          ></span>
-        </div>
-      </div>
-    {% endif %}
-
-    {%- comment -%} ---------- Size guide (bed match) modal — its trigger link sits right below the bundle picker ---------- {%- endcomment -%}
-    {%- assign has_size_guide = false -%}
-    {%- if section.settings.show_size_guide and size_option_index >= 0 -%}
-      {%- assign has_size_guide = true -%}
-    {%- endif -%}
-    {% if has_size_guide %}
-      <div class="velin-size-guide" data-size-guide-modal hidden>
-        <div class="velin-size-guide__overlay" data-size-guide-close></div>
-        <div class="velin-size-guide__panel" role="dialog" aria-modal="true" aria-labelledby="VelinSizeGuideTitle-{{ section.id }}">
-          <button type="button" class="velin-size-guide__close" data-size-guide-close aria-label="Fermer">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 4l16 16M20 4L4 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          </button>
-          <h3 id="VelinSizeGuideTitle-{{ section.id }}" class="velin-size-guide__title">{{ section.settings.size_guide_heading | default: "Guide des tailles" }}</h3>
-          {% if section.settings.size_guide_intro != blank %}
-            <p class="velin-size-guide__intro">{{ section.settings.size_guide_intro }}</p>
-          {% endif %}
-          <div class="velin-size-guide__table-wrap">
-            <table class="velin-size-guide__table">
-              <thead>
-                <tr>
-                  <th>Taille</th>
-                  <th>Convient pour</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for value in size_option.values %}
-                  {%- liquid
-                    assign guide_key = value | remove: ' ' | downcase
-                    assign guide_bed = ''
-                    assign guide_width = ''
-                    assign guide_persons = ''
-                    case guide_key
-                      when '140x200cm'
-                        assign guide_bed = 'Lit simple'
-                        assign guide_width = '90–140 cm de large'
-                        assign guide_persons = '1 personne'
-                      when '160x210cm'
-                        assign guide_bed = 'Lit simple XL'
-                        assign guide_width = '140–160 cm de large'
-                        assign guide_persons = '1 personne'
-                      when '200x200cm'
-                        assign guide_bed = 'Lit double'
-                        assign guide_width = '140–160 cm de large'
-                        assign guide_persons = '2 personnes'
-                      when '220x240cm'
-                        assign guide_bed = 'Grand lit double'
-                        assign guide_width = '160–180 cm de large'
-                        assign guide_persons = '2 personnes'
-                      when '230x230cm'
-                        assign guide_bed = 'Grand lit double'
-                        assign guide_width = '180–200 cm de large'
-                        assign guide_persons = '2 personnes'
-                      when '230x265cm'
-                        assign guide_bed = 'Très grand lit (King)'
-                        assign guide_width = '200 cm de large et plus'
-                        assign guide_persons = '2 personnes'
-                    endcase
-                  -%}
-                  <tr data-size-guide-row="{{ value | escape }}"{% if value == size_option.selected_value %} class="is-current"{% endif %}>
-                    <td class="velin-size-guide__size">{{ value }}</td>
-                    <td class="velin-size-guide__match">
-                      {% if guide_bed != '' %}
-                        <span class="velin-size-guide__bed">{{ guide_bed }}</span>
-                        <span class="velin-size-guide__meta">{{ guide_width }} · {{ guide_persons }}</span>
-                      {% else %}
-                        <span class="velin-size-guide__bed">—</span>
-                      {% endif %}
-                    </td>
-                  </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    {% endif %}
-
-    {%- comment -%} ---------- Offers (1 Sac / 2 Sac) ---------- {%- endcomment -%}
-    {%- assign has_offers = false -%}
-    {% for block in section.blocks %}{% if block.type == 'offer' %}{% assign has_offers = true %}{% endif %}{% endfor %}
-    {% if has_offers and product.type != "Portefeuille" %}
-      <div class="velin-pdp__offers">
-        {% for block in section.blocks %}
-          {% if block.type == 'offer' %}
-            <label class="velin-pdp__offer{% if block.settings.preselected %} is-selected{% endif %}" data-offer data-qty="{{ block.settings.quantity }}" {{ block.shopify_attributes }}>
-              <input type="radio" name="velin-offer-{{ section.id }}" value="{{ block.settings.quantity }}" {% if block.settings.preselected %}checked{% endif %}>
-              <div class="velin-pdp__offer-body">
-                <div class="velin-pdp__offer-row">
-                  <span class="velin-pdp__offer-title">
-                    <span class="velin-pdp__offer-dot" data-offer-dot></span>
-                    {{ block.settings.title }}
-                    {% if block.settings.badge_text != blank %}
-                      <span class="velin-pdp__offer-badge">{{ block.settings.badge_text }}</span>
-                    {% endif %}
-                  </span>
-                  {%- if block.settings.price_text != blank -%}
-                    <span class="velin-pdp__offer-price">{{ block.settings.price_text }}</span>
-                  {%- else -%}
-                    <span class="velin-pdp__offer-price" data-offer-live-price data-offer-qty="{{ block.settings.quantity }}">{{ product.price | times: block.settings.quantity | money }}</span>
-                  {%- endif -%}
-                </div>
-                {% if block.settings.sub_label != blank %}
-                  <div class="velin-pdp__offer-sub">
-                    <span>{{ block.settings.sub_label }}</span>
-                    <s>{{ block.settings.sub_price }}</s>
-                  </div>
-                {% endif %}
-                {% if block.settings.perks != blank %}
-                  <ul class="velin-pdp__offer-perks">
-                    {% assign perks = block.settings.perks | newline_to_br | split: '<br />' %}
-                    {% for perk in perks %}<li>{{ perk }}</li>{% endfor %}
-                  </ul>
-                {% endif %}
-                {% if block.settings.show_variant_picker %}
-                  <div class="velin-pdp__variant-picker">
-                    {% if color_coll != blank %}
-                      <div class="velin-pdp__variant-group">
-                        <select data-color-nav id="velin-color-nav-{{ block.id }}" aria-label="{{ section.settings.color_label }}">
-                          {% for p in color_coll.products %}
-                            {%- assign p_color = '' -%}
-                            {%- for opt in p.options_with_values -%}
-                              {%- assign od = opt.name | downcase -%}
-                              {%- if od == section.settings.color_option_name or od == 'couleur' or od == 'color' -%}
-                                {%- assign p_color = opt.values | first -%}
-                              {%- endif -%}
-                            {%- endfor -%}
-                            {%- if p_color == '' -%}{%- assign p_color = p.title -%}{%- endif -%}
-                            <option value="{{ p.url }}" {% if p.id == product.id %}selected{% endif %}>{{ p_color }}</option>
-                          {% endfor %}
-                        </select>
-                        <label for="velin-color-nav-{{ block.id }}" class="velin-pdp__variant-label">{{ section.settings.color_label | upcase }}</label>
-                      </div>
-                    {% elsif color_option_index >= 0 %}
-                      <div class="velin-pdp__variant-group">
-                        <select data-color-select id="velin-color-select-{{ block.id }}" aria-label="{{ section.settings.color_label }}">
-                          {% for value in color_option.values %}
-                            <option value="{{ value | escape }}" {% if value == color_option.selected_value %}selected{% endif %}>{{ value }}</option>
-                          {% endfor %}
-                        </select>
-                        <label for="velin-color-select-{{ block.id }}" class="velin-pdp__variant-label">{{ section.settings.color_label | upcase }}</label>
-                      </div>
-                    {% endif %}
-                    {% if size_option_index >= 0 %}
-                      <div class="velin-pdp__variant-group">
-                        <select data-size-select id="velin-size-select-{{ block.id }}" aria-label="{{ section.settings.size_label }}">
-                          {% for value in size_option.values %}
-                            <option value="{{ value | escape }}" {% if value == size_option.selected_value %}selected{% endif %}>{{ value }}</option>
-                          {% endfor %}
-                        </select>
-                        <label for="velin-size-select-{{ block.id }}" class="velin-pdp__variant-label">{{ section.settings.size_label | upcase }}</label>
-                      </div>
-                    {% endif %}
-                  </div>
-                {% endif %}
-              </div>
-            </label>
-          {% endif %}
-        {% endfor %}
-      </div>
-    {% endif %}
-
-    {%- comment -%} ---------- Revy Bundle (manual embed, from the app's "Embed this bundle manually in any page via HTML" option) ---------- {%- endcomment -%}
-    {% if section.settings.revy_bundle_id != blank %}
-      <div data-revy-bundle-id="{{ section.settings.revy_bundle_id }}"{% if size_option_index >= 0 %} data-bundle-show-machine-kg{% endif %}></div>
-    {% endif %}
-
-    {%- comment -%} ---------- Payment method logos — between the bundle picker and the size guide link ---------- {%- endcomment -%}
-    {% if section.settings.show_payment_logos and shop.enabled_payment_types.size > 0 %}
-      <ul class="velin-pdp__payment-logos" role="list" aria-label="Moyens de paiement acceptés">
-        {%- for payment_type in shop.enabled_payment_types -%}
-          <li class="velin-pdp__payment-logo">{{ payment_type | payment_type_svg_tag: class: 'velin-pdp__payment-svg' }}</li>
-        {%- endfor -%}
-      </ul>
-    {% endif %}
-
-    {%- comment -%} Size guide link — right below the bundle picker {%- endcomment -%}
-    {% if has_size_guide %}
-      <button type="button" class="velin-pdp__size-guide-trigger" data-size-guide-open>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <rect x="2" y="7" width="20" height="10" rx="1.5" stroke="currentColor" stroke-width="1.6"/>
-          <path d="M6 7v3M10 7v2M14 7v3M18 7v2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-        </svg>
-        <span>{{ section.settings.size_guide_link_text | default: "Quelle taille me faut-il ?" }}</span>
-      </button>
-    {% endif %}
-
-    {% if section.settings.show_installments %}
-      {%- liquid
-        assign velin_installment_count = section.settings.installment_count | default: 3
-        assign velin_klarna_h = section.settings.payment_icon_size | default: 24
-        assign velin_klarna_w = velin_klarna_h | times: 64 | divided_by: 27.0 | round
-      -%}
-      <div class="velin-pdp__installments">
-        <svg class="velin-pdp__klarna" width="{{ velin_klarna_w }}" height="{{ velin_klarna_h }}" viewBox="0 0 64 27" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Klarna">
-          <rect width="64" height="27" rx="6" fill="#FFB3C7"></rect>
-          <text x="32" y="18.5" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="700" font-size="13" fill="#17120F">Klarna.</text>
-        </svg>
-        <span class="velin-pdp__installments-text">Achetez maintenant, payez en {{ velin_installment_count }} versements</span>
-      </div>
-    {% endif %}
-
-    {%- comment -%} ---------- Free shipping line ---------- {%- endcomment -%}
-    {% unless section.settings.hide_native_purchase %}
-    {% if section.settings.show_free_shipping and section.settings.free_shipping_text != blank %}
-      <div class="velin-pdp__free-shipping" data-free-shipping>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M2 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7Z" stroke="currentColor" stroke-width="1.6"/>
-          <path d="M14 10h3.3a1 1 0 0 1 .8.4l2.4 3.2a1 1 0 0 1 .2.6V16a1 1 0 0 1-1 1H14v-7Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
-          <circle cx="7" cy="18" r="1.6" stroke="currentColor" stroke-width="1.6"/>
-          <circle cx="17.5" cy="18" r="1.6" stroke="currentColor" stroke-width="1.6"/>
-        </svg>
-        <span>{{ section.settings.free_shipping_text }}</span>
-      </div>
-    {% endif %}
-
-    {%- comment -%} ---------- Add to cart ---------- {%- endcomment -%}
-    {%- form 'product', product, id: 'VelinPDPForm' -%}
-      <input type="hidden" name="items[0][id]" value="{{ product.selected_or_first_available_variant.id }}" data-variant-id>
-      <input type="hidden" name="items[0][quantity]" value="1" data-qty-input>
-      <button
-        type="submit"
-        class="velin-pdp__atc"
-        style="background: {{ section.settings.atc_bg }}; color: {{ section.settings.atc_color }};{% if section.settings.hide_atc_button %} display: none;{% endif %}"
-        data-atc-text="{{ section.settings.atc_text | escape }}"
-        data-sold-out-text="{{ 'products.product.sold_out' | t | escape }}"
-        {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %}
-      >
-        {% if product.selected_or_first_available_variant.available %}{{ section.settings.atc_text }}{% else %}{{ 'products.product.sold_out' | t }}{% endif %}
-      </button>
-    {%- endform -%}
-    {% endunless %}
-
-    {%- comment -%} ---------- Stock bar ---------- {%- endcomment -%}
-    {% if section.settings.show_stock %}
-      <div class="velin-pdp__stock">
-        <p class="velin-pdp__stock-title">{{ section.settings.stock_title }}</p>
-        <p class="velin-pdp__stock-sub">{{ section.settings.stock_sub }}</p>
-        <div class="velin-pdp__stock-bar">
-          <div class="velin-pdp__stock-fill" style="width: {{ section.settings.sold_percent }}%; background: {{ section.settings.stock_bar_color }};"></div>
-        </div>
-        <div class="velin-pdp__stock-row">
-          <span class="velin-pdp__stock-sold">{{ section.settings.sold_percent }} % {{ section.settings.sold_label }}</span>
-          <span>{{ section.settings.countdown_label }} <span data-countdown data-hours="{{ section.settings.countdown_hours }}">--:--:--</span></span>
-        </div>
-      </div>
-    {% endif %}
-
-    {%- comment -%} ---------- Trust strip (3 icons) — used when trust_item_* are set ---------- {%- endcomment -%}
-    {% if section.settings.trust_item_1 != blank or section.settings.trust_item_2 != blank or section.settings.trust_item_3 != blank or section.settings.trust_item_4 != blank %}
-      <div class="velin-pdp__trust-strip">
-        {% if section.settings.trust_item_1 != blank %}
-          <div class="velin-pdp__trust-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2"></rect><path d="M3 9.5h18"></path><path d="M8 2.5v4M16 2.5v4"></path><path d="M12 12.8c-1.4-1.4-3.6-1-3.6 1 0 1.6 1.8 2.9 3.6 4.4 1.8-1.5 3.6-2.8 3.6-4.4 0-2-2.2-2.4-3.6-1Z"></path></svg>
-            <span>{{ section.settings.trust_item_1 }}</span>
-          </div>
-        {% endif %}
-        {% if section.settings.trust_item_2 != blank %}
-          <div class="velin-pdp__trust-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5V8Z"></path><path d="M3 8l9 5 9-5"></path><path d="M12 13v8"></path></svg>
-            <span>{{ section.settings.trust_item_2 }}</span>
-          </div>
-        {% endif %}
-        {% if section.settings.trust_item_3 != blank %}
-          <div class="velin-pdp__trust-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5"></path><path d="M2 18v2M22 18v2"></path><path d="M4 11V8a2 2 0 0 1 2-2h5a2 2 0 0 1 2 2v3"></path><path d="M13 11V9.5a1.5 1.5 0 0 1 1.5-1.5H18a2 2 0 0 1 2 2v1"></path></svg>
-            <span>{{ section.settings.trust_item_3 }}</span>
-          </div>
-        {% endif %}
-        {% if section.settings.trust_item_4 != blank %}
-          <div class="velin-pdp__trust-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
-            <span>{{ section.settings.trust_item_4 }}</span>
-          </div>
-        {% endif %}
-      </div>
-    {% elsif section.settings.guarantee_heading != blank %}
-      <div class="velin-pdp__guarantee">
-        <div class="velin-pdp__guarantee-head">
-          {% if section.settings.guarantee_image != blank %}
-            <img src="{{ section.settings.guarantee_image | image_url: width: 80 }}" alt="">
-          {% endif %}
-          <span>{{ section.settings.guarantee_heading }}</span>
-        </div>
-        {% if section.settings.guarantee_text != blank %}
-          <p>{{ section.settings.guarantee_text }}</p>
-        {% endif %}
-      </div>
-    {% endif %}
-
-    {%- comment -%} ---------- Approved videos ---------- {%- endcomment -%}
-
-{%- assign has_videos = false -%}
-{% for block in section.blocks %}
-  {% if block.type == 'video_thumb' %}
-    {% assign has_videos = true %}
-  {% endif %}
-{% endfor %}
-
-{% if has_videos %}
-  <div class="velin-pdp__approved">
-
-    {% if section.settings.approved_heading != blank %}
-      <p class="velin-pdp__approved-heading">
-        {{ section.settings.approved_heading }}
-      </p>
-    {% endif %}
-
-    <div class="velin-pdp__approved-wrap">
-  <button type="button" class="velin-pdp__approved-arrow velin-pdp__approved-arrow--prev" data-approved-prev aria-label="Previous">
-    <svg width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M7 1L1 7L7 13" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-  </button>
-
-  <div class="velin-pdp__approved-grid" style="gap: {{ section.settings.video_gap }}px;">
-{% for block in section.blocks %}
-  {% if block.type == 'video_thumb' %}
-
-    <div class="velin-pdp__approved-item" style="width: {{ section.settings.video_card_width }}px; height: {{ section.settings.video_card_height }}px;" {{ block.shopify_attributes }}>
-
-      <div class="velin-video-card" data-lazy-video-card>
-
-        {%- comment -%}
-          Lightweight poster shown immediately; the real <video> (with its
-          multi-MB source) stays inert inside a <template> — never fetched by
-          the browser — until this card is scrolled near the viewport. See
-          the IntersectionObserver below.
-        {%- endcomment -%}
-        <img class="velin-video-poster" src="{{ block.settings.video.preview_image | image_url: width: 400 }}" alt="" loading="lazy">
-
-        <template data-lazy-video-template>
-          {{
-            block.settings.video
-            | video_tag:
-            image_size: '400x',
-            autoplay: false,
-            loop: false,
-            controls: false,
-            muted: false,
-            playsinline: true,
-            preload: 'metadata',
-            class: 'velin-video'
-          }}
-        </template>
-
-        <button type="button" class="velin-video-play">
-          <svg width="10" height="12" viewBox="0 0 10 12" fill="none">
-            <path d="M10 6L0 12V0L10 6Z" fill="#000"/>
-          </svg>
-        </button>
-
-      </div>
-
-    </div>
-
-  {% endif %}
-{% endfor %}
-
-  </div>
-
-  <button type="button" class="velin-pdp__approved-arrow velin-pdp__approved-arrow--next" data-approved-next aria-label="Next">
-    <svg width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M1 1L7 7L1 13" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-  </button>
-  </div>
-
-  </div>
-{% endif %}
-
-    {%- comment -%} ---------- FAQ ---------- {%- endcomment -%}
-    {%- assign has_faq = false -%}
-    {% for block in section.blocks %}{% if block.type == 'faq_item' %}{% assign has_faq = true %}{% endif %}{% endfor %}
-    {%- assign show_description_faq = false -%}
-    {% if section.settings.show_description_faq and product.description != blank %}{% assign show_description_faq = true %}{% endif %}
-    {% if has_faq or show_description_faq %}
-      <div class="velin-faq{% if section.settings.faq_pill_style %} velin-faq--pill{% endif %}">
-        {% if show_description_faq %}
-          <div class="velin-faq__item" data-faq-default-open>
-            <button type="button" class="velin-faq__row" data-faq-toggle>
-              {% if section.settings.faq_pill_style %}
-                <span class="velin-faq__icon">
-                  {% case section.settings.description_faq_icon %}
-                    {% when 'book' %}
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-                    {% when 'sliders' %}
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7"></path><path d="M4 10V3"></path><path d="M12 21v-9"></path><path d="M12 8V3"></path><path d="M20 21v-5"></path><path d="M20 12V3"></path><path d="M1 14h6"></path><path d="M9 8h6"></path><path d="M17 16h6"></path></svg>
-                    {% when 'washer' %}
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="2" width="18" height="20" rx="2"></rect><circle cx="12" cy="13" r="6"></circle></svg>
-                    {% when 'season' %}
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"></path></svg>
-                    {% when 'truck' %}
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
-                    {% when 'return' %}
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"></path><path d="M21 17a9 9 0 0 0-15-6.7L3 13"></path></svg>
-                    {% when 'star' %}
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                  {% endcase %}
-                </span>
-              {% endif %}
-              <p class="velin-faq__question">{{ section.settings.description_faq_label }}</p>
-              {% if section.settings.faq_pill_style %}
-                <span class="velin-faq__chevron" data-faq-chevron><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
-              {% else %}
-                <span class="velin-faq__plus" data-faq-plus></span>
-              {% endif %}
-            </button>
-            <div class="velin-faq__divider"></div>
-            <div class="velin-faq__answer" data-faq-answer>
-              <div class="velin-faq__answer-inner">
-                {{ product.description }}
-              </div>
-            </div>
-          </div>
-        {% endif %}
-        {% for block in section.blocks %}
-          {% if block.type == 'faq_item' %}
-            <div class="velin-faq__item" {{ block.shopify_attributes }}>
-              <button type="button" class="velin-faq__row" data-faq-toggle>
-                {% if section.settings.faq_pill_style %}
-                  <span class="velin-faq__icon">
-                    {% case block.settings.icon_type %}
-                      {% when 'book' %}
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-                      {% when 'sliders' %}
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7"></path><path d="M4 10V3"></path><path d="M12 21v-9"></path><path d="M12 8V3"></path><path d="M20 21v-5"></path><path d="M20 12V3"></path><path d="M1 14h6"></path><path d="M9 8h6"></path><path d="M17 16h6"></path></svg>
-                      {% when 'washer' %}
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="2" width="18" height="20" rx="2"></rect><circle cx="12" cy="13" r="6"></circle></svg>
-                      {% when 'season' %}
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"></path></svg>
-                      {% when 'truck' %}
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
-                      {% when 'return' %}
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"></path><path d="M21 17a9 9 0 0 0-15-6.7L3 13"></path></svg>
-                      {% when 'star' %}
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                    {% endcase %}
-                  </span>
-                {% endif %}
-                <p class="velin-faq__question">{{ block.settings.question }}</p>
-                {% if section.settings.faq_pill_style %}
-                  <span class="velin-faq__chevron" data-faq-chevron><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
-                {% else %}
-                  <span class="velin-faq__plus" data-faq-plus></span>
-                {% endif %}
-              </button>
-              <div class="velin-faq__divider"></div>
-              <div class="velin-faq__answer" data-faq-answer>
-                <div class="velin-faq__answer-inner">
-                  {{ block.settings.answer }}
-                </div>
-              </div>
-            </div>
-          {% endif %}
-        {% endfor %}
-      </div>
-    {% endif %}
-
-  </div>
-
-  <script type="application/json" data-pdp-product>{{ product | json }}</script>
-  <script type="application/json" data-pdp-color-media>{{ color_media_map }}</script>
-</div>
-
-<div class="velin-pdp__sticky-atc" data-sticky-atc>
-  <div class="velin-pdp__sticky-atc-inner">
-    <div class="velin-pdp__sticky-atc-info">
-      {%- if product.featured_image -%}
-        <img class="velin-pdp__sticky-atc-image" src="{{ product.featured_image | image_url: width: 100 }}" alt="" loading="lazy">
-      {%- endif -%}
-      <div class="velin-pdp__sticky-atc-text">
-        <p class="velin-pdp__sticky-atc-title">{{ product.title }}</p>
-        {%- if section.settings.sticky_atc_label != blank -%}
-          <p class="velin-pdp__sticky-atc-label">{{ section.settings.sticky_atc_label }}</p>
-        {%- endif -%}
-        <p class="velin-pdp__sticky-atc-price" data-sticky-atc-price>{{ product.selected_or_first_available_variant.price | money }}</p>
-      </div>
-    </div>
-    <button
-      type="button"
-      class="velin-pdp__sticky-atc-btn"
-      data-sticky-atc-btn
-      style="background: {{ section.settings.atc_bg }}; color: {{ section.settings.atc_color }};"
-    >{{ section.settings.atc_text }}</button>
-  </div>
-</div>
-
+{%- comment -%} Styles first: if they arrive after the (large) markup below, the page paints with the inline 680px sizes and then jumps to the mobile layout (CLS). {%- endcomment -%}
 <style>
   .velin-pdp {
     max-width: 1445px;
@@ -2373,6 +1553,828 @@
     --rbu-gen-badge-text-color: {{ section.settings.accent_color }};
   }
 </style>
+
+<div class="velin-pdp" id="VelinPDP-{{ section.id }}" style="
+  background: {{ section.settings.bg_color }};
+  padding: {{ section.settings.padding_v }}px {{ section.settings.padding_h }}px;
+  gap: {{ section.settings.column_gap }}px;
+">
+
+  {%- comment -%} ---------- LEFT: media ---------- {%- endcomment -%}
+  <div class="velin-pdp__media" style="width: {{ section.settings.media_width }}px; gap: {{ section.settings.media_gap }}px;">
+    <div class="velin-pdp__main-image{% unless product.selected_or_first_available_variant.available %} is-sold-out{% endunless %}{% if section.settings.image_fit == 'cover' %} velin-pdp__main-image--cover-desktop{% endif %}" style="height: {{ section.settings.image_height }}px; background: {{ section.settings.image_bg }};">
+      {% unless product.selected_or_first_available_variant.available %}
+        <span class="velin-pdp__sold-out-badge">{{ 'products.product.sold_out' | t }}</span>
+      {% endunless %}
+      {% if product.featured_media %}
+        <img
+          id="VelinPDPMainImg-{{ section.id }}"
+          src="{{ product.featured_media | image_url: width: 1200 }}"
+          srcset="{{ product.featured_media | image_url: width: 400 }} 400w,
+                  {{ product.featured_media | image_url: width: 700 }} 700w,
+                  {{ product.featured_media | image_url: width: 1000 }} 1000w,
+                  {{ product.featured_media | image_url: width: 1200 }} 1200w"
+          sizes="(max-width: 1100px) 100vw, {{ section.settings.media_width }}px"
+          alt="{{ product.featured_media.alt | escape }}"
+          loading="eager"
+          fetchpriority="high"
+        >
+      {% endif %}
+      <div class="velin-pdp__main-video" id="VelinPDPMainVideo-{{ section.id }}" hidden></div>
+    </div>
+    {% if product.media.size > 1 %}
+      <div class="velin-pdp__thumbs" style="height: {{ section.settings.thumbs_height }}px; gap: {{ section.settings.thumbs_gap }}px;">
+        {%- assign is_first_thumb = true -%}
+        {% for media in product.media %}
+          {%- if color_option_index >= 0 and media.media_type == 'image' and color_option.values contains media.alt -%}
+            {%- continue -%}
+          {%- endif -%}
+          {%- liquid
+            assign thumb_is_video = false
+            if media.media_type == 'video' or media.media_type == 'external_video'
+              assign thumb_is_video = true
+            endif
+            if thumb_is_video
+              assign thumb_full = media.preview_image | image_url: width: 1200
+              assign thumb_small = media.preview_image | image_url: width: 240
+            else
+              assign thumb_full = media | image_url: width: 1200
+              assign thumb_small = media | image_url: width: 240
+            endif
+          -%}
+          <button
+            type="button"
+            class="velin-pdp__thumb{% if is_first_thumb %} is-active{% endif %}"
+            data-full="{{ thumb_full }}"
+            {% if thumb_is_video %}data-video-id="{{ media.id }}"{% endif %}
+            aria-label="{% if thumb_is_video %}Vidéo{% else %}Image{% endif %} {{ forloop.index }}"
+          >
+            <img src="{{ thumb_small }}" alt="{{ media.alt | escape }}" loading="lazy">
+            {% if thumb_is_video %}
+              <span class="velin-pdp__thumb-play" aria-hidden="true">
+                <svg width="8" height="10" viewBox="0 0 10 12" fill="none"><path d="M10 6L0 12V0L10 6Z" fill="#fff"/></svg>
+              </span>
+            {% endif %}
+          </button>
+          {%- assign is_first_thumb = false -%}
+        {% endfor %}
+      </div>
+    {% endif %}
+    <div hidden aria-hidden="true">
+      {% for media in product.media %}
+        {% if media.media_type == 'video' %}
+          <template data-pdp-video-template="{{ media.id }}">
+            {{ media | video_tag: image_size: '1200x', autoplay: true, loop: true, controls: false, muted: true, playsinline: true, preload: 'metadata', class: 'velin-pdp__main-video-el' }}
+          </template>
+        {% elsif media.media_type == 'external_video' %}
+          <template data-pdp-video-template="{{ media.id }}">
+            {{ media | external_video_tag: autoplay: false, class: 'velin-pdp__main-video-el' }}
+          </template>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    {%- comment -%} ---------- Extra photos grid (desktop only), shown below the main image as the page scrolls ---------- {%- endcomment -%}
+    {% if section.settings.show_media_grid and product.media.size > 1 %}
+      <div class="velin-pdp__media-grid" style="gap: {{ section.settings.media_gap }}px;">
+        {%- comment -%} Product video(s): first cell of the grid = 2nd position after the main image. Muted, looped; played by the script below only when visible. {%- endcomment -%}
+        {% for media in product.media %}
+          {% if media.media_type == 'video' %}
+            <div class="velin-pdp__media-grid-video">
+              {{ media | video_tag: image_size: '1200x', autoplay: false, loop: true, controls: false, muted: true, playsinline: true, preload: 'none', class: 'velin-pdp__media-grid-video-el' }}
+            </div>
+          {% endif %}
+        {% endfor %}
+        {% for media in product.media offset: 1 %}
+          {% if media.media_type == 'image' and color_option_index >= 0 and color_option.values contains media.alt %}
+            {% continue %}
+          {% endif %}
+          {% if media.media_type == 'image' %}
+            <img data-src="{{ media | image_url: width: 1200 }}" alt="{{ media.alt | escape }}" loading="lazy" class="velin-pdp__media-grid-img">
+          {% endif %}
+        {% endfor %}
+      </div>
+      <script>
+        (function () {
+          // The grid is display:none under 1101px: only fetch its images on desktop.
+          if (!window.matchMedia("(min-width: 1101px)").matches) return;
+          document.querySelectorAll(".velin-pdp__media-grid-img[data-src]").forEach(function (img) {
+            img.src = img.getAttribute("data-src");
+          });
+          var vids = document.querySelectorAll(".velin-pdp__media-grid-video-el");
+          if (!vids.length) return;
+          if (!("IntersectionObserver" in window)) { vids.forEach(function (v) { v.play(); }); return; }
+          var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (e) {
+              if (e.isIntersecting) { e.target.play().catch(function () {}); } else { e.target.pause(); }
+            });
+          }, { threshold: 0.25 });
+          vids.forEach(function (v) { io.observe(v); });
+        })();
+      </script>
+    {% endif %}
+  </div>
+
+  {%- comment -%} ---------- RIGHT: info ---------- {%- endcomment -%}
+  <div class="velin-pdp__info" style="width: {{ section.settings.info_width }}px; gap: {{ section.settings.info_gap }}px;">
+
+    {% if section.settings.badge_text != blank %}
+      <div class="velin-pdp__badge" style="background: {{ section.settings.badge_bg }}; font-size: {{ section.settings.badge_size }}px;">
+        {{ section.settings.badge_text }}
+      </div>
+    {% endif %}
+
+    <div class="velin-pdp__title-price-group">
+      <h1 class="velin-pdp__title" style="font-size: {{ section.settings.title_size }}px;">{{ product.title }}</h1>
+
+      <div class="velin-pdp__price-row" style="gap: 8px;">
+        {% if section.settings.revy_bundle_id == blank %}
+          {% if product.compare_at_price > product.price %}
+            <s class="velin-pdp__compare" style="color: {{ section.settings.compare_color }};">{{ product.compare_at_price | money }}</s>
+          {% elsif section.settings.compare_text != blank %}
+            <s class="velin-pdp__compare" style="color: {{ section.settings.compare_color }};">{{ section.settings.compare_text }}</s>
+          {% endif %}
+          <span class="velin-pdp__price" id="VelinPDPPrice-{{ section.id }}">{{ product.price | money }}</span>
+        {% endif %}
+        <!-- Air reviews star rating -->
+        <div class="AirReviews-Widget AirReviews-Widget--Stars"></div><span>{{ product.metafields.air_reviews_product.review_avg }}/5  ({{ product.metafields.air_reviews_product.review_count }})</span>
+      </div>
+
+      {% if section.settings.launch_offer_text != blank %}
+        {%- liquid
+          assign velin_offer_month_num = 'now' | date: '%-m'
+          case velin_offer_month_num
+            when '1'
+              assign velin_offer_month_fr = 'janvier'
+            when '2'
+              assign velin_offer_month_fr = 'février'
+            when '3'
+              assign velin_offer_month_fr = 'mars'
+            when '4'
+              assign velin_offer_month_fr = 'avril'
+            when '5'
+              assign velin_offer_month_fr = 'mai'
+            when '6'
+              assign velin_offer_month_fr = 'juin'
+            when '7'
+              assign velin_offer_month_fr = 'juillet'
+            when '8'
+              assign velin_offer_month_fr = 'août'
+            when '9'
+              assign velin_offer_month_fr = 'septembre'
+            when '10'
+              assign velin_offer_month_fr = 'octobre'
+            when '11'
+              assign velin_offer_month_fr = 'novembre'
+            when '12'
+              assign velin_offer_month_fr = 'décembre'
+          endcase
+          assign velin_offer_day = 'now' | date: '%-d'
+        -%}
+        <p class="velin-pdp__launch-badge" style="background: {{ section.settings.launch_offer_bg }}; color: {{ section.settings.launch_offer_color }};">
+          {{ section.settings.launch_offer_text }} {{ velin_offer_day }} {{ velin_offer_month_fr }}
+        </p>
+      {% endif %}
+    </div>
+
+    {%- assign has_chips = false -%}
+    {% for block in section.blocks %}{% if block.type == 'chip' %}{% assign has_chips = true %}{% endif %}{% endfor %}
+    {% if has_chips %}
+      <div class="velin-pdp__chips" style="gap: {{ section.settings.chip_gap }}px;">
+        {% for block in section.blocks %}
+          {% if block.type == 'chip' %}
+            {%- assign chip_state = block.settings.state | default: 'positive' -%}
+            <div class="velin-pdp__chip velin-pdp__chip--{{ chip_state }}" style="font-size: {{ section.settings.chip_size }}px;" {{ block.shopify_attributes }}>
+              <span class="velin-pdp__chip-icon">
+                {% if chip_state == 'negative' %}
+                  <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="12" fill="#E7E9F6"/><path d="M7 12h10" stroke="#4A4E78" stroke-width="2" stroke-linecap="round"/></svg>
+                {% else %}
+                  <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="12" fill="#DCEFE1"/><path d="M12 7v10M7 12h10" stroke="#1F6D3B" stroke-width="2" stroke-linecap="round"/></svg>
+                {% endif %}
+              </span>
+              <span class="velin-pdp__chip-text">{{ block.settings.text }}</span>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {%- assign has_included_gifts = false -%}
+    {% for block in section.blocks %}{% if block.type == 'included_gift' %}{% assign has_included_gifts = true %}{% endif %}{% endfor %}
+    {% if has_included_gifts %}
+      <div class="velin-pdp__included-gifts">
+        {% for block in section.blocks %}
+          {% if block.type == 'included_gift' %}
+            <div class="velin-pdp__included-gift" {{ block.shopify_attributes }}>
+              {% if block.settings.image != blank %}
+                <img src="{{ block.settings.image | image_url: width: 200 }}" alt="{{ block.settings.title | escape }}" loading="lazy" class="velin-pdp__included-gift-img">
+              {% endif %}
+              <div class="velin-pdp__included-gift-text">
+                <p class="velin-pdp__included-gift-title">
+                  {{ block.settings.title }}
+                  <span class="velin-pdp__included-gift-tag">{{ block.settings.tag_text }}</span>
+                </p>
+                {% if block.settings.text != blank %}
+                  <p class="velin-pdp__included-gift-desc">{{ block.settings.text }}</p>
+                {% endif %}
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if color_coll != blank %}
+      {%- comment -%} Colors from a collection: same bag as separate products, one per color {%- endcomment -%}
+      <div class="velin-pdp__colors">
+        <p class="velin-pdp__colors-label">{{ section.settings.color_label }} : <span class="velin-pdp__colors-value">{{ product.title }}</span></p>
+        <div class="velin-pdp__swatches">
+          {% for p in color_coll.products %}
+            {%- assign p_color = '' -%}
+            {%- for opt in p.options_with_values -%}
+              {%- assign od = opt.name | downcase -%}
+              {%- if od == section.settings.color_option_name or od == 'couleur' or od == 'color' -%}
+                {%- assign p_color = opt.values | first -%}
+              {%- endif -%}
+            {%- endfor -%}
+            {%- if p_color == '' -%}{%- assign p_color = p.title -%}{%- endif -%}
+            {%- assign swatch_hex = '' -%}
+            {%- for line in map_lines -%}
+              {%- assign pair = line | strip | split: ':' -%}
+              {%- assign pair_name = pair[0] | strip | downcase -%}
+              {%- assign val_down = p_color | downcase -%}
+              {%- if pair_name == val_down -%}{%- assign swatch_hex = pair[1] | strip -%}{%- endif -%}
+            {%- endfor -%}
+            {%- if swatch_hex == '' -%}{%- assign swatch_hex = '#cccccc' -%}{%- endif -%}
+            <a
+              href="{{ p.url }}"
+              class="velin-pdp__swatch{% if p.id == product.id %} is-active{% endif %}"
+              data-color-value="{{ p_color | escape }}"
+              style="background: {{ swatch_hex }};"
+              aria-label="{{ p_color | escape }}"
+              title="{{ p_color | escape }}"
+            >{% if p.featured_image != blank %}<img src="{{ p.featured_image | image_url: width: 160 }}" alt="" loading="lazy">{% endif %}</a>
+          {% endfor %}
+        </div>
+      </div>
+    {% elsif color_option_index >= 0 %}
+      <div class="velin-pdp__colors">
+        <p class="velin-pdp__colors-label">{{ section.settings.color_label }} : <span class="velin-pdp__colors-value">{{ color_option.selected_value }}</span></p>
+        <div class="velin-pdp__swatches">
+          {% for value in color_option.values %}
+            {%- assign swatch_hex = '' -%}
+            {%- for line in map_lines -%}
+              {%- assign pair = line | strip | split: ':' -%}
+              {%- assign pair_name = pair[0] | strip | downcase -%}
+              {%- assign val_down = value | downcase -%}
+              {%- if pair_name == val_down -%}{%- assign swatch_hex = pair[1] | strip -%}{%- endif -%}
+            {%- endfor -%}
+            {%- if swatch_hex == '' -%}{%- assign swatch_hex = '#cccccc' -%}{%- endif -%}
+            {%- comment -%} Prefer a photo tagged for this exact color (alt text) — the same match used to swap the main gallery — since variant images here are often assigned per size, not per color, and would show an identical thumbnail for every swatch. {%- endcomment -%}
+            {%- assign swatch_color_photo = product.images | where: 'alt', value | first -%}
+            {%- assign swatch_image = blank -%}
+            {%- if swatch_color_photo != blank -%}
+              {%- assign swatch_image = swatch_color_photo -%}
+            {%- elsif color_option_key != '' -%}
+              {%- for v in product.variants -%}
+                {%- if v[color_option_key] == value -%}
+                  {%- assign swatch_image = v.featured_image | default: product.featured_image -%}
+                  {%- break -%}
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endif -%}
+            <button
+              type="button"
+              class="velin-pdp__swatch{% if value == color_option.selected_value %} is-active{% endif %}"
+              data-color-value="{{ value | escape }}"
+              style="background: {{ swatch_hex }};"
+              aria-label="{{ value | escape }}"
+            >{% if swatch_image != blank %}<img src="{{ swatch_image | image_url: width: 160 }}" alt="" loading="lazy">{% endif %}</button>
+          {% endfor %}
+        </div>
+      </div>
+    {% elsif product.metafields.shopify['color-pattern'].value != blank %}
+      {%- comment -%} This product's own color(s), tagged directly via Shopify's Category metafields (no sibling products / no variant option) {%- endcomment -%}
+      <div class="velin-pdp__colors">
+        <p class="velin-pdp__colors-label">{{ section.settings.color_label }}</p>
+        <div class="velin-pdp__swatches">
+          {% for color_ref in product.metafields.shopify['color-pattern'].value %}
+            <span
+              class="velin-pdp__swatch is-active"
+              style="background: {{ color_ref.color }};"
+              aria-label="{{ color_ref.label | escape }}"
+              title="{{ color_ref.label | escape }}"
+            ></span>
+          {% endfor %}
+        </div>
+      </div>
+    {% elsif product.metafields.custom.bag_color.value != blank %}
+      {%- comment -%} This product's own color, from the simple "Couleur du sac" text field {%- endcomment -%}
+      {%- assign own_color = product.metafields.custom.bag_color.value -%}
+      {%- assign own_color_down = own_color | downcase -%}
+      {%- assign swatch_hex = '' -%}
+      {%- for line in map_lines -%}
+        {%- assign pair = line | strip | split: ':' -%}
+        {%- assign pair_name = pair[0] | strip | downcase -%}
+        {%- if pair_name == own_color_down -%}{%- assign swatch_hex = pair[1] | strip -%}{%- endif -%}
+      {%- endfor -%}
+      {%- if swatch_hex == '' -%}{%- assign swatch_hex = '#cccccc' -%}{%- endif -%}
+      <div class="velin-pdp__colors">
+        <p class="velin-pdp__colors-label">{{ section.settings.color_label }}</p>
+        <div class="velin-pdp__swatches">
+          <span
+            class="velin-pdp__swatch is-active"
+            style="background: {{ swatch_hex }};"
+            aria-label="{{ own_color | escape }}"
+            title="{{ own_color | escape }}"
+          ></span>
+        </div>
+      </div>
+    {% endif %}
+
+    {%- comment -%} ---------- Size guide (bed match) modal — its trigger link sits right below the bundle picker ---------- {%- endcomment -%}
+    {%- assign has_size_guide = false -%}
+    {%- if section.settings.show_size_guide and size_option_index >= 0 -%}
+      {%- assign has_size_guide = true -%}
+    {%- endif -%}
+    {% if has_size_guide %}
+      <div class="velin-size-guide" data-size-guide-modal hidden>
+        <div class="velin-size-guide__overlay" data-size-guide-close></div>
+        <div class="velin-size-guide__panel" role="dialog" aria-modal="true" aria-labelledby="VelinSizeGuideTitle-{{ section.id }}">
+          <button type="button" class="velin-size-guide__close" data-size-guide-close aria-label="Fermer">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 4l16 16M20 4L4 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+          <h3 id="VelinSizeGuideTitle-{{ section.id }}" class="velin-size-guide__title">{{ section.settings.size_guide_heading | default: "Guide des tailles" }}</h3>
+          {% if section.settings.size_guide_intro != blank %}
+            <p class="velin-size-guide__intro">{{ section.settings.size_guide_intro }}</p>
+          {% endif %}
+          <div class="velin-size-guide__table-wrap">
+            <table class="velin-size-guide__table">
+              <thead>
+                <tr>
+                  <th>Taille</th>
+                  <th>Convient pour</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for value in size_option.values %}
+                  {%- liquid
+                    assign guide_key = value | remove: ' ' | downcase
+                    assign guide_bed = ''
+                    assign guide_width = ''
+                    assign guide_persons = ''
+                    case guide_key
+                      when '140x200cm'
+                        assign guide_bed = 'Lit simple'
+                        assign guide_width = '90–140 cm de large'
+                        assign guide_persons = '1 personne'
+                      when '160x210cm'
+                        assign guide_bed = 'Lit simple XL'
+                        assign guide_width = '140–160 cm de large'
+                        assign guide_persons = '1 personne'
+                      when '200x200cm'
+                        assign guide_bed = 'Lit double'
+                        assign guide_width = '140–160 cm de large'
+                        assign guide_persons = '2 personnes'
+                      when '220x240cm'
+                        assign guide_bed = 'Grand lit double'
+                        assign guide_width = '160–180 cm de large'
+                        assign guide_persons = '2 personnes'
+                      when '230x230cm'
+                        assign guide_bed = 'Grand lit double'
+                        assign guide_width = '180–200 cm de large'
+                        assign guide_persons = '2 personnes'
+                      when '230x265cm'
+                        assign guide_bed = 'Très grand lit (King)'
+                        assign guide_width = '200 cm de large et plus'
+                        assign guide_persons = '2 personnes'
+                    endcase
+                  -%}
+                  <tr data-size-guide-row="{{ value | escape }}"{% if value == size_option.selected_value %} class="is-current"{% endif %}>
+                    <td class="velin-size-guide__size">{{ value }}</td>
+                    <td class="velin-size-guide__match">
+                      {% if guide_bed != '' %}
+                        <span class="velin-size-guide__bed">{{ guide_bed }}</span>
+                        <span class="velin-size-guide__meta">{{ guide_width }} · {{ guide_persons }}</span>
+                      {% else %}
+                        <span class="velin-size-guide__bed">—</span>
+                      {% endif %}
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+    {%- comment -%} ---------- Offers (1 Sac / 2 Sac) ---------- {%- endcomment -%}
+    {%- assign has_offers = false -%}
+    {% for block in section.blocks %}{% if block.type == 'offer' %}{% assign has_offers = true %}{% endif %}{% endfor %}
+    {% if has_offers and product.type != "Portefeuille" %}
+      <div class="velin-pdp__offers">
+        {% for block in section.blocks %}
+          {% if block.type == 'offer' %}
+            <label class="velin-pdp__offer{% if block.settings.preselected %} is-selected{% endif %}" data-offer data-qty="{{ block.settings.quantity }}" {{ block.shopify_attributes }}>
+              <input type="radio" name="velin-offer-{{ section.id }}" value="{{ block.settings.quantity }}" {% if block.settings.preselected %}checked{% endif %}>
+              <div class="velin-pdp__offer-body">
+                <div class="velin-pdp__offer-row">
+                  <span class="velin-pdp__offer-title">
+                    <span class="velin-pdp__offer-dot" data-offer-dot></span>
+                    {{ block.settings.title }}
+                    {% if block.settings.badge_text != blank %}
+                      <span class="velin-pdp__offer-badge">{{ block.settings.badge_text }}</span>
+                    {% endif %}
+                  </span>
+                  {%- if block.settings.price_text != blank -%}
+                    <span class="velin-pdp__offer-price">{{ block.settings.price_text }}</span>
+                  {%- else -%}
+                    <span class="velin-pdp__offer-price" data-offer-live-price data-offer-qty="{{ block.settings.quantity }}">{{ product.price | times: block.settings.quantity | money }}</span>
+                  {%- endif -%}
+                </div>
+                {% if block.settings.sub_label != blank %}
+                  <div class="velin-pdp__offer-sub">
+                    <span>{{ block.settings.sub_label }}</span>
+                    <s>{{ block.settings.sub_price }}</s>
+                  </div>
+                {% endif %}
+                {% if block.settings.perks != blank %}
+                  <ul class="velin-pdp__offer-perks">
+                    {% assign perks = block.settings.perks | newline_to_br | split: '<br />' %}
+                    {% for perk in perks %}<li>{{ perk }}</li>{% endfor %}
+                  </ul>
+                {% endif %}
+                {% if block.settings.show_variant_picker %}
+                  <div class="velin-pdp__variant-picker">
+                    {% if color_coll != blank %}
+                      <div class="velin-pdp__variant-group">
+                        <select data-color-nav id="velin-color-nav-{{ block.id }}" aria-label="{{ section.settings.color_label }}">
+                          {% for p in color_coll.products %}
+                            {%- assign p_color = '' -%}
+                            {%- for opt in p.options_with_values -%}
+                              {%- assign od = opt.name | downcase -%}
+                              {%- if od == section.settings.color_option_name or od == 'couleur' or od == 'color' -%}
+                                {%- assign p_color = opt.values | first -%}
+                              {%- endif -%}
+                            {%- endfor -%}
+                            {%- if p_color == '' -%}{%- assign p_color = p.title -%}{%- endif -%}
+                            <option value="{{ p.url }}" {% if p.id == product.id %}selected{% endif %}>{{ p_color }}</option>
+                          {% endfor %}
+                        </select>
+                        <label for="velin-color-nav-{{ block.id }}" class="velin-pdp__variant-label">{{ section.settings.color_label | upcase }}</label>
+                      </div>
+                    {% elsif color_option_index >= 0 %}
+                      <div class="velin-pdp__variant-group">
+                        <select data-color-select id="velin-color-select-{{ block.id }}" aria-label="{{ section.settings.color_label }}">
+                          {% for value in color_option.values %}
+                            <option value="{{ value | escape }}" {% if value == color_option.selected_value %}selected{% endif %}>{{ value }}</option>
+                          {% endfor %}
+                        </select>
+                        <label for="velin-color-select-{{ block.id }}" class="velin-pdp__variant-label">{{ section.settings.color_label | upcase }}</label>
+                      </div>
+                    {% endif %}
+                    {% if size_option_index >= 0 %}
+                      <div class="velin-pdp__variant-group">
+                        <select data-size-select id="velin-size-select-{{ block.id }}" aria-label="{{ section.settings.size_label }}">
+                          {% for value in size_option.values %}
+                            <option value="{{ value | escape }}" {% if value == size_option.selected_value %}selected{% endif %}>{{ value }}</option>
+                          {% endfor %}
+                        </select>
+                        <label for="velin-size-select-{{ block.id }}" class="velin-pdp__variant-label">{{ section.settings.size_label | upcase }}</label>
+                      </div>
+                    {% endif %}
+                  </div>
+                {% endif %}
+              </div>
+            </label>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {%- comment -%} ---------- Revy Bundle (manual embed, from the app's "Embed this bundle manually in any page via HTML" option) ---------- {%- endcomment -%}
+    {% if section.settings.revy_bundle_id != blank %}
+      <div data-revy-bundle-id="{{ section.settings.revy_bundle_id }}"{% if size_option_index >= 0 %} data-bundle-show-machine-kg{% endif %}></div>
+    {% endif %}
+
+    {%- comment -%} ---------- Payment method logos — between the bundle picker and the size guide link ---------- {%- endcomment -%}
+    {% if section.settings.show_payment_logos and shop.enabled_payment_types.size > 0 %}
+      <ul class="velin-pdp__payment-logos" role="list" aria-label="Moyens de paiement acceptés">
+        {%- for payment_type in shop.enabled_payment_types -%}
+          <li class="velin-pdp__payment-logo">{{ payment_type | payment_type_svg_tag: class: 'velin-pdp__payment-svg' }}</li>
+        {%- endfor -%}
+      </ul>
+    {% endif %}
+
+    {%- comment -%} Size guide link — right below the bundle picker {%- endcomment -%}
+    {% if has_size_guide %}
+      <button type="button" class="velin-pdp__size-guide-trigger" data-size-guide-open>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="2" y="7" width="20" height="10" rx="1.5" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M6 7v3M10 7v2M14 7v3M18 7v2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        <span>{{ section.settings.size_guide_link_text | default: "Quelle taille me faut-il ?" }}</span>
+      </button>
+    {% endif %}
+
+    {% if section.settings.show_installments %}
+      {%- liquid
+        assign velin_installment_count = section.settings.installment_count | default: 3
+        assign velin_klarna_h = section.settings.payment_icon_size | default: 24
+        assign velin_klarna_w = velin_klarna_h | times: 64 | divided_by: 27.0 | round
+      -%}
+      <div class="velin-pdp__installments">
+        <svg class="velin-pdp__klarna" width="{{ velin_klarna_w }}" height="{{ velin_klarna_h }}" viewBox="0 0 64 27" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Klarna">
+          <rect width="64" height="27" rx="6" fill="#FFB3C7"></rect>
+          <text x="32" y="18.5" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="700" font-size="13" fill="#17120F">Klarna.</text>
+        </svg>
+        <span class="velin-pdp__installments-text">Achetez maintenant, payez en {{ velin_installment_count }} versements</span>
+      </div>
+    {% endif %}
+
+    {%- comment -%} ---------- Free shipping line ---------- {%- endcomment -%}
+    {% unless section.settings.hide_native_purchase %}
+    {% if section.settings.show_free_shipping and section.settings.free_shipping_text != blank %}
+      <div class="velin-pdp__free-shipping" data-free-shipping>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M2 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7Z" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M14 10h3.3a1 1 0 0 1 .8.4l2.4 3.2a1 1 0 0 1 .2.6V16a1 1 0 0 1-1 1H14v-7Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+          <circle cx="7" cy="18" r="1.6" stroke="currentColor" stroke-width="1.6"/>
+          <circle cx="17.5" cy="18" r="1.6" stroke="currentColor" stroke-width="1.6"/>
+        </svg>
+        <span>{{ section.settings.free_shipping_text }}</span>
+      </div>
+    {% endif %}
+
+    {%- comment -%} ---------- Add to cart ---------- {%- endcomment -%}
+    {%- form 'product', product, id: 'VelinPDPForm' -%}
+      <input type="hidden" name="items[0][id]" value="{{ product.selected_or_first_available_variant.id }}" data-variant-id>
+      <input type="hidden" name="items[0][quantity]" value="1" data-qty-input>
+      <button
+        type="submit"
+        class="velin-pdp__atc"
+        style="background: {{ section.settings.atc_bg }}; color: {{ section.settings.atc_color }};{% if section.settings.hide_atc_button %} display: none;{% endif %}"
+        data-atc-text="{{ section.settings.atc_text | escape }}"
+        data-sold-out-text="{{ 'products.product.sold_out' | t | escape }}"
+        {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %}
+      >
+        {% if product.selected_or_first_available_variant.available %}{{ section.settings.atc_text }}{% else %}{{ 'products.product.sold_out' | t }}{% endif %}
+      </button>
+    {%- endform -%}
+    {% endunless %}
+
+    {%- comment -%} ---------- Stock bar ---------- {%- endcomment -%}
+    {% if section.settings.show_stock %}
+      <div class="velin-pdp__stock">
+        <p class="velin-pdp__stock-title">{{ section.settings.stock_title }}</p>
+        <p class="velin-pdp__stock-sub">{{ section.settings.stock_sub }}</p>
+        <div class="velin-pdp__stock-bar">
+          <div class="velin-pdp__stock-fill" style="width: {{ section.settings.sold_percent }}%; background: {{ section.settings.stock_bar_color }};"></div>
+        </div>
+        <div class="velin-pdp__stock-row">
+          <span class="velin-pdp__stock-sold">{{ section.settings.sold_percent }} % {{ section.settings.sold_label }}</span>
+          <span>{{ section.settings.countdown_label }} <span data-countdown data-hours="{{ section.settings.countdown_hours }}">--:--:--</span></span>
+        </div>
+      </div>
+    {% endif %}
+
+    {%- comment -%} ---------- Trust strip (3 icons) — used when trust_item_* are set ---------- {%- endcomment -%}
+    {% if section.settings.trust_item_1 != blank or section.settings.trust_item_2 != blank or section.settings.trust_item_3 != blank or section.settings.trust_item_4 != blank %}
+      <div class="velin-pdp__trust-strip">
+        {% if section.settings.trust_item_1 != blank %}
+          <div class="velin-pdp__trust-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2"></rect><path d="M3 9.5h18"></path><path d="M8 2.5v4M16 2.5v4"></path><path d="M12 12.8c-1.4-1.4-3.6-1-3.6 1 0 1.6 1.8 2.9 3.6 4.4 1.8-1.5 3.6-2.8 3.6-4.4 0-2-2.2-2.4-3.6-1Z"></path></svg>
+            <span>{{ section.settings.trust_item_1 }}</span>
+          </div>
+        {% endif %}
+        {% if section.settings.trust_item_2 != blank %}
+          <div class="velin-pdp__trust-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5V8Z"></path><path d="M3 8l9 5 9-5"></path><path d="M12 13v8"></path></svg>
+            <span>{{ section.settings.trust_item_2 }}</span>
+          </div>
+        {% endif %}
+        {% if section.settings.trust_item_3 != blank %}
+          <div class="velin-pdp__trust-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5"></path><path d="M2 18v2M22 18v2"></path><path d="M4 11V8a2 2 0 0 1 2-2h5a2 2 0 0 1 2 2v3"></path><path d="M13 11V9.5a1.5 1.5 0 0 1 1.5-1.5H18a2 2 0 0 1 2 2v1"></path></svg>
+            <span>{{ section.settings.trust_item_3 }}</span>
+          </div>
+        {% endif %}
+        {% if section.settings.trust_item_4 != blank %}
+          <div class="velin-pdp__trust-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+            <span>{{ section.settings.trust_item_4 }}</span>
+          </div>
+        {% endif %}
+      </div>
+    {% elsif section.settings.guarantee_heading != blank %}
+      <div class="velin-pdp__guarantee">
+        <div class="velin-pdp__guarantee-head">
+          {% if section.settings.guarantee_image != blank %}
+            <img src="{{ section.settings.guarantee_image | image_url: width: 80 }}" alt="">
+          {% endif %}
+          <span>{{ section.settings.guarantee_heading }}</span>
+        </div>
+        {% if section.settings.guarantee_text != blank %}
+          <p>{{ section.settings.guarantee_text }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {%- comment -%} ---------- Approved videos ---------- {%- endcomment -%}
+
+{%- assign has_videos = false -%}
+{% for block in section.blocks %}
+  {% if block.type == 'video_thumb' %}
+    {% assign has_videos = true %}
+  {% endif %}
+{% endfor %}
+
+{% if has_videos %}
+  <div class="velin-pdp__approved">
+
+    {% if section.settings.approved_heading != blank %}
+      <p class="velin-pdp__approved-heading">
+        {{ section.settings.approved_heading }}
+      </p>
+    {% endif %}
+
+    <div class="velin-pdp__approved-wrap">
+  <button type="button" class="velin-pdp__approved-arrow velin-pdp__approved-arrow--prev" data-approved-prev aria-label="Previous">
+    <svg width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M7 1L1 7L7 13" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+
+  <div class="velin-pdp__approved-grid" style="gap: {{ section.settings.video_gap }}px;">
+{% for block in section.blocks %}
+  {% if block.type == 'video_thumb' %}
+
+    <div class="velin-pdp__approved-item" style="width: {{ section.settings.video_card_width }}px; height: {{ section.settings.video_card_height }}px;" {{ block.shopify_attributes }}>
+
+      <div class="velin-video-card" data-lazy-video-card>
+
+        {%- comment -%}
+          Lightweight poster shown immediately; the real <video> (with its
+          multi-MB source) stays inert inside a <template> — never fetched by
+          the browser — until this card is scrolled near the viewport. See
+          the IntersectionObserver below.
+        {%- endcomment -%}
+        <img class="velin-video-poster" src="{{ block.settings.video.preview_image | image_url: width: 400 }}" alt="" loading="lazy">
+
+        <template data-lazy-video-template>
+          {{
+            block.settings.video
+            | video_tag:
+            image_size: '400x',
+            autoplay: false,
+            loop: false,
+            controls: false,
+            muted: false,
+            playsinline: true,
+            preload: 'metadata',
+            class: 'velin-video'
+          }}
+        </template>
+
+        <button type="button" class="velin-video-play">
+          <svg width="10" height="12" viewBox="0 0 10 12" fill="none">
+            <path d="M10 6L0 12V0L10 6Z" fill="#000"/>
+          </svg>
+        </button>
+
+      </div>
+
+    </div>
+
+  {% endif %}
+{% endfor %}
+
+  </div>
+
+  <button type="button" class="velin-pdp__approved-arrow velin-pdp__approved-arrow--next" data-approved-next aria-label="Next">
+    <svg width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M1 1L7 7L1 13" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  </div>
+
+  </div>
+{% endif %}
+
+    {%- comment -%} ---------- FAQ ---------- {%- endcomment -%}
+    {%- assign has_faq = false -%}
+    {% for block in section.blocks %}{% if block.type == 'faq_item' %}{% assign has_faq = true %}{% endif %}{% endfor %}
+    {%- assign show_description_faq = false -%}
+    {% if section.settings.show_description_faq and product.description != blank %}{% assign show_description_faq = true %}{% endif %}
+    {% if has_faq or show_description_faq %}
+      <div class="velin-faq{% if section.settings.faq_pill_style %} velin-faq--pill{% endif %}">
+        {% if show_description_faq %}
+          <div class="velin-faq__item" data-faq-default-open>
+            <button type="button" class="velin-faq__row" data-faq-toggle>
+              {% if section.settings.faq_pill_style %}
+                <span class="velin-faq__icon">
+                  {% case section.settings.description_faq_icon %}
+                    {% when 'book' %}
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                    {% when 'sliders' %}
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7"></path><path d="M4 10V3"></path><path d="M12 21v-9"></path><path d="M12 8V3"></path><path d="M20 21v-5"></path><path d="M20 12V3"></path><path d="M1 14h6"></path><path d="M9 8h6"></path><path d="M17 16h6"></path></svg>
+                    {% when 'washer' %}
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="2" width="18" height="20" rx="2"></rect><circle cx="12" cy="13" r="6"></circle></svg>
+                    {% when 'season' %}
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"></path></svg>
+                    {% when 'truck' %}
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                    {% when 'return' %}
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"></path><path d="M21 17a9 9 0 0 0-15-6.7L3 13"></path></svg>
+                    {% when 'star' %}
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                  {% endcase %}
+                </span>
+              {% endif %}
+              <p class="velin-faq__question">{{ section.settings.description_faq_label }}</p>
+              {% if section.settings.faq_pill_style %}
+                <span class="velin-faq__chevron" data-faq-chevron><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+              {% else %}
+                <span class="velin-faq__plus" data-faq-plus></span>
+              {% endif %}
+            </button>
+            <div class="velin-faq__divider"></div>
+            <div class="velin-faq__answer" data-faq-answer>
+              <div class="velin-faq__answer-inner">
+                {{ product.description }}
+              </div>
+            </div>
+          </div>
+        {% endif %}
+        {% for block in section.blocks %}
+          {% if block.type == 'faq_item' %}
+            <div class="velin-faq__item" {{ block.shopify_attributes }}>
+              <button type="button" class="velin-faq__row" data-faq-toggle>
+                {% if section.settings.faq_pill_style %}
+                  <span class="velin-faq__icon">
+                    {% case block.settings.icon_type %}
+                      {% when 'book' %}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                      {% when 'sliders' %}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7"></path><path d="M4 10V3"></path><path d="M12 21v-9"></path><path d="M12 8V3"></path><path d="M20 21v-5"></path><path d="M20 12V3"></path><path d="M1 14h6"></path><path d="M9 8h6"></path><path d="M17 16h6"></path></svg>
+                      {% when 'washer' %}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="2" width="18" height="20" rx="2"></rect><circle cx="12" cy="13" r="6"></circle></svg>
+                      {% when 'season' %}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"></path></svg>
+                      {% when 'truck' %}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                      {% when 'return' %}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"></path><path d="M21 17a9 9 0 0 0-15-6.7L3 13"></path></svg>
+                      {% when 'star' %}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    {% endcase %}
+                  </span>
+                {% endif %}
+                <p class="velin-faq__question">{{ block.settings.question }}</p>
+                {% if section.settings.faq_pill_style %}
+                  <span class="velin-faq__chevron" data-faq-chevron><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                {% else %}
+                  <span class="velin-faq__plus" data-faq-plus></span>
+                {% endif %}
+              </button>
+              <div class="velin-faq__divider"></div>
+              <div class="velin-faq__answer" data-faq-answer>
+                <div class="velin-faq__answer-inner">
+                  {{ block.settings.answer }}
+                </div>
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+  </div>
+
+  <script type="application/json" data-pdp-product>{{ product | json }}</script>
+  <script type="application/json" data-pdp-color-media>{{ color_media_map }}</script>
+</div>
+
+<div class="velin-pdp__sticky-atc" data-sticky-atc>
+  <div class="velin-pdp__sticky-atc-inner">
+    <div class="velin-pdp__sticky-atc-info">
+      {%- if product.featured_image -%}
+        <img class="velin-pdp__sticky-atc-image" src="{{ product.featured_image | image_url: width: 100 }}" alt="" loading="lazy">
+      {%- endif -%}
+      <div class="velin-pdp__sticky-atc-text">
+        <p class="velin-pdp__sticky-atc-title">{{ product.title }}</p>
+        {%- if section.settings.sticky_atc_label != blank -%}
+          <p class="velin-pdp__sticky-atc-label">{{ section.settings.sticky_atc_label }}</p>
+        {%- endif -%}
+        <p class="velin-pdp__sticky-atc-price" data-sticky-atc-price>{{ product.selected_or_first_available_variant.price | money }}</p>
+      </div>
+    </div>
+    <button
+      type="button"
+      class="velin-pdp__sticky-atc-btn"
+      data-sticky-atc-btn
+      style="background: {{ section.settings.atc_bg }}; color: {{ section.settings.atc_color }};"
+    >{{ section.settings.atc_text }}</button>
+  </div>
+</div>
+
 
 <script>
   (function () {

@@ -1543,6 +1543,26 @@
       grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     }
   }
+
+  {%- comment -%}
+    The bundle's main button repeats the selected tier's name ("2 Couettes + 4 Taies d'oreiller
+    offertes") and the app offers no setting to change it. Hide that text and show a fixed label
+    instead; font-size/line-height 0 on the original text keeps the button height unchanged, and
+    the label follows whichever tier is selected. Disabled states keep the app's own wording.
+  {%- endcomment -%}
+  [data-revy-bundle-id] .rbu-qb-btn[data-disabled="false"] .rbu-qb-btn__text {
+    font-size: 0 !important;
+    line-height: 0 !important;
+    letter-spacing: 0 !important;
+  }
+
+  [data-revy-bundle-id] .rbu-qb-btn[data-disabled="false"] .rbu-qb-btn__text::after {
+    content: "Ajouter au panier";
+    display: block;
+    font-size: 18px;
+    line-height: 24px;
+    letter-spacing: 0.32px;
+  }
   
   :root {
     --rbu-gen-disc-label-bg: {{ section.settings.accent_color }};

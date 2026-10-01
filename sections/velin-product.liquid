@@ -564,6 +564,15 @@
       <div data-revy-bundle-id="{{ section.settings.revy_bundle_id }}"{% if size_option_index >= 0 %} data-bundle-show-machine-kg{% endif %}></div>
     {% endif %}
 
+    {%- comment -%} ---------- Payment method logos — between the bundle picker and the size guide link ---------- {%- endcomment -%}
+    {% if section.settings.show_payment_logos and shop.enabled_payment_types.size > 0 %}
+      <ul class="velin-pdp__payment-logos" role="list" aria-label="Moyens de paiement acceptés">
+        {%- for payment_type in shop.enabled_payment_types -%}
+          <li class="velin-pdp__payment-logo">{{ payment_type | payment_type_svg_tag: class: 'velin-pdp__payment-svg' }}</li>
+        {%- endfor -%}
+      </ul>
+    {% endif %}
+
     {%- comment -%} Size guide link — right below the bundle picker {%- endcomment -%}
     {% if has_size_guide %}
       <button type="button" class="velin-pdp__size-guide-trigger" data-size-guide-open>
@@ -2092,6 +2101,28 @@
     }
   }
 
+  .velin-pdp__payment-logos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    list-style: none;
+    margin: 14px 0 0;
+    padding: 0;
+  }
+
+  .velin-pdp__payment-logo {
+    display: flex;
+    margin: 0;
+    padding: 0;
+  }
+
+  .velin-pdp__payment-svg {
+    display: block;
+    width: auto;
+    height: {{ section.settings.payment_logo_height | default: 24 }}px;
+  }
+
   .velin-pdp__size-guide-trigger {
     display: inline-flex;
     align-items: center;
@@ -3212,6 +3243,8 @@ if (compareEl) {
     { "type": "color", "id": "launch_offer_bg", "label": "Launch urgency badge background", "default": "#705744" },
     { "type": "color", "id": "launch_offer_color", "label": "Launch urgency badge text color", "default": "#ffffff" },
     { "type": "header", "content": "Installments" },
+    { "type": "checkbox", "id": "show_payment_logos", "label": "Afficher les logos des moyens de paiement", "info": "Affiche les moyens de paiement activés dans Shopify, entre le bundle et le lien « Quelle taille me faut-il ? ».", "default": true },
+    { "type": "range", "id": "payment_logo_height", "label": "Hauteur des logos de paiement (px)", "min": 16, "max": 40, "step": 1, "default": 24 },
     { "type": "checkbox", "id": "show_installments", "label": "Show installment payment line", "default": false },
     { "type": "range", "id": "installment_count", "label": "Number of installments", "min": 2, "max": 12, "step": 1, "default": 3, "info": "Amount shown is the current product price divided by this number." },
     { "type": "range", "id": "payment_icon_size", "label": "Klarna badge height (px)", "min": 14, "max": 60, "step": 1, "default": 24 },

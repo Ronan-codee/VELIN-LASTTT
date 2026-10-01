@@ -156,7 +156,7 @@
       {% for media in product.media %}
         {% if media.media_type == 'video' %}
           <template data-pdp-video-template="{{ media.id }}">
-            {{ media | video_tag: image_size: '1200x', autoplay: false, loop: false, controls: true, muted: false, playsinline: true, preload: 'metadata', class: 'velin-pdp__main-video-el' }}
+            {{ media | video_tag: image_size: '1200x', autoplay: true, loop: true, controls: false, muted: true, playsinline: true, preload: 'metadata', class: 'velin-pdp__main-video-el' }}
           </template>
         {% elsif media.media_type == 'external_video' %}
           <template data-pdp-video-template="{{ media.id }}">
@@ -2523,11 +2523,11 @@
       root.querySelectorAll(".velin-pdp__thumb[data-video-id]")
     );
 
-    // Inserts the video thumb(s) at the 3rd position (index 2) of the strip,
+    // Inserts the video thumb(s) at the 2nd position (index 1) of the strip,
     // falling back to the end if there aren't enough photos ahead of it yet.
     function appendVideoThumbs() {
       if (!thumbsRow) return;
-      var referenceNode = thumbsRow.children[2] || null;
+      var referenceNode = thumbsRow.children[1] || null;
       videoThumbSources.forEach(function (source) {
         var clone = source.cloneNode(true);
         clone.classList.remove("is-active");

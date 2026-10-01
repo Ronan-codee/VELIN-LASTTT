@@ -1,0 +1,59 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1080
+PlayResY: 1080
+WrapStyle: 2
+
+[V4+ Styles]
+Format: Name,Fontname,Fontsize,PrimaryColour,SecondaryColour,OutlineColour,BackColour,Bold,Italic,Underline,StrikeOut,ScaleX,ScaleY,Spacing,Angle,BorderStyle,Outline,Shadow,Alignment,MarginL,MarginR,MarginV,Encoding
+Style: Cap,DejaVu Sans,78,&H00FFFFFF&,&H00FFFFFF&,&H00000000&,&H80000000&,-1,0,0,0,100,100,0,0,1,7,2,2,60,60,120,1
+Style: Chrono,DejaVu Sans Mono,70,&H00FFFFFF&,&H00FFFFFF&,&H99000000&,&H99000000&,-1,0,0,0,100,100,0,0,3,14,0,8,60,60,70,1
+
+[Events]
+Format: Layer,Start,End,Style,Name,MarginL,MarginR,MarginV,Effect,Text
+Dialogue: 0,0:00:00.15,0:00:00.43,Cap,,0,0,0,,{\fscx85\fscy85\t(0,110,\fscx100\fscy100)}{\1c&H004FC1F2&}LAVABLE {\alpha&HFF&}EN{\alpha&H00&} {\alpha&HFF&}MACHINE{\alpha&H00&}
+Dialogue: 0,0:00:00.43,0:00:00.71,Cap,,0,0,0,,{\fscx85\fscy85\t(0,110,\fscx100\fscy100)}{\1c&H00FFFFFF&}LAVABLE {\1c&H004FC1F2&}EN {\alpha&HFF&}MACHINE{\alpha&H00&}
+Dialogue: 0,0:00:00.71,0:00:02.78,Cap,,0,0,0,,{\fscx85\fscy85\t(0,110,\fscx100\fscy100)}{\1c&H00FFFFFF&}LAVABLE {\1c&H00FFFFFF&}EN {\1c&H004FC1F2&}MACHINE
+Dialogue: 0,0:00:03.03,0:00:03.31,Cap,,0,0,0,,{\fscx85\fscy85\t(0,110,\fscx100\fscy100)}{\1c&H004FC1F2&}SÈCHE {\alpha&HFF&}À{\alpha&H00&} {\alpha&HFF&}L'AIR{\alpha&H00&} {\alpha&HFF&}LIBRE{\alpha&H00&}
+Dialogue: 0,0:00:03.31,0:00:03.59,Cap,,0,0,0,,{\fscx85\fscy85\t(0,110,\fscx100\fscy100)}{\1c&H00FFFFFF&}SÈCHE {\1c&H004FC1F2&}À {\alpha&HFF&}L'AIR{\alpha&H00&} {\alpha&HFF&}LIBRE{\alpha&H00&}
+Dialogue: 0,0:00:03.59,0:00:03.87,Cap,,0,0,0,,{\fscx85\fscy85\t(0,110,\fscx100\fscy100)}{\1c&H00FFFFFF&}SÈCHE {\1c&H00FFFFFF&}À {\1c&H004FC1F2&}L'AIR {\alpha&HFF&}LIBRE{\alpha&H00&}
+Dialogue: 0,0:00:03.87,0:00:05.33,Cap,,0,0,0,,{\fscx85\fscy85\t(0,110,\fscx100\fscy100)}{\1c&H00FFFFFF&}SÈCHE {\1c&H00FFFFFF&}À {\1c&H00FFFFFF&}L'AIR {\1c&H004FC1F2&}LIBRE
+Dialogue: 0,0:00:05.58,0:00:05.86,Cap,,0,0,0,,{\fscx85\fscy85\t(0,110,\fscx100\fscy100)}{\1c&H004FC1F2&}LIT {\alpha&HFF&}FAIT{\alpha&H00&} {\alpha&HFF&}EN{\alpha&H00&} {\alpha&HFF&}3{\alpha&H00&} {\alpha&HFF&}SECONDES{\alpha&H00&}
+Dialogue: 0,0:00:05.86,0:00:06.14,Cap,,0,0,0,,{\fscx85\fscy85\t(0,110,\fscx100\fscy100)}{\1c&H00FFFFFF&}LIT {\1c&H004FC1F2&}FAIT {\alpha&HFF&}EN{\alpha&H00&} {\alpha&HFF&}3{\alpha&H00&} {\alpha&HFF&}SECONDES{\alpha&H00&}
+Dialogue: 0,0:00:06.14,0:00:06.42,Cap,,0,0,0,,{\fscx85\fscy85\t(0,110,\fscx100\fscy100)}{\1c&H00FFFFFF&}LIT {\1c&H00FFFFFF&}FAIT {\1c&H004FC1F2&}EN {\alpha&HFF&}3{\alpha&H00&} {\alpha&HFF&}SECONDES{\alpha&H00&}
+Dialogue: 0,0:00:06.42,0:00:06.70,Cap,,0,0,0,,{\fscx85\fscy85\t(0,110,\fscx100\fscy100)}{\1c&H00FFFFFF&}LIT {\1c&H00FFFFFF&}FAIT {\1c&H00FFFFFF&}EN {\1c&H004FC1F2&}3 {\alpha&HFF&}SECONDES{\alpha&H00&}
+Dialogue: 0,0:00:06.70,0:00:08.38,Cap,,0,0,0,,{\fscx85\fscy85\t(0,110,\fscx100\fscy100)}{\1c&H00FFFFFF&}LIT {\1c&H00FFFFFF&}FAIT {\1c&H00FFFFFF&}EN {\1c&H00FFFFFF&}3 {\1c&H004FC1F2&}SECONDES
+Dialogue: 1,0:00:05.43,0:00:05.53,Chrono,,0,0,0,,{\1c&H00FFFFFF&}⏱ 0.0 s
+Dialogue: 1,0:00:05.53,0:00:05.63,Chrono,,0,0,0,,{\1c&H00FFFFFF&}⏱ 0.1 s
+Dialogue: 1,0:00:05.63,0:00:05.73,Chrono,,0,0,0,,{\1c&H00FFFFFF&}⏱ 0.2 s
+Dialogue: 1,0:00:05.73,0:00:05.83,Chrono,,0,0,0,,{\1c&H00FFFFFF&}⏱ 0.3 s
+Dialogue: 1,0:00:05.83,0:00:05.93,Chrono,,0,0,0,,{\1c&H00FFFFFF&}⏱ 0.4 s
+Dialogue: 1,0:00:05.93,0:00:06.03,Chrono,,0,0,0,,{\1c&H00FFFFFF&}⏱ 0.5 s
+Dialogue: 1,0:00:06.03,0:00:06.13,Chrono,,0,0,0,,{\1c&H00FFFFFF&}⏱ 0.6 s
+Dialogue: 1,0:00:06.13,0:00:06.23,Chrono,,0,0,0,,{\1c&H00FFFFFF&}⏱ 0.7 s
+Dialogue: 1,0:00:06.23,0:00:06.33,Chrono,,0,0,0,,{\1c&H00FFFFFF&}⏱ 0.8 s
+Dialogue: 1,0:00:06.33,0:00:06.43,Chrono,,0,0,0,,{\1c&H00FFFFFF&}⏱ 0.9 s
+Dialogue: 1,0:00:06.43,0:00:06.53,Chrono,,0,0,0,,{\1c&H00FFFFFF&}⏱ 1.0 s
+Dialogue: 1,0:00:06.53,0:00:06.63,Chrono,,0,0,0,,{\1c&H00FFFFFF&}⏱ 1.1 s
+Dialogue: 1,0:00:06.63,0:00:06.73,Chrono,,0,0,0,,{\1c&H00FFFFFF&}⏱ 1.2 s
+Dialogue: 1,0:00:06.73,0:00:06.83,Chrono,,0,0,0,,{\1c&H00FFFFFF&}⏱ 1.3 s
+Dialogue: 1,0:00:06.83,0:00:06.93,Chrono,,0,0,0,,{\1c&H00FFFFFF&}⏱ 1.4 s
+Dialogue: 1,0:00:06.93,0:00:07.03,Chrono,,0,0,0,,{\1c&H00FFFFFF&}⏱ 1.5 s
+Dialogue: 1,0:00:07.03,0:00:07.13,Chrono,,0,0,0,,{\1c&H00FFFFFF&}⏱ 1.6 s
+Dialogue: 1,0:00:07.13,0:00:07.23,Chrono,,0,0,0,,{\1c&H00FFFFFF&}⏱ 1.7 s
+Dialogue: 1,0:00:07.23,0:00:07.33,Chrono,,0,0,0,,{\1c&H00FFFFFF&}⏱ 1.8 s
+Dialogue: 1,0:00:07.33,0:00:07.43,Chrono,,0,0,0,,{\1c&H00FFFFFF&}⏱ 1.9 s
+Dialogue: 1,0:00:07.43,0:00:07.53,Chrono,,0,0,0,,{\1c&H00FFFFFF&}⏱ 2.0 s
+Dialogue: 1,0:00:07.53,0:00:07.63,Chrono,,0,0,0,,{\1c&H00FFFFFF&}⏱ 2.1 s
+Dialogue: 1,0:00:07.63,0:00:07.73,Chrono,,0,0,0,,{\1c&H00FFFFFF&}⏱ 2.2 s
+Dialogue: 1,0:00:07.73,0:00:07.83,Chrono,,0,0,0,,{\1c&H00FFFFFF&}⏱ 2.3 s
+Dialogue: 1,0:00:07.83,0:00:07.93,Chrono,,0,0,0,,{\1c&H00FFFFFF&}⏱ 2.4 s
+Dialogue: 1,0:00:07.93,0:00:08.03,Chrono,,0,0,0,,{\1c&H00FFFFFF&}⏱ 2.5 s
+Dialogue: 1,0:00:08.03,0:00:08.13,Chrono,,0,0,0,,{\1c&H00FFFFFF&}⏱ 2.6 s
+Dialogue: 1,0:00:08.13,0:00:08.23,Chrono,,0,0,0,,{\1c&H00FFFFFF&}⏱ 2.7 s
+Dialogue: 1,0:00:08.23,0:00:08.33,Chrono,,0,0,0,,{\1c&H00FFFFFF&}⏱ 2.8 s
+Dialogue: 1,0:00:08.33,0:00:08.43,Chrono,,0,0,0,,{\1c&H00FFFFFF&}⏱ 2.9 s
+Dialogue: 1,0:00:08.43,0:00:08.48,Chrono,,0,0,0,,{\1c&H004FC1F2&}⏱ 3.0 s
+Dialogue: 0,0:00:08.63,0:00:08.91,Cap,,0,0,0,,{\fscx85\fscy85\t(0,110,\fscx100\fscy100)}{\1c&H004FC1F2&}DOUCEUR {\alpha&HFF&}AU{\alpha&H00&} {\alpha&HFF&}QUOTIDIEN{\alpha&H00&}
+Dialogue: 0,0:00:08.91,0:00:09.19,Cap,,0,0,0,,{\fscx85\fscy85\t(0,110,\fscx100\fscy100)}{\1c&H00FFFFFF&}DOUCEUR {\1c&H004FC1F2&}AU {\alpha&HFF&}QUOTIDIEN{\alpha&H00&}
+Dialogue: 0,0:00:09.19,0:00:10.92,Cap,,0,0,0,,{\fscx85\fscy85\t(0,110,\fscx100\fscy100)}{\1c&H00FFFFFF&}DOUCEUR {\1c&H00FFFFFF&}AU {\1c&H004FC1F2&}QUOTIDIEN

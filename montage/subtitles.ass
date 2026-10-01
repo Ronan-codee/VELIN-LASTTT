@@ -1,0 +1,27 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1080
+PlayResY: 1080
+WrapStyle: 2
+
+[V4+ Styles]
+Format: Name,Fontname,Fontsize,PrimaryColour,SecondaryColour,OutlineColour,BackColour,Bold,Italic,Underline,StrikeOut,ScaleX,ScaleY,Spacing,Angle,BorderStyle,Outline,Shadow,Alignment,MarginL,MarginR,MarginV,Encoding
+Style: Cap,DejaVu Sans,78,&H00FFFFFF&,&H00FFFFFF&,&H00000000&,&H80000000&,-1,0,0,0,100,100,0,0,1,7,2,2,60,60,120,1
+
+[Events]
+Format: Layer,Start,End,Style,Name,MarginL,MarginR,MarginV,Effect,Text
+Dialogue: 0,0:00:00.15,0:00:00.43,Cap,,0,0,0,,{\fscx85\fscy85\t(0,110,\fscx100\fscy100)}{\1c&H004FC1F2&}LAVABLE {\alpha&HFF&}EN{\alpha&H00&} {\alpha&HFF&}MACHINE{\alpha&H00&}
+Dialogue: 0,0:00:00.43,0:00:00.71,Cap,,0,0,0,,{\fscx85\fscy85\t(0,110,\fscx100\fscy100)}{\1c&H00FFFFFF&}LAVABLE {\1c&H004FC1F2&}EN {\alpha&HFF&}MACHINE{\alpha&H00&}
+Dialogue: 0,0:00:00.71,0:00:02.78,Cap,,0,0,0,,{\fscx85\fscy85\t(0,110,\fscx100\fscy100)}{\1c&H00FFFFFF&}LAVABLE {\1c&H00FFFFFF&}EN {\1c&H004FC1F2&}MACHINE
+Dialogue: 0,0:00:03.03,0:00:03.31,Cap,,0,0,0,,{\fscx85\fscy85\t(0,110,\fscx100\fscy100)}{\1c&H004FC1F2&}SÈCHE {\alpha&HFF&}À{\alpha&H00&} {\alpha&HFF&}L'AIR{\alpha&H00&} {\alpha&HFF&}LIBRE{\alpha&H00&}
+Dialogue: 0,0:00:03.31,0:00:03.59,Cap,,0,0,0,,{\fscx85\fscy85\t(0,110,\fscx100\fscy100)}{\1c&H00FFFFFF&}SÈCHE {\1c&H004FC1F2&}À {\alpha&HFF&}L'AIR{\alpha&H00&} {\alpha&HFF&}LIBRE{\alpha&H00&}
+Dialogue: 0,0:00:03.59,0:00:03.87,Cap,,0,0,0,,{\fscx85\fscy85\t(0,110,\fscx100\fscy100)}{\1c&H00FFFFFF&}SÈCHE {\1c&H00FFFFFF&}À {\1c&H004FC1F2&}L'AIR {\alpha&HFF&}LIBRE{\alpha&H00&}
+Dialogue: 0,0:00:03.87,0:00:05.33,Cap,,0,0,0,,{\fscx85\fscy85\t(0,110,\fscx100\fscy100)}{\1c&H00FFFFFF&}SÈCHE {\1c&H00FFFFFF&}À {\1c&H00FFFFFF&}L'AIR {\1c&H004FC1F2&}LIBRE
+Dialogue: 0,0:00:05.58,0:00:05.86,Cap,,0,0,0,,{\fscx85\fscy85\t(0,110,\fscx100\fscy100)}{\1c&H004FC1F2&}SE {\alpha&HFF&}FAIT{\alpha&H00&} {\alpha&HFF&}EN{\alpha&H00&} {\alpha&HFF&}UN{\alpha&H00&} {\alpha&HFF&}GESTE{\alpha&H00&}
+Dialogue: 0,0:00:05.86,0:00:06.14,Cap,,0,0,0,,{\fscx85\fscy85\t(0,110,\fscx100\fscy100)}{\1c&H00FFFFFF&}SE {\1c&H004FC1F2&}FAIT {\alpha&HFF&}EN{\alpha&H00&} {\alpha&HFF&}UN{\alpha&H00&} {\alpha&HFF&}GESTE{\alpha&H00&}
+Dialogue: 0,0:00:06.14,0:00:06.42,Cap,,0,0,0,,{\fscx85\fscy85\t(0,110,\fscx100\fscy100)}{\1c&H00FFFFFF&}SE {\1c&H00FFFFFF&}FAIT {\1c&H004FC1F2&}EN {\alpha&HFF&}UN{\alpha&H00&} {\alpha&HFF&}GESTE{\alpha&H00&}
+Dialogue: 0,0:00:06.42,0:00:06.70,Cap,,0,0,0,,{\fscx85\fscy85\t(0,110,\fscx100\fscy100)}{\1c&H00FFFFFF&}SE {\1c&H00FFFFFF&}FAIT {\1c&H00FFFFFF&}EN {\1c&H004FC1F2&}UN {\alpha&HFF&}GESTE{\alpha&H00&}
+Dialogue: 0,0:00:06.70,0:00:07.87,Cap,,0,0,0,,{\fscx85\fscy85\t(0,110,\fscx100\fscy100)}{\1c&H00FFFFFF&}SE {\1c&H00FFFFFF&}FAIT {\1c&H00FFFFFF&}EN {\1c&H00FFFFFF&}UN {\1c&H004FC1F2&}GESTE
+Dialogue: 0,0:00:08.12,0:00:08.40,Cap,,0,0,0,,{\fscx85\fscy85\t(0,110,\fscx100\fscy100)}{\1c&H004FC1F2&}DOUCEUR {\alpha&HFF&}AU{\alpha&H00&} {\alpha&HFF&}QUOTIDIEN{\alpha&H00&}
+Dialogue: 0,0:00:08.40,0:00:08.68,Cap,,0,0,0,,{\fscx85\fscy85\t(0,110,\fscx100\fscy100)}{\1c&H00FFFFFF&}DOUCEUR {\1c&H004FC1F2&}AU {\alpha&HFF&}QUOTIDIEN{\alpha&H00&}
+Dialogue: 0,0:00:08.68,0:00:10.41,Cap,,0,0,0,,{\fscx85\fscy85\t(0,110,\fscx100\fscy100)}{\1c&H00FFFFFF&}DOUCEUR {\1c&H00FFFFFF&}AU {\1c&H004FC1F2&}QUOTIDIEN

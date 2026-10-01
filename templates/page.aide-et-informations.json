@@ -22,32 +22,46 @@
         "faq_1": {
           "type": "faq_item",
           "settings": {
-            "question": "Quels sont les délais de livraison ?",
-            "answer": "<p>Nous préparons votre commande avec soin sous 72 heures. Votre commande est livrée en 5 à 9 jours ouvrables au total, selon votre lieu de résidence. Un numéro de suivi vous est envoyé dès l'expédition afin que vous puissiez suivre votre colis.</p>"
+            "question": "Comment fonctionne la couette 2-en-1 ?",
+            "answer": "<p>La couette est intégrée directement à l'intérieur de la housse et fixée par des attaches internes. Vous n'avez plus à emboîter la couette dans sa housse : un geste pour l'étaler, et le lit est fait.</p>"
           }
         },
         "faq_2": {
           "type": "faq_item",
           "settings": {
-            "question": "Comment retourner ou échanger un article ?",
-            "answer": "<p>Vous disposez de 30 jours après réception pour changer d'avis. Rendez-vous sur notre page « Annulation et retour » (accessible en pied de page) pour lancer votre demande.</p>"
+            "question": "Comment laver ma couette 2-en-1 ?",
+            "answer": "<p>L'ensemble se lave en machine en une seule fois, à 30°C. Nous recommandons un cycle délicat et un séchage à basse température ou à l'air libre pour préserver la douceur et le gonflant.</p>"
           }
         },
         "faq_3": {
           "type": "faq_item",
           "settings": {
-            "question": "Comment entretenir mon sac en cuir ?",
-            "answer": "<p>Évitez l'exposition prolongée au soleil et à l'humidité. Nettoyez régulièrement avec un chiffon doux et sec, et utilisez un produit d'entretien adapté au cuir tous les mois.</p>"
+            "question": "Quelle est la taille des taies d'oreiller offertes ?",
+            "answer": "<p>Les taies d'oreiller offertes mesurent 51 x 76 cm.</p>"
           }
         },
         "faq_4": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Quels sont les délais de livraison ?",
+            "answer": "<p>Nous préparons votre commande avec soin sous 72 heures. Votre commande est livrée en 5 à 9 jours ouvrables au total, selon votre lieu de résidence. Un numéro de suivi vous est envoyé dès l'expédition afin que vous puissiez suivre votre colis.</p>"
+          }
+        },
+        "faq_5": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Comment retourner ou échanger ma couette ?",
+            "answer": "<p>Vous disposez de 30 jours après réception pour changer d'avis. Rendez-vous sur notre page « Annulation et retour » (accessible en pied de page) pour lancer votre demande.</p>"
+          }
+        },
+        "faq_6": {
           "type": "faq_item",
           "settings": {
             "question": "Quels moyens de paiement acceptez-vous ?",
             "answer": "<p>Nous acceptons les cartes bancaires (Visa, Mastercard) ainsi que les autres moyens de paiement proposés au moment du règlement.</p>"
           }
         },
-        "faq_5": {
+        "faq_7": {
           "type": "faq_item",
           "settings": {
             "question": "Comment suivre ma commande ?",
@@ -60,7 +74,9 @@
         "faq_2",
         "faq_3",
         "faq_4",
-        "faq_5"
+        "faq_5",
+        "faq_6",
+        "faq_7"
       ],
       "name": "Velin Help / FAQ",
       "settings": {

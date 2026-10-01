@@ -182,14 +182,19 @@
             {% continue %}
           {% endif %}
           {% if media.media_type == 'image' %}
-            <img src="{{ media | image_url: width: 1200 }}" alt="{{ media.alt | escape }}" loading="lazy" class="velin-pdp__media-grid-img">
+            <img data-src="{{ media | image_url: width: 1200 }}" alt="{{ media.alt | escape }}" loading="lazy" class="velin-pdp__media-grid-img">
           {% endif %}
         {% endfor %}
       </div>
       <script>
         (function () {
+          // The grid is display:none under 1101px: only fetch its images on desktop.
+          if (!window.matchMedia("(min-width: 1101px)").matches) return;
+          document.querySelectorAll(".velin-pdp__media-grid-img[data-src]").forEach(function (img) {
+            img.src = img.getAttribute("data-src");
+          });
           var vids = document.querySelectorAll(".velin-pdp__media-grid-video-el");
-          if (!vids.length || !window.matchMedia("(min-width: 1101px)").matches) return;
+          if (!vids.length) return;
           if (!("IntersectionObserver" in window)) { vids.forEach(function (v) { v.play(); }); return; }
           var io = new IntersectionObserver(function (entries) {
             entries.forEach(function (e) {

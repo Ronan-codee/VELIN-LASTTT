@@ -7,8 +7,55 @@
   <div class="velin-video-banner__overlay" style="background: rgba(0,0,0,{{ section.settings.overlay_opacity | divided_by: 100.0 }});"></div>
 
   {% if section.settings.banner_video != blank %}
+    {%- comment -%}
+      Shopify's video_tag lists every rendition, highest first, so browsers pick the 1080p
+      (~7 Mbps, 8+ MB) file even on a phone. Pick a 720p (desktop) and a 480p (phone) source
+      instead, and only start loading once the banner is near the viewport.
+    {%- endcomment -%}
+    {%- assign vb = section.settings.banner_video -%}
+    {%- assign vb_lg = blank -%}
+    {%- assign vb_sm = blank -%}
+    {%- assign vb_lg_h = 0 -%}
+    {%- assign vb_sm_h = 0 -%}
+    {%- comment -%} Sources come in no particular order: keep the tallest one under each limit. {%- endcomment -%}
+    {%- for src in vb.sources -%}
+      {%- if src.mime_type == 'video/mp4' -%}
+        {%- if src.height <= 720 and src.height > vb_lg_h -%}{%- assign vb_lg = src.url -%}{%- assign vb_lg_h = src.height -%}{%- endif -%}
+        {%- if src.height <= 480 and src.height > vb_sm_h -%}{%- assign vb_sm = src.url -%}{%- assign vb_sm_h = src.height -%}{%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
     <div class="velin-video-banner__player">
-      {{ section.settings.banner_video | video_tag: loop: true, controls: false, muted: true, autoplay: true, playsinline: true, image_size: '1600x' }}
+      {%- if vb_lg != blank -%}
+        <video
+          loop muted playsinline preload="none"
+          poster="{{ vb.preview_image | image_url: width: 800 }}"
+          data-src-lg="{{ vb_lg }}"
+          data-src-sm="{{ vb_sm | default: vb_lg }}"
+          data-lazy-banner-video
+        ></video>
+        <script>
+          (function () {
+            var v = document.querySelector("#VideoBanner-{{ section.id }} [data-lazy-banner-video]");
+            if (!v) return;
+            function start() {
+              if (v.getAttribute("src")) return;
+              v.src = window.innerWidth < 750 ? v.getAttribute("data-src-sm") : v.getAttribute("data-src-lg");
+              var p = v.play();
+              if (p && p.catch) p.catch(function () {});
+            }
+            if (!("IntersectionObserver" in window)) { start(); return; }
+            var io = new IntersectionObserver(function (entries) {
+              entries.forEach(function (e) {
+                if (e.isIntersecting) { start(); if (v.paused && v.getAttribute("src")) { var q = v.play(); if (q && q.catch) q.catch(function () {}); } }
+                else if (v.getAttribute("src")) { v.pause(); }
+              });
+            }, { rootMargin: "300px 0px" });
+            io.observe(v);
+          })();
+        </script>
+      {%- else -%}
+        {{ vb | video_tag: loop: true, controls: false, muted: true, autoplay: true, playsinline: true, image_size: '1600x' }}
+      {%- endif -%}
     </div>
   {% elsif request.design_mode %}
     <p class="velin-video-banner__placeholder">Select a video in the theme customizer</p>

@@ -2697,8 +2697,53 @@
       });
     }
 
+    // The color picked with the swatches also fills every color picker of the Unlimited Bundles widget
+    // (one per couette, in every tier), so choosing "Blanc" once gives a white bundle. The widget is
+    // rendered by the app after load and resets its pickers while it initialises: during the first
+    // seconds the pick is re-applied after each burst of changes, unless the visitor already used
+    // one of the bundle's own pickers (a real, trusted "change" event).
+    var bundleColorPick = null;
+    var bundleColorTouched = false;
+    function setBundleColor(value) {
+      var setter = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, "value").set;
+      root.querySelectorAll("[data-revy-bundle-id] select").forEach(function (sel) {
+        var hasColor = Array.prototype.some.call(sel.options, function (o) { return o.value === value; });
+        if (!hasColor || sel.value === value) return;
+        // Native setter + bubbling events so the app's own listeners pick the change up.
+        setter.call(sel, value);
+        sel.dispatchEvent(new Event("input", { bubbles: true }));
+        sel.dispatchEvent(new Event("change", { bubbles: true }));
+      });
+    }
+    var bundleColorRoot = root.querySelector("[data-revy-bundle-id]");
+    if (bundleColorRoot) {
+      bundleColorRoot.addEventListener("change", function (e) {
+        if (e.isTrusted) bundleColorTouched = true;
+      });
+      if ("MutationObserver" in window) {
+        var bundleColorUntil = 0;
+        var bundleColorTimer = null;
+        var bundleColorObserver = new MutationObserver(function () {
+          if (!bundleColorRoot.querySelector("select")) return;
+          if (!bundleColorUntil) bundleColorUntil = Date.now() + 6000;
+          if (Date.now() > bundleColorUntil) {
+            bundleColorObserver.disconnect();
+            return;
+          }
+          window.clearTimeout(bundleColorTimer);
+          bundleColorTimer = window.setTimeout(function () {
+            if (!bundleColorTouched && bundleColorPick) setBundleColor(bundleColorPick);
+          }, 250);
+        });
+        bundleColorObserver.observe(bundleColorRoot, { childList: true, subtree: true });
+      }
+    }
+
     // Color selection (swatches + selects stay in sync)
     function selectColor(value) {
+      bundleColorPick = value;
+      bundleColorTouched = false;
+      setBundleColor(value);
       root.querySelectorAll(".velin-pdp__swatch").forEach(function (s) {
         s.classList.toggle("is-active", s.getAttribute("data-color-value") === value);
         if (s.getAttribute("data-color-value") === value) {

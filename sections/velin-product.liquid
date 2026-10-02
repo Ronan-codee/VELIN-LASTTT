@@ -813,6 +813,24 @@
       text-align: center;
     }
 
+    {%- comment -%}
+      The label and price now follow the selected bundle tier ("3 Couettes" / "179,85 €"), which is wider
+      than the old fixed "Lot de 2 - 129,95€". Stack them so the price is never cut off by the button.
+    {%- endcomment -%}
+    .velin-pdp__sticky-atc-text {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+    }
+
+    .velin-pdp__sticky-atc-label + .velin-pdp__sticky-atc-price::before {
+      content: none;
+    }
+
+    .velin-pdp__sticky-atc-btn {
+      padding: 12px 20px;
+    }
+
     .velin-pdp__chip {
       font-size: 13px !important;
     }
@@ -2686,7 +2704,7 @@
         if (variant && variantInput) {
           variantInput.value = variant.id;
           setAvailability(variant.available);
-          if (stickyAtcPrice) stickyAtcPrice.textContent = formatMoney(variant.price);
+          if (stickyAtcPrice && !bundleSelectedTier()) stickyAtcPrice.textContent = formatMoney(variant.price);
           if (priceEl) priceEl.textContent = formatMoney(variant.price);
 var compareEl = root.querySelector(".velin-pdp__compare");
 
@@ -2779,7 +2797,7 @@ if (compareEl) {
 
       variantInput.value = variant.id;
       setAvailability(variant.available);
-      if (stickyAtcPrice) stickyAtcPrice.textContent = formatMoney(variant.price);
+      if (stickyAtcPrice && !bundleSelectedTier()) stickyAtcPrice.textContent = formatMoney(variant.price);
       if (priceEl) priceEl.textContent = formatMoney(variant.price);
 
       var compareEl = root.querySelector(".velin-pdp__compare");
@@ -3013,6 +3031,43 @@ if (compareEl) {
       updateStickyAtcVisibility();
     }
 
+    // Keep the sticky bar's label and price in sync with the tier selected in the Unlimited Bundles widget
+    // ("2 Couettes + 4 Taies d'oreiller offertes" / 129,90€ -> "2 Couettes" / 129,90 €). Without a bundle
+    // tier on the page, the bar keeps showing the section label and the selected variant's price.
+    function bundleSelectedTier() {
+      return root.querySelector("[data-revy-bundle-id] .rbu-qb-tier-container__selected");
+    }
+    function syncStickyWithBundle() {
+      if (!stickyAtc) return;
+      var tier = bundleSelectedTier();
+      if (!tier) return;
+      var labelEl = tier.querySelector(".rbu-qb-tier-label");
+      var priceFinalEl = tier.querySelector(".rbu-qb-tier-price-final");
+      var stickyLabel = stickyAtc.querySelector(".velin-pdp__sticky-atc-label");
+      if (stickyLabel && labelEl) {
+        stickyLabel.textContent = labelEl.textContent.split("+")[0].trim();
+      }
+      if (stickyAtcPrice && priceFinalEl) {
+        var raw = priceFinalEl.textContent.replace(/[^\d,.]/g, "");
+        if (raw.indexOf(",") > -1) raw = raw.replace(/\./g, "").replace(",", ".");
+        var amount = parseFloat(raw);
+        if (!isNaN(amount)) stickyAtcPrice.textContent = formatMoney(Math.round(amount * 100));
+      }
+    }
+    var bundleWidget = root.querySelector("[data-revy-bundle-id]");
+    if (stickyAtc && bundleWidget && "MutationObserver" in window) {
+      var stickySyncQueued = false;
+      new MutationObserver(function () {
+        if (stickySyncQueued) return;
+        stickySyncQueued = true;
+        window.requestAnimationFrame(function () {
+          stickySyncQueued = false;
+          syncStickyWithBundle();
+        });
+      }).observe(bundleWidget, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
+      syncStickyWithBundle();
+    }
+
     var stickyAtcBtn = stickyAtc ? stickyAtc.querySelector("[data-sticky-atc-btn]") : null;
     if (stickyAtcBtn) {
       stickyAtcBtn.addEventListener("click", function () {
@@ -3051,19 +3106,23 @@ if (compareEl) {
         })
           .then(function (res) {
             if (!res.ok) throw new Error("Add to cart failed");
-            return fetch("/cart.js");
-          })
-          .then(function (res) { return res.json(); })
-          .then(function (cart) {
-            if (window.VelinCartDrawer) {
-              return window.VelinCartDrawer.refresh(cart).then(function () {
-                window.VelinCartDrawer.open();
-              });
+            // One shared refresh (cart.js + drawer in parallel) that the cart drawer's own fetch hook also triggers.
+            if (window.VelinCartDrawer && window.VelinCartDrawer.refreshAndOpen) {
+              return window.VelinCartDrawer.refreshAndOpen();
             }
-            document.querySelectorAll("[data-cart-count]").forEach(function (el) {
-              el.textContent = cart.item_count;
-              el.classList.toggle("is-empty", cart.item_count === 0);
-            });
+            return fetch("/cart.js")
+              .then(function (r) { return r.json(); })
+              .then(function (cart) {
+                if (window.VelinCartDrawer) {
+                  return window.VelinCartDrawer.refresh(cart).then(function () {
+                    window.VelinCartDrawer.open();
+                  });
+                }
+                document.querySelectorAll("[data-cart-count]").forEach(function (el) {
+                  el.textContent = cart.item_count;
+                  el.classList.toggle("is-empty", cart.item_count === 0);
+                });
+              });
           })
           .catch(function () {
             atcForm.submit();

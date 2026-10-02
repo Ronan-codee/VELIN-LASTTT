@@ -1,0 +1,14 @@
+<script>
+  document.addEventListener('click', function (e) {
+    const wrapper = e.target.closest('.AirReviews-Widget--Stars-Wrapper');
+    if (!wrapper) return;
+
+    const target = document.querySelector('#AirReviews-BlockWrapper');
+    if (!target) return;
+
+    target.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  });
+</script>

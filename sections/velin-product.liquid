@@ -1576,6 +1576,26 @@
   }
 
   {%- comment -%}
+    Pillowcase pill under each color field: color + count on the first line, size on the second, because
+    both on one line are wider than the bundle's narrow columns (about 135-150px).
+  {%- endcomment -%}
+  .velin-bundle-pillow-note {
+    border-radius: 14px;
+    padding: 4px 10px;
+    white-space: normal;
+  }
+
+  .velin-bundle-pillow-note__text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.25;
+  }
+
+  .velin-bundle-pillow-note__size {
+    font-weight: 400;
+  }
+
+  {%- comment -%}
     Unlimited Bundles app widget (the quantity/bundle picker mounted at
     [data-revy-bundle-id]) isn't theme markup — it's rendered by the app
     itself. It exposes its own colors as CSS custom properties (--rbu-gen-*),
@@ -3241,7 +3261,20 @@ if (compareEl) {
     // Second pill, under each color field: the size of the free pillowcases that come with each couette.
     // The bundle gives 2 pillowcases per couette (1 couette + 2 taies, 2 + 4, 3 + 6): change the text if that changes.
     var PILLOW_ATTR = "data-pillow-pill";
-    var PILLOW_TEXT = "2 taies 51 x 76 cm";
+    var PILLOW_COUNT = 2;
+    var PILLOW_SIZE = "51 x 76 cm";
+    // The pillowcases come in the same color as the couette picked in that row. French agreement
+    // ("taies" is feminine plural); a color that is not listed is shown by its name as is.
+    var PILLOW_COLOR_FORMS = {
+      "gris": "grises", "blanc": "blanches", "noir": "noires", "bleu": "bleues", "vert": "vertes",
+      "marron": "marron", "rouge": "rouges", "beige": "beiges", "rose": "roses", "brun": "brunes",
+      "ivoire": "ivoire", "taupe": "taupe", "camel": "camel"
+    };
+    function pillowLabel(color) {
+      var key = (color || "").trim().toLowerCase();
+      var form = PILLOW_COLOR_FORMS[key] || key;
+      return PILLOW_COUNT + " taies" + (form ? " " + form : "");
+    }
 
     function normalize(text) {
       return (text || "").toLowerCase().replace(/×/g, "x").replace(/\s+/g, "");
@@ -3271,7 +3304,7 @@ if (compareEl) {
       if (pill && pill.getAttribute(PILL_ATTR) === "1") pill.remove();
     }
 
-    var PILLOW_ICON_SVG = '<svg class="velin-bundle-machine-note__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"></rect><path d="M12 8v13"></path><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"></path><path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5"></path></svg><span data-pill-text></span>';
+    var PILLOW_ICON_SVG = '<svg class="velin-bundle-machine-note__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"></rect><path d="M12 8v13"></path><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"></path><path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5"></path></svg><span class="velin-bundle-pillow-note__text"><span data-pill-text></span><span class="velin-bundle-pillow-note__size" data-pill-size></span></span>';
 
     // A color field is a select whose options are the colors offered by the swatches above the bundle.
     function isColorSelect(select) {
@@ -3287,11 +3320,12 @@ if (compareEl) {
       if (!pill || pill.getAttribute(PILLOW_ATTR) !== "1") {
         pill = document.createElement("span");
         pill.setAttribute(PILLOW_ATTR, "1");
-        pill.className = "velin-bundle-machine-note";
+        pill.className = "velin-bundle-machine-note velin-bundle-pillow-note";
         pill.innerHTML = PILLOW_ICON_SVG;
         select.insertAdjacentElement("afterend", pill);
       }
-      pill.querySelector("[data-pill-text]").textContent = PILLOW_TEXT;
+      pill.querySelector("[data-pill-text]").textContent = pillowLabel(select.value);
+      pill.querySelector("[data-pill-size]").textContent = PILLOW_SIZE;
     }
 
     function syncSelect(select) {

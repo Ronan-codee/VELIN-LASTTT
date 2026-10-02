@@ -1377,6 +1377,23 @@
     height: {{ section.settings.payment_logo_height | default: 24 }}px;
   }
 
+  @media (max-width: 749px) {
+    .velin-pdp__payment-logos {
+      flex-wrap: nowrap;
+    }
+
+    .velin-pdp__payment-logo {
+      flex: 0 1 auto;
+      min-width: 0;
+    }
+
+    .velin-pdp__payment-svg {
+      max-width: 100%;
+      height: auto;
+      max-height: {{ section.settings.payment_logo_height | default: 24 }}px;
+    }
+  }
+
   .velin-pdp__size-guide-trigger {
     display: inline-flex;
     align-items: center;
@@ -2117,8 +2134,11 @@
     {%- comment -%} ---------- Payment method logos — between the bundle picker and the size guide link ---------- {%- endcomment -%}
     {% if section.settings.show_payment_logos and shop.enabled_payment_types.size > 0 %}
       <ul class="velin-pdp__payment-logos" role="list" aria-label="Moyens de paiement acceptés">
+        {%- assign hidden_payment_types = section.settings.hidden_payment_types | default: '' | remove: ' ' | downcase | split: ',' -%}
         {%- for payment_type in shop.enabled_payment_types -%}
-          <li class="velin-pdp__payment-logo">{{ payment_type | payment_type_svg_tag: class: 'velin-pdp__payment-svg' }}</li>
+          {%- unless hidden_payment_types contains payment_type -%}
+            <li class="velin-pdp__payment-logo">{{ payment_type | payment_type_svg_tag: class: 'velin-pdp__payment-svg' }}</li>
+          {%- endunless -%}
         {%- endfor -%}
       </ul>
     {% endif %}
@@ -3395,6 +3415,7 @@ if (compareEl) {
     { "type": "header", "content": "Installments" },
     { "type": "checkbox", "id": "show_payment_logos", "label": "Afficher les logos des moyens de paiement", "info": "Affiche les moyens de paiement activés dans Shopify, entre le bundle et le lien « Quelle taille me faut-il ? ».", "default": true },
     { "type": "range", "id": "payment_logo_height", "label": "Hauteur des logos de paiement (px)", "min": 16, "max": 40, "step": 1, "default": 24 },
+    { "type": "text", "id": "hidden_payment_types", "label": "Logos de paiement à masquer", "info": "Noms séparés par des virgules, ex. american_express, shopify_pay. Les moyens de paiement restent actifs dans Shopify, seul le logo est masqué ici (pour que la rangée tienne sur une ligne sur téléphone).", "default": "american_express" },
     { "type": "checkbox", "id": "show_installments", "label": "Show installment payment line", "default": false },
     { "type": "range", "id": "installment_count", "label": "Number of installments", "min": 2, "max": 12, "step": 1, "default": 3, "info": "Amount shown is the current product price divided by this number." },
     { "type": "range", "id": "payment_icon_size", "label": "Klarna badge height (px)", "min": 14, "max": 60, "step": 1, "default": 24 },

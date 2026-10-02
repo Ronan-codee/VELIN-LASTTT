@@ -459,25 +459,30 @@
 
   .velin-pdp__swatches {
     display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
+    flex-wrap: nowrap;
+    gap: 10px;
   }
 
   {%- comment -%}
-    Color choices are small round dots filled with the color itself (see color_map), not photo thumbnails:
-    7 colors fit on one line, even on a 320px phone (7 x 30px + 6 x 8px = 258px).
+    Color choices are small rounded squares showing a close-up of the quilted fabric in that color
+    (assets/swatch-<color>.webp), on top of the color itself (see color_map) as a fallback.
+    They share the row equally and shrink to stay on ONE line, even on a 320px phone.
   {%- endcomment -%}
   .velin-pdp__swatch {
     position: relative;
     display: block;
-    flex: 0 0 auto;
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    border: 1px solid rgba(0, 0, 0, 0.18);
+    flex: 0 1 44px;
+    min-width: 0;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.14);
     cursor: pointer;
     padding: 0;
-    background-clip: padding-box;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
   }
 
   .velin-pdp__swatch img {
@@ -496,8 +501,7 @@
     }
 
     .velin-pdp__swatch {
-      width: 30px;
-      height: 30px;
+      flex-basis: 40px;
     }
   }
 
@@ -1893,11 +1897,12 @@
               {%- if pair_name == val_down -%}{%- assign swatch_hex = pair[1] | strip -%}{%- endif -%}
             {%- endfor -%}
             {%- if swatch_hex == '' -%}{%- assign swatch_hex = '#cccccc' -%}{%- endif -%}
+            {%- assign swatch_asset = value | handleize | prepend: 'swatch-' | append: '.webp' -%}
             <button
               type="button"
               class="velin-pdp__swatch{% if value == color_option.selected_value %} is-active{% endif %}"
               data-color-value="{{ value | escape }}"
-              style="background: {{ swatch_hex }};"
+              style="background: {{ swatch_hex }} url('{{ swatch_asset | asset_url }}') center / cover no-repeat;"
               aria-label="{{ value | escape }}"
               title="{{ value | escape }}"
             ></button>

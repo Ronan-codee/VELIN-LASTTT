@@ -20,6 +20,13 @@
       <h2 class="cart-drawer__title">Votre panier {% if cart.item_count > 0 %}({{ cart.item_count }}){% endif %}</h2>
     </div>
 
+    {% if cart.item_count > 0 %}
+      <p class="cart-drawer__urgency" data-cart-urgency>
+        <span aria-hidden="true">&#9203;</span>
+        <span data-cart-urgency-text>Ton panier est réservé pendant 10:00</span>
+      </p>
+    {% endif %}
+
     <div class="cart-drawer__body">
       {% if cart.item_count == 0 %}
         <div class="cart-drawer__empty" data-cart-urgency-reset>
@@ -106,10 +113,6 @@
 
     {% if cart.item_count > 0 %}
       <div class="cart-drawer__footer">
-        <p class="cart-drawer__urgency" data-cart-urgency>
-          <span aria-hidden="true">&#9203;</span>
-          <span data-cart-urgency-text>Ton panier est réservé pendant 10:00</span>
-        </p>
         {% if cart.total_discount > 0 %}
           <div class="cart-drawer__summary-row">
             <span>Remise</span>
@@ -480,7 +483,7 @@
   }
 
   {%- comment -%}
-    Urgency line: while the 10-minute reservation runs it sits between two thin rules; once it has
+    Urgency line, above the items: while the 10-minute reservation runs it sits under the header's rule with its own thin rule below; once it has
     run out it becomes a rounded card with the stock message.
   {%- endcomment -%}
   .cart-drawer__urgency {
@@ -490,7 +493,6 @@
     align-items: center;
     justify-content: center;
     gap: 6px;
-    border-top: 1px solid #e6e6e6;
     border-bottom: 1px solid #e6e6e6;
     font-family: 'Manrope', sans-serif;
     font-size: 13px;
@@ -502,6 +504,7 @@
   }
 
   .cart-drawer__urgency.is-expired {
+    margin: 12px 24px 0;
     border: 1px solid #e6e6e6;
     border-radius: 14px;
   }

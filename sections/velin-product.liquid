@@ -460,34 +460,45 @@
   .velin-pdp__swatches {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 12px;
   }
 
+  {%- comment -%}
+    Color choices are small round dots filled with the color itself (see color_map), not photo thumbnails:
+    7 colors fit on one line, even on a 320px phone (7 x 30px + 6 x 8px = 258px).
+  {%- endcomment -%}
   .velin-pdp__swatch {
     position: relative;
     display: block;
-    width: 64px;
-    height: 64px;
-    border-radius: 12px;
-    border: 1px solid rgba(0, 0, 0, 0.12);
+    flex: 0 0 auto;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.18);
     cursor: pointer;
     padding: 0;
-    overflow: hidden;
-    background-size: cover;
-    background-position: center;
+    background-clip: padding-box;
   }
 
   .velin-pdp__swatch img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    display: none;
   }
 
   .velin-pdp__swatch.is-active {
     border-color: {{ section.settings.accent_color }};
     outline: 2px solid {{ section.settings.accent_color }};
     outline-offset: 2px;
+  }
+
+  @media (max-width: 749px) {
+    .velin-pdp__swatches {
+      gap: 8px;
+    }
+
+    .velin-pdp__swatch {
+      width: 30px;
+      height: 30px;
+    }
   }
 
   .velin-pdp__sizes {
@@ -1882,26 +1893,14 @@
               {%- if pair_name == val_down -%}{%- assign swatch_hex = pair[1] | strip -%}{%- endif -%}
             {%- endfor -%}
             {%- if swatch_hex == '' -%}{%- assign swatch_hex = '#cccccc' -%}{%- endif -%}
-            {%- comment -%} Prefer a photo tagged for this exact color (alt text) — the same match used to swap the main gallery — since variant images here are often assigned per size, not per color, and would show an identical thumbnail for every swatch. {%- endcomment -%}
-            {%- assign swatch_color_photo = product.images | where: 'alt', value | first -%}
-            {%- assign swatch_image = blank -%}
-            {%- if swatch_color_photo != blank -%}
-              {%- assign swatch_image = swatch_color_photo -%}
-            {%- elsif color_option_key != '' -%}
-              {%- for v in product.variants -%}
-                {%- if v[color_option_key] == value -%}
-                  {%- assign swatch_image = v.featured_image | default: product.featured_image -%}
-                  {%- break -%}
-                {%- endif -%}
-              {%- endfor -%}
-            {%- endif -%}
             <button
               type="button"
               class="velin-pdp__swatch{% if value == color_option.selected_value %} is-active{% endif %}"
               data-color-value="{{ value | escape }}"
               style="background: {{ swatch_hex }};"
               aria-label="{{ value | escape }}"
-            >{% if swatch_image != blank %}<img src="{{ swatch_image | image_url: width: 160 }}" alt="" loading="lazy">{% endif %}</button>
+              title="{{ value | escape }}"
+            ></button>
           {% endfor %}
         </div>
       </div>

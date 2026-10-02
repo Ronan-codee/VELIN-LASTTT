@@ -1576,16 +1576,6 @@
   }
 
   {%- comment -%}
-    Pillowcase pill: one line across the whole bundle row (a grid item spanning both columns), because
-    "2 taies grises · 51 x 76 cm" (about 180px) is wider than a single column (about 135-150px).
-  {%- endcomment -%}
-  .velin-bundle-pillow-note {
-    grid-column: 1 / -1;
-    justify-self: start;
-    margin: 0;
-  }
-
-  {%- comment -%}
     Unlimited Bundles app widget (the quantity/bundle picker mounted at
     [data-revy-bundle-id]) isn't theme markup — it's rendered by the app
     itself. It exposes its own colors as CSS custom properties (--rbu-gen-*),
@@ -1607,7 +1597,19 @@
     margin-top: -12px;
   }
 
-  @media (min-width: 750px) {
+  {%- comment -%}
+    Size and color fields side by side only when each column can hold the one-line pillowcase pill
+    ("2 taies grises : 51x76 cm", about 190px); in a narrower product column they stack.
+  {%- endcomment -%}
+  [data-revy-bundle-id] {
+    container-type: inline-size;
+  }
+
+  [data-revy-bundle-id] .rbu-qb-single-options {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  @container (min-width: 480px) {
     [data-revy-bundle-id] .rbu-qb-single-options {
       grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     }
@@ -3305,17 +3307,16 @@ if (compareEl) {
       return Array.prototype.some.call(select.options, function (o) { return names[o.value]; });
     }
 
-    // One pill per bundle row, on a single line across the whole row (under the size and color fields):
-    // "2 taies grises · 51 x 76 cm" is wider than either of the row's two narrow columns.
+    // The pill sits right under its color select, so on desktop it lines up with the "Machine X kg" pill
+    // under the size select (both groups start at the same height).
     function attachPillowPill(select) {
-      var row = select.closest(".rbu-qb-single-options") || select.parentElement;
-      var pill = row.querySelector("[" + PILLOW_ATTR + "]");
-      if (!pill) {
+      var pill = select.nextElementSibling;
+      if (!pill || pill.getAttribute(PILLOW_ATTR) !== "1") {
         pill = document.createElement("span");
         pill.setAttribute(PILLOW_ATTR, "1");
         pill.className = "velin-bundle-machine-note velin-bundle-pillow-note";
         pill.innerHTML = PILLOW_ICON_SVG;
-        row.appendChild(pill);
+        select.insertAdjacentElement("afterend", pill);
       }
       pill.querySelector("[data-pill-text]").textContent = pillowLabel(select.value) + " : " + PILLOW_SIZE;
     }

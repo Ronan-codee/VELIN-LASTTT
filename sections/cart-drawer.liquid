@@ -1,5 +1,9 @@
 {% comment %} Velin - Sliding cart drawer, opened from the header cart icon (or after a quick add). Re-fetched via the Section Rendering API (?section_id=cart-drawer) after any cart change, so it always reflects the live cart. {% endcomment %}
 
+{%- comment -%} Manrope for the urgency line and the delivery line; preload+onload keeps it off the critical path (preconnects live in layout/theme.liquid). {%- endcomment -%}
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+
 <div class="cart-drawer" data-cart-drawer aria-hidden="true">
   <div class="cart-drawer__overlay" data-cart-drawer-close></div>
   <aside class="cart-drawer__panel" role="dialog" aria-modal="true" aria-label="Panier">
@@ -18,7 +22,7 @@
 
     <div class="cart-drawer__body">
       {% if cart.item_count == 0 %}
-        <div class="cart-drawer__empty">
+        <div class="cart-drawer__empty" data-cart-urgency-reset>
           <p>Votre panier est vide.</p>
           <a href="/collections/nos-produits" class="cart-drawer__empty-btn" data-cart-drawer-close>Continuer vos achats</a>
         </div>
@@ -102,16 +106,10 @@
 
     {% if cart.item_count > 0 %}
       <div class="cart-drawer__footer">
-        <div class="cart-drawer__trust">
-          <p class="cart-drawer__trust-item">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 10V7a5 5 0 0 1 10 0v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="15" r="1.3" fill="currentColor"/></svg>
-            Paiement 100&nbsp;% sécurisé
-          </p>
-          <p class="cart-drawer__trust-item">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 13v-1a8 8 0 0 1 16 0v1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><rect x="2.5" y="13" width="5" height="7" rx="2" stroke="currentColor" stroke-width="1.5"/><rect x="16.5" y="13" width="5" height="7" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M19 20v.5a3 3 0 0 1-3 3h-2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-            Support disponible 24/7
-          </p>
-        </div>
+        <p class="cart-drawer__urgency" data-cart-urgency>
+          <span aria-hidden="true">&#9203;</span>
+          <span data-cart-urgency-text>Ton panier est réservé pendant 10:00</span>
+        </p>
         {% if cart.total_discount > 0 %}
           <div class="cart-drawer__summary-row">
             <span>Remise</span>
@@ -126,10 +124,9 @@
           <span>Sous-total</span>
           <span>{{ cart.total_price | money }}</span>
         </div>
-        <p class="cart-drawer__taxes-note">Taxes incluses.</p>
         <p class="cart-drawer__delivery">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7Z" stroke="currentColor" stroke-width="1.6"/><path d="M14 10h3.3a1 1 0 0 1 .8.4l2.4 3.2a1 1 0 0 1 .2.6V16a1 1 0 0 1-1 1H14v-7Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="7" cy="18" r="1.6" stroke="currentColor" stroke-width="1.6"/><circle cx="17.5" cy="18" r="1.6" stroke="currentColor" stroke-width="1.6"/></svg>
-          <span data-velin-delivery>Expédiée sous 72h · Livrée en 5 à 9 jours ouvrables</span>
+          <span data-velin-delivery>Livrée en 5 à 9 jours ouvrables</span>
         </p>
         <form action="/cart" method="post">
           <button type="submit" name="checkout" class="cart-drawer__checkout-btn">Acheter maintenant</button>
@@ -482,23 +479,31 @@
     gap: 12px;
   }
 
-  .cart-drawer__trust {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .cart-drawer__trust-item {
+  {%- comment -%}
+    Urgency line: while the 10-minute reservation runs it sits between two thin rules; once it has
+    run out it becomes a rounded card with the stock message.
+  {%- endcomment -%}
+  .cart-drawer__urgency {
     margin: 0;
+    padding: 12px 6px;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
+    border-top: 1px solid #e6e6e6;
+    border-bottom: 1px solid #e6e6e6;
+    font-family: 'Manrope', sans-serif;
     font-size: 13px;
-    color: #000;
+    font-weight: 500;
+    line-height: 1.3;
+    text-align: center;
+    text-wrap: balance;
+    color: #6b7390;
   }
 
-  .cart-drawer__trust-item svg {
-    flex: 0 0 auto;
+  .cart-drawer__urgency.is-expired {
+    border: 1px solid #e6e6e6;
+    border-radius: 14px;
   }
 
   .cart-drawer__summary-row {
@@ -526,18 +531,13 @@
     text-transform: uppercase;
   }
 
-  .cart-drawer__taxes-note {
-    margin: 0;
-    font-size: 12px;
-    color: rgba(0, 0, 0, 0.6);
-  }
-
   .cart-drawer__delivery {
     margin: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
+    font-family: 'Manrope', sans-serif;
     font-size: 13px;
     font-weight: 600;
     line-height: 1.3;
@@ -595,6 +595,42 @@
   }
 
 </style>
+
+<script>
+  (function () {
+    // Cart reservation timer: starts the first time the drawer shows a non-empty cart, survives page
+    // changes (localStorage) and, once it has run out, stays on the stock message until the cart is emptied.
+    var KEY = "velin_cart_timer_start";
+    var DURATION = 10 * 60 * 1000;
+    function read() { try { return parseInt(localStorage.getItem(KEY), 10) || 0; } catch (e) { return 0; } }
+    function write(v) { try { if (v) localStorage.setItem(KEY, String(v)); else localStorage.removeItem(KEY); } catch (e) {} }
+    function pad(n) { return (n < 10 ? "0" : "") + n; }
+
+    function tick() {
+      if (document.querySelector("[data-cart-urgency-reset]")) { write(0); return; }
+      var box = document.querySelector("[data-cart-urgency]");
+      if (!box) return;
+      var start = read();
+      if (!start) { start = Date.now(); write(start); }
+      var left = DURATION - (Date.now() - start);
+      var text = box.querySelector("[data-cart-urgency-text]");
+      if (left <= 0) {
+        box.classList.add("is-expired");
+        text.textContent = "Finalise ta commande avant que les stocks partent !";
+        return;
+      }
+      box.classList.remove("is-expired");
+      var secs = Math.ceil(left / 1000);
+      text.textContent = "Ton panier est réservé pendant " + pad(Math.floor(secs / 60)) + ":" + pad(secs % 60);
+    }
+
+    tick();
+    setInterval(tick, 500);
+    // The drawer is replaced after every cart change: refresh the fresh copy right away.
+    var drawer = document.querySelector("[data-cart-drawer]");
+    if (drawer && drawer.parentNode) new MutationObserver(tick).observe(drawer.parentNode, { childList: true });
+  })();
+</script>
 
 <script>
   (function () {

@@ -1588,9 +1588,13 @@
     margin-top: -16px;
   }
 
-  {%- comment -%} The size guide link now sits just above the bundle: do not pull the bundle up over it. {%- endcomment -%}
+  {%- comment -%}
+    The size guide link sits just above the bundle. The app adds 16px above its first card, so the
+    bundle is pulled up by 12px: first card 16px under the link instead of 28px. A pull of 16px would
+    leave the bundle's invisible box over the bottom of the link and make it hard to tap.
+  {%- endcomment -%}
   .velin-pdp__size-guide-trigger + [data-revy-bundle-id] {
-    margin-top: 0;
+    margin-top: -12px;
   }
 
   @media (min-width: 750px) {

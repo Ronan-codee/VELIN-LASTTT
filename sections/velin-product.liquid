@@ -3051,19 +3051,23 @@ if (compareEl) {
         })
           .then(function (res) {
             if (!res.ok) throw new Error("Add to cart failed");
-            return fetch("/cart.js");
-          })
-          .then(function (res) { return res.json(); })
-          .then(function (cart) {
-            if (window.VelinCartDrawer) {
-              return window.VelinCartDrawer.refresh(cart).then(function () {
-                window.VelinCartDrawer.open();
-              });
+            // One shared refresh (cart.js + drawer in parallel) that the cart drawer's own fetch hook also triggers.
+            if (window.VelinCartDrawer && window.VelinCartDrawer.refreshAndOpen) {
+              return window.VelinCartDrawer.refreshAndOpen();
             }
-            document.querySelectorAll("[data-cart-count]").forEach(function (el) {
-              el.textContent = cart.item_count;
-              el.classList.toggle("is-empty", cart.item_count === 0);
-            });
+            return fetch("/cart.js")
+              .then(function (r) { return r.json(); })
+              .then(function (cart) {
+                if (window.VelinCartDrawer) {
+                  return window.VelinCartDrawer.refresh(cart).then(function () {
+                    window.VelinCartDrawer.open();
+                  });
+                }
+                document.querySelectorAll("[data-cart-count]").forEach(function (el) {
+                  el.textContent = cart.item_count;
+                  el.classList.toggle("is-empty", cart.item_count === 0);
+                });
+              });
           })
           .catch(function () {
             atcForm.submit();

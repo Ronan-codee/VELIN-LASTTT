@@ -560,6 +560,33 @@
     text-transform: uppercase;
   }
 
+
+  /* Drawer opens right after the add succeeds, before the fresh cart HTML has arrived: dim the stale body and show a spinner. */
+  .cart-drawer.is-loading .cart-drawer__body {
+    position: relative;
+    opacity: 0.45;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+  }
+
+  .cart-drawer.is-loading .cart-drawer__body::after {
+    content: "";
+    position: absolute;
+    top: 48px;
+    left: 50%;
+    width: 28px;
+    height: 28px;
+    margin-left: -14px;
+    border: 3px solid rgba(32, 30, 80, 0.2);
+    border-top-color: #201e50;
+    border-radius: 50%;
+    animation: cart-drawer-spin 0.7s linear infinite;
+  }
+
+  @keyframes cart-drawer-spin {
+    to { transform: rotate(360deg); }
+  }
+
   @media screen and (max-width: 480px) {
     .cart-drawer__panel {
       width: 100%;
@@ -619,6 +646,39 @@
           root.replaceWith(fresh);
           if (wasOpen) open();
         });
+    }
+
+
+    // Adds are followed by /cart.js (counts) + the re-rendered drawer. Run both at once, open the drawer
+    // as soon as the add succeeded (dimmed, with a spinner) and share one run between every caller, so
+    // an add handled by both the page script and the fetch hook below does the work only once.
+    var refreshing = null;
+    function refreshAndOpen() {
+      if (refreshing) return refreshing;
+      var current = drawerRoot();
+      if (current) {
+        current.classList.add('is-loading');
+        open();
+      }
+      refreshing = Promise.all([
+        nativeFetch('/cart.js', { cache: 'no-store' }).then(function (res) { return res.json(); }).catch(function () { return null; }),
+        nativeFetch(window.location.pathname + '?section_id=cart-drawer', { cache: 'no-store' }).then(function (res) { return res.text(); }),
+      ])
+        .then(function (results) {
+          if (results[0]) updateCounts(results[0]);
+          var tmp = document.createElement('div');
+          tmp.innerHTML = results[1];
+          var fresh = tmp.querySelector('[data-cart-drawer]');
+          var root = drawerRoot();
+          if (fresh && root) root.replaceWith(fresh);
+          open();
+        })
+        .catch(function () {
+          var root = drawerRoot();
+          if (root) root.classList.remove('is-loading');
+        })
+        .then(function () { refreshing = null; });
+      return refreshing;
     }
 
     function changeLine(line, quantity) {
@@ -708,7 +768,7 @@
       if (e.key === 'Escape') close();
     });
 
-    window.VelinCartDrawer = { open: open, close: close, refresh: refresh };
+    window.VelinCartDrawer = { open: open, close: close, refresh: refresh, refreshAndOpen: refreshAndOpen };
 
     // Opens the drawer after ANY successful /cart/add call, including ones
     // triggered by third-party apps (e.g. the bundle picker) that don't know
@@ -720,10 +780,7 @@
       var isCartAdd = url.indexOf('/cart/add') !== -1;
       return nativeFetch.apply(this, arguments).then(function (response) {
         if (isCartAdd && response.ok) {
-          fetch('/cart.js')
-            .then(function (r) { return r.json(); })
-            .then(function (cart) { return refresh(cart); })
-            .then(open);
+          refreshAndOpen();
         }
         return response;
       });

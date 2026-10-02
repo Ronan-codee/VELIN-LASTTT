@@ -1399,7 +1399,7 @@
     align-items: center;
     gap: 8px;
     width: fit-content;
-    margin: -8px 0 0;
+    margin: 4px 0 6px;
     padding: 0;
     border: none;
     background: none;
@@ -1586,6 +1586,11 @@
   {%- endcomment -%}
   [data-revy-bundle-id] {
     margin-top: -16px;
+  }
+
+  {%- comment -%} The size guide link now sits just above the bundle: do not pull the bundle up over it. {%- endcomment -%}
+  .velin-pdp__size-guide-trigger + [data-revy-bundle-id] {
+    margin-top: 0;
   }
 
   @media (min-width: 750px) {
@@ -2126,12 +2131,23 @@
       </div>
     {% endif %}
 
+    {%- comment -%} Size guide link — right above the bundle picker (sizes are chosen inside the bundle) {%- endcomment -%}
+    {% if has_size_guide %}
+      <button type="button" class="velin-pdp__size-guide-trigger" data-size-guide-open>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="2" y="7" width="20" height="10" rx="1.5" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M6 7v3M10 7v2M14 7v3M18 7v2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        <span>{{ section.settings.size_guide_link_text | default: "Quelle taille me faut-il ?" }}</span>
+      </button>
+    {% endif %}
+
     {%- comment -%} ---------- Revy Bundle (manual embed, from the app's "Embed this bundle manually in any page via HTML" option) ---------- {%- endcomment -%}
     {% if section.settings.revy_bundle_id != blank %}
       <div data-revy-bundle-id="{{ section.settings.revy_bundle_id }}"{% if size_option_index >= 0 %} data-bundle-show-machine-kg{% endif %}></div>
     {% endif %}
 
-    {%- comment -%} ---------- Payment method logos — between the bundle picker and the size guide link ---------- {%- endcomment -%}
+    {%- comment -%} ---------- Payment method logos — right below the bundle picker ---------- {%- endcomment -%}
     {% if section.settings.show_payment_logos and shop.enabled_payment_types.size > 0 %}
       <ul class="velin-pdp__payment-logos" role="list" aria-label="Moyens de paiement acceptés">
         {%- assign hidden_payment_types = section.settings.hidden_payment_types | default: '' | remove: ' ' | downcase | split: ',' -%}
@@ -2141,17 +2157,6 @@
           {%- endunless -%}
         {%- endfor -%}
       </ul>
-    {% endif %}
-
-    {%- comment -%} Size guide link — right below the bundle picker {%- endcomment -%}
-    {% if has_size_guide %}
-      <button type="button" class="velin-pdp__size-guide-trigger" data-size-guide-open>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <rect x="2" y="7" width="20" height="10" rx="1.5" stroke="currentColor" stroke-width="1.6"/>
-          <path d="M6 7v3M10 7v2M14 7v3M18 7v2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-        </svg>
-        <span>{{ section.settings.size_guide_link_text | default: "Quelle taille me faut-il ?" }}</span>
-      </button>
     {% endif %}
 
     {% if section.settings.show_installments %}
@@ -2697,8 +2702,53 @@
       });
     }
 
+    // The color picked with the swatches also fills every color picker of the Unlimited Bundles widget
+    // (one per couette, in every tier), so choosing "Blanc" once gives a white bundle. The widget is
+    // rendered by the app after load and resets its pickers while it initialises: during the first
+    // seconds the pick is re-applied after each burst of changes, unless the visitor already used
+    // one of the bundle's own pickers (a real, trusted "change" event).
+    var bundleColorPick = null;
+    var bundleColorTouched = false;
+    function setBundleColor(value) {
+      var setter = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, "value").set;
+      root.querySelectorAll("[data-revy-bundle-id] select").forEach(function (sel) {
+        var hasColor = Array.prototype.some.call(sel.options, function (o) { return o.value === value; });
+        if (!hasColor || sel.value === value) return;
+        // Native setter + bubbling events so the app's own listeners pick the change up.
+        setter.call(sel, value);
+        sel.dispatchEvent(new Event("input", { bubbles: true }));
+        sel.dispatchEvent(new Event("change", { bubbles: true }));
+      });
+    }
+    var bundleColorRoot = root.querySelector("[data-revy-bundle-id]");
+    if (bundleColorRoot) {
+      bundleColorRoot.addEventListener("change", function (e) {
+        if (e.isTrusted) bundleColorTouched = true;
+      });
+      if ("MutationObserver" in window) {
+        var bundleColorUntil = 0;
+        var bundleColorTimer = null;
+        var bundleColorObserver = new MutationObserver(function () {
+          if (!bundleColorRoot.querySelector("select")) return;
+          if (!bundleColorUntil) bundleColorUntil = Date.now() + 6000;
+          if (Date.now() > bundleColorUntil) {
+            bundleColorObserver.disconnect();
+            return;
+          }
+          window.clearTimeout(bundleColorTimer);
+          bundleColorTimer = window.setTimeout(function () {
+            if (!bundleColorTouched && bundleColorPick) setBundleColor(bundleColorPick);
+          }, 250);
+        });
+        bundleColorObserver.observe(bundleColorRoot, { childList: true, subtree: true });
+      }
+    }
+
     // Color selection (swatches + selects stay in sync)
     function selectColor(value) {
+      bundleColorPick = value;
+      bundleColorTouched = false;
+      setBundleColor(value);
       root.querySelectorAll(".velin-pdp__swatch").forEach(function (s) {
         s.classList.toggle("is-active", s.getAttribute("data-color-value") === value);
         if (s.getAttribute("data-color-value") === value) {
@@ -3413,7 +3463,7 @@ if (compareEl) {
     { "type": "color", "id": "launch_offer_bg", "label": "Launch urgency badge background", "default": "#705744" },
     { "type": "color", "id": "launch_offer_color", "label": "Launch urgency badge text color", "default": "#ffffff" },
     { "type": "header", "content": "Installments" },
-    { "type": "checkbox", "id": "show_payment_logos", "label": "Afficher les logos des moyens de paiement", "info": "Affiche les moyens de paiement activés dans Shopify, entre le bundle et le lien « Quelle taille me faut-il ? ».", "default": true },
+    { "type": "checkbox", "id": "show_payment_logos", "label": "Afficher les logos des moyens de paiement", "info": "Affiche les moyens de paiement activés dans Shopify, juste sous le bundle.", "default": true },
     { "type": "range", "id": "payment_logo_height", "label": "Hauteur des logos de paiement (px)", "min": 16, "max": 40, "step": 1, "default": 24 },
     { "type": "text", "id": "hidden_payment_types", "label": "Logos de paiement à masquer", "info": "Noms séparés par des virgules, ex. american_express, shopify_pay. Les moyens de paiement restent actifs dans Shopify, seul le logo est masqué ici (pour que la rangée tienne sur une ligne sur téléphone).", "default": "american_express" },
     { "type": "checkbox", "id": "show_installments", "label": "Show installment payment line", "default": false },

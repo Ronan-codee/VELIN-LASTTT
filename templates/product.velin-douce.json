@@ -31,7 +31,7 @@
         "chip_dc01c": {
           "type": "chip",
           "settings": {
-            "text": "Lavable En Machine, Même En Grande Taille",
+            "text": "Moins D'acariens, Lavable En Machine",
             "state": "positive"
           }
         },
@@ -54,7 +54,7 @@
           "type": "faq_item",
           "settings": {
             "question": "Quel entretien pour Velin ?",
-            "answer": "L'ensemble se lave en machine à 30 ou 40°C. Nous recommandons un cycle délicat et un séchage à l'air libre.",
+            "answer": "L'ensemble se lave en machine à 30 ou 40°C, avec un essorage à 600-800 tours/minute. Nous recommandons un cycle délicat et un séchage à l'air libre.",
             "icon_type": "washer"
           }
         },

@@ -24,7 +24,7 @@
         "chip_dc01a": {
           "type": "chip",
           "settings": {
-            "text": "Couette Intégrée, Fini Les Coins Qui S'échappent",
+            "text": "Couette Intégrée, Fini Le Combat Avec La Couette",
             "state": "positive"
           }
         },
@@ -38,7 +38,7 @@
         "chip_dc01d": {
           "type": "chip",
           "settings": {
-            "text": "Fibre Thermorégulante, Jamais Trop Chaud, Jamais Trop Froid",
+            "text": "Fibre Thermorégulante, Ni Trop Chaud Ni Trop Froid",
             "state": "positive"
           }
         },

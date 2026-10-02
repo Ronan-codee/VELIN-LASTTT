@@ -3238,6 +3238,10 @@ if (compareEl) {
       "230x265cm": "10 kg"
     };
     var PILL_ATTR = "data-machine-kg-pill";
+    // Second pill, under each color field: the size of the free pillowcases that come with each couette.
+    // The bundle gives 2 pillowcases per couette (1 couette + 2 taies, 2 + 4, 3 + 6): change the text if that changes.
+    var PILLOW_ATTR = "data-pillow-pill";
+    var PILLOW_TEXT = "2 taies 51 x 76 cm";
 
     function normalize(text) {
       return (text || "").toLowerCase().replace(/×/g, "x").replace(/\s+/g, "");
@@ -3267,7 +3271,34 @@ if (compareEl) {
       if (pill && pill.getAttribute(PILL_ATTR) === "1") pill.remove();
     }
 
+    var PILLOW_ICON_SVG = '<svg class="velin-bundle-machine-note__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"></rect><path d="M12 8v13"></path><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"></path><path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5"></path></svg><span data-pill-text></span>';
+
+    // A color field is a select whose options are the colors offered by the swatches above the bundle.
+    function isColorSelect(select) {
+      var names = {};
+      document.querySelectorAll(".velin-pdp__swatch[data-color-value]").forEach(function (s) {
+        names[s.getAttribute("data-color-value")] = true;
+      });
+      return Array.prototype.some.call(select.options, function (o) { return names[o.value]; });
+    }
+
+    function attachPillowPill(select) {
+      var pill = select.nextElementSibling;
+      if (!pill || pill.getAttribute(PILLOW_ATTR) !== "1") {
+        pill = document.createElement("span");
+        pill.setAttribute(PILLOW_ATTR, "1");
+        pill.className = "velin-bundle-machine-note";
+        pill.innerHTML = PILLOW_ICON_SVG;
+        select.insertAdjacentElement("afterend", pill);
+      }
+      pill.querySelector("[data-pill-text]").textContent = PILLOW_TEXT;
+    }
+
     function syncSelect(select) {
+      if (isColorSelect(select)) {
+        attachPillowPill(select);
+        return;
+      }
       var kg = kgForSelect(select);
       if (kg) {
         attachPill(select, kg);
@@ -3293,7 +3324,7 @@ if (compareEl) {
           Array.prototype.slice.call(m.addedNodes),
           Array.prototype.slice.call(m.removedNodes)
         ).every(function (n) {
-          return n.nodeType === 1 && n.getAttribute(PILL_ATTR) === "1";
+          return n.nodeType === 1 && (n.getAttribute(PILL_ATTR) === "1" || n.getAttribute(PILLOW_ATTR) === "1");
         });
       });
       if (onlyOwnPills) return;

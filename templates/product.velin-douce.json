@@ -35,6 +35,13 @@
             "state": "positive"
           }
         },
+        "chip_pillow": {
+          "type": "chip",
+          "settings": {
+            "text": "Taies D'oreiller Offertes : 51 x 76 cm",
+            "state": "positive"
+          }
+        },
         "chip_dc01d": {
           "type": "chip",
           "settings": {
@@ -86,6 +93,7 @@
       "block_order": [
         "chip_dc01a",
         "chip_dc01c",
+        "chip_pillow",
         "chip_dc01d",
         "faq_item_dc01a",
         "faq_item_dc01b",

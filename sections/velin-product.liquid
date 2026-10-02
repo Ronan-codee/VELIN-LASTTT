@@ -1802,7 +1802,7 @@
           <span class="velin-pdp__price" id="VelinPDPPrice-{{ section.id }}">{{ product.price | money }}</span>
         {% endif %}
         <!-- Air reviews star rating -->
-        <div class="AirReviews-Widget AirReviews-Widget--Stars"></div><span style="cursor: pointer;">{{ product.metafields.air_reviews_product.review_avg }}/5  ({{ product.metafields.air_reviews_product.review_count }} avis)</span>
+        <div class="AirReviews-Widget--Stars-Wrapper" style="cursor: pointer;"><div class="AirReviews-Widget AirReviews-Widget--Stars"></div><span>{{ product.metafields.air_reviews_product.review_avg }}/5  ({{ product.metafields.air_reviews_product.review_count }} avis)</span></div>
       </div>
 
       {% if section.settings.launch_offer_text != blank %}

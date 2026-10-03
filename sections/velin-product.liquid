@@ -252,6 +252,63 @@
     display: block;
   }
 
+  .velin-pdp__media-cell,
+  .velin-pdp__media-grid-video {
+    position: relative;
+  }
+
+  {%- comment -%} OEKO-TEX badge, top left of every gallery image and video. {%- endcomment -%}
+  .velin-oeko-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 3;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px 3px 3px;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 9px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+    pointer-events: none;
+  }
+
+  .velin-oeko-badge__logo {
+    width: 22px;
+    height: 22px;
+    flex: 0 0 auto;
+    display: block;
+  }
+
+  .velin-oeko-badge__text {
+    font-family: 'Manrope', sans-serif;
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1;
+    color: #1a1a1a;
+    white-space: nowrap;
+  }
+
+  @media screen and (max-width: 749px) {
+    .velin-oeko-badge {
+      top: 6px;
+      left: 6px;
+      gap: 5px;
+      padding: 3px 7px 3px 3px;
+      border-radius: 8px;
+    }
+
+    .velin-oeko-badge__logo {
+      width: 20px;
+      height: 20px;
+    }
+
+    .velin-oeko-badge__text {
+      font-size: 11px;
+    }
+  }
+
   .velin-pdp__media-grid-img {
     width: 100%;
     aspect-ratio: 1 / 1;
@@ -1666,8 +1723,15 @@
 ">
 
   {%- comment -%} ---------- LEFT: media ---------- {%- endcomment -%}
+  {%- capture oeko_badge -%}
+    <span class="velin-oeko-badge" role="img" aria-label="Certifié OEKO-TEX® STANDARD 100">
+      <svg class="velin-oeko-badge__logo" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="9" fill="#1F9D6E"/><text x="20" y="18" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="9.5" font-weight="700" fill="#fff" letter-spacing=".4">OEKO</text><text x="20" y="30" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="9.5" font-weight="700" fill="#fff" letter-spacing=".4">TEX</text></svg>
+      <span class="velin-oeko-badge__text">Oeko-Tex&reg;</span>
+    </span>
+  {%- endcapture -%}
   <div class="velin-pdp__media" style="width: {{ section.settings.media_width }}px; gap: {{ section.settings.media_gap }}px;">
     <div class="velin-pdp__main-image{% unless product.selected_or_first_available_variant.available %} is-sold-out{% endunless %}{% if section.settings.image_fit == 'cover' %} velin-pdp__main-image--cover-desktop{% endif %}" style="height: {{ section.settings.image_height }}px; background: {{ section.settings.image_bg }};">
+      {{ oeko_badge }}
       {% unless product.selected_or_first_available_variant.available %}
         <span class="velin-pdp__sold-out-badge">{{ 'products.product.sold_out' | t }}</span>
       {% endunless %}
@@ -1747,6 +1811,7 @@
           {% if media.media_type == 'video' %}
             <div class="velin-pdp__media-grid-video">
               {{ media | video_tag: image_size: '1200x', autoplay: false, loop: true, controls: false, muted: true, playsinline: true, preload: 'none', class: 'velin-pdp__media-grid-video-el' }}
+              {{ oeko_badge }}
             </div>
           {% endif %}
         {% endfor %}
@@ -1755,7 +1820,10 @@
             {% continue %}
           {% endif %}
           {% if media.media_type == 'image' %}
-            <img data-src="{{ media | image_url: width: 1200 }}" alt="{{ media.alt | escape }}" loading="lazy" class="velin-pdp__media-grid-img">
+            <div class="velin-pdp__media-cell">
+              <img data-src="{{ media | image_url: width: 1200 }}" alt="{{ media.alt | escape }}" loading="lazy" class="velin-pdp__media-grid-img">
+              {{ oeko_badge }}
+            </div>
           {% endif %}
         {% endfor %}
       </div>

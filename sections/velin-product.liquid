@@ -252,12 +252,7 @@
     display: block;
   }
 
-  .velin-pdp__media-cell,
-  .velin-pdp__media-grid-video {
-    position: relative;
-  }
-
-  {%- comment -%} OEKO-TEX badge, top left of every gallery image and video. {%- endcomment -%}
+  {%- comment -%} OEKO-TEX badge, top left of the first photo of the gallery / of each color only (class set by the thumbnail script). {%- endcomment -%}
   .velin-oeko-badge {
     position: absolute;
     top: 10px;
@@ -272,6 +267,10 @@
     border-radius: 9px;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
     pointer-events: none;
+  }
+
+  .velin-pdp__main-image:not(.is-first-photo) .velin-oeko-badge {
+    display: none;
   }
 
   .velin-oeko-badge__logo {
@@ -1730,7 +1729,7 @@
     </span>
   {%- endcapture -%}
   <div class="velin-pdp__media" style="width: {{ section.settings.media_width }}px; gap: {{ section.settings.media_gap }}px;">
-    <div class="velin-pdp__main-image{% unless product.selected_or_first_available_variant.available %} is-sold-out{% endunless %}{% if section.settings.image_fit == 'cover' %} velin-pdp__main-image--cover-desktop{% endif %}" style="height: {{ section.settings.image_height }}px; background: {{ section.settings.image_bg }};">
+    <div class="velin-pdp__main-image is-first-photo{% unless product.selected_or_first_available_variant.available %} is-sold-out{% endunless %}{% if section.settings.image_fit == 'cover' %} velin-pdp__main-image--cover-desktop{% endif %}" style="height: {{ section.settings.image_height }}px; background: {{ section.settings.image_bg }};">
       {{ oeko_badge }}
       {% unless product.selected_or_first_available_variant.available %}
         <span class="velin-pdp__sold-out-badge">{{ 'products.product.sold_out' | t }}</span>
@@ -1811,7 +1810,6 @@
           {% if media.media_type == 'video' %}
             <div class="velin-pdp__media-grid-video">
               {{ media | video_tag: image_size: '1200x', autoplay: false, loop: true, controls: false, muted: true, playsinline: true, preload: 'none', class: 'velin-pdp__media-grid-video-el' }}
-              {{ oeko_badge }}
             </div>
           {% endif %}
         {% endfor %}
@@ -1820,10 +1818,7 @@
             {% continue %}
           {% endif %}
           {% if media.media_type == 'image' %}
-            <div class="velin-pdp__media-cell">
-              <img data-src="{{ media | image_url: width: 1200 }}" alt="{{ media.alt | escape }}" loading="lazy" class="velin-pdp__media-grid-img">
-              {{ oeko_badge }}
-            </div>
+            <img data-src="{{ media | image_url: width: 1200 }}" alt="{{ media.alt | escape }}" loading="lazy" class="velin-pdp__media-grid-img">
           {% endif %}
         {% endfor %}
       </div>
@@ -2646,7 +2641,9 @@
     }
 
     // Stops/clears any playing video and shows the plain image again.
-    function showMainImage(src) {
+    function showMainImage(src, notFirstPhoto) {
+      // The OEKO-TEX badge only shows on the first photo of the current color.
+      if (mainImageWrap) mainImageWrap.classList.toggle("is-first-photo", !notFirstPhoto);
       if (mainVideo) {
         mainVideo.innerHTML = "";
         mainVideo.hidden = true;
@@ -2670,6 +2667,7 @@
       mainVideo.innerHTML = "";
       mainVideo.appendChild(template.content.cloneNode(true));
       mainVideo.hidden = false;
+      if (mainImageWrap) mainImageWrap.classList.remove("is-first-photo");
       if (mainImg) mainImg.hidden = true;
       // A <video> cloned from a <template> keeps the "muted" attribute but not the muted
       // property, so mobile browsers block autoplay. Force it, then start playback.
@@ -2691,7 +2689,8 @@
         if (videoId) {
           showMainVideo(videoId);
         } else {
-          showMainImage(thumb.getAttribute("data-full"));
+          var firstPhotoThumb = thumb.parentElement && thumb.parentElement.querySelector(".velin-pdp__thumb:not([data-video-id])");
+          showMainImage(thumb.getAttribute("data-full"), thumb !== firstPhotoThumb);
         }
       });
     }

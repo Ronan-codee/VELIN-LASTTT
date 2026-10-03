@@ -252,62 +252,6 @@
     display: block;
   }
 
-  {%- comment -%} OEKO-TEX badge, top left of the first photo of the gallery / of each color only (class set by the thumbnail script). {%- endcomment -%}
-  .velin-oeko-badge {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    z-index: 3;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 3px 10px 3px 3px;
-    background: #fff;
-    border: 1px solid rgba(0, 0, 0, 0.12);
-    border-radius: 9px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
-    pointer-events: none;
-  }
-
-  .velin-pdp__main-image:not(.is-first-photo) .velin-oeko-badge {
-    display: none;
-  }
-
-  .velin-oeko-badge__logo {
-    width: 22px;
-    height: 22px;
-    flex: 0 0 auto;
-    display: block;
-  }
-
-  .velin-oeko-badge__text {
-    font-family: 'Manrope', sans-serif;
-    font-size: 12.5px;
-    font-weight: 600;
-    line-height: 1;
-    color: #1a1a1a;
-    white-space: nowrap;
-  }
-
-  @media screen and (max-width: 749px) {
-    .velin-oeko-badge {
-      top: 6px;
-      left: 6px;
-      gap: 5px;
-      padding: 3px 7px 3px 3px;
-      border-radius: 8px;
-    }
-
-    .velin-oeko-badge__logo {
-      width: 20px;
-      height: 20px;
-    }
-
-    .velin-oeko-badge__text {
-      font-size: 11px;
-    }
-  }
-
   .velin-pdp__media-grid-img {
     width: 100%;
     aspect-ratio: 1 / 1;
@@ -1722,15 +1666,8 @@
 ">
 
   {%- comment -%} ---------- LEFT: media ---------- {%- endcomment -%}
-  {%- capture oeko_badge -%}
-    <span class="velin-oeko-badge" role="img" aria-label="Certifié OEKO-TEX® STANDARD 100">
-      <svg class="velin-oeko-badge__logo" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="9" fill="#1F9D6E"/><text x="20" y="18" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="9.5" font-weight="700" fill="#fff" letter-spacing=".4">OEKO</text><text x="20" y="30" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="9.5" font-weight="700" fill="#fff" letter-spacing=".4">TEX</text></svg>
-      <span class="velin-oeko-badge__text">Oeko-Tex&reg;</span>
-    </span>
-  {%- endcapture -%}
   <div class="velin-pdp__media" style="width: {{ section.settings.media_width }}px; gap: {{ section.settings.media_gap }}px;">
-    <div class="velin-pdp__main-image is-first-photo{% unless product.selected_or_first_available_variant.available %} is-sold-out{% endunless %}{% if section.settings.image_fit == 'cover' %} velin-pdp__main-image--cover-desktop{% endif %}" style="height: {{ section.settings.image_height }}px; background: {{ section.settings.image_bg }};">
-      {{ oeko_badge }}
+    <div class="velin-pdp__main-image{% unless product.selected_or_first_available_variant.available %} is-sold-out{% endunless %}{% if section.settings.image_fit == 'cover' %} velin-pdp__main-image--cover-desktop{% endif %}" style="height: {{ section.settings.image_height }}px; background: {{ section.settings.image_bg }};">
       {% unless product.selected_or_first_available_variant.available %}
         <span class="velin-pdp__sold-out-badge">{{ 'products.product.sold_out' | t }}</span>
       {% endunless %}
@@ -2641,9 +2578,7 @@
     }
 
     // Stops/clears any playing video and shows the plain image again.
-    function showMainImage(src, notFirstPhoto) {
-      // The OEKO-TEX badge only shows on the first photo of the current color.
-      if (mainImageWrap) mainImageWrap.classList.toggle("is-first-photo", !notFirstPhoto);
+    function showMainImage(src) {
       if (mainVideo) {
         mainVideo.innerHTML = "";
         mainVideo.hidden = true;
@@ -2667,7 +2602,6 @@
       mainVideo.innerHTML = "";
       mainVideo.appendChild(template.content.cloneNode(true));
       mainVideo.hidden = false;
-      if (mainImageWrap) mainImageWrap.classList.remove("is-first-photo");
       if (mainImg) mainImg.hidden = true;
       // A <video> cloned from a <template> keeps the "muted" attribute but not the muted
       // property, so mobile browsers block autoplay. Force it, then start playback.
@@ -2689,8 +2623,7 @@
         if (videoId) {
           showMainVideo(videoId);
         } else {
-          var firstPhotoThumb = thumb.parentElement && thumb.parentElement.querySelector(".velin-pdp__thumb:not([data-video-id])");
-          showMainImage(thumb.getAttribute("data-full"), thumb !== firstPhotoThumb);
+          showMainImage(thumb.getAttribute("data-full"));
         }
       });
     }

@@ -305,6 +305,29 @@
     margin-left: 0;
   }
 
+  .AirReviews-Widget--Stars-Wrapper {
+    flex-wrap: wrap;
+    align-items: center;
+    row-gap: 6px;
+  }
+
+  .velin-pdp__review-text {
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .velin-pdp__avatars--reviews {
+    flex-shrink: 0;
+    align-self: center;
+    margin-left: 0;
+  }
+
+  .velin-pdp__avatars--reviews img {
+    width: 20px;
+    height: 20px;
+    margin-left: -6px;
+  }
+
   .velin-verified-badge {
     flex-shrink: 0;
   }
@@ -1802,7 +1825,7 @@
           <span class="velin-pdp__price" id="VelinPDPPrice-{{ section.id }}">{{ product.price | money }}</span>
         {% endif %}
         <!-- Air reviews star rating -->
-        <div class="AirReviews-Widget--Stars-Wrapper" style="cursor: pointer; display: flex; gap: 5px;"><div class="AirReviews-Widget AirReviews-Widget--Stars"></div><span>{{ product.metafields.air_reviews_product.review_avg }}/5  ({{ product.metafields.air_reviews_product.review_count }} avis)</span></div>
+        <div class="AirReviews-Widget--Stars-Wrapper" style="cursor: pointer; display: flex; gap: 5px;"><div class="AirReviews-Widget AirReviews-Widget--Stars"></div><span class="velin-pdp__review-text">{{ product.metafields.air_reviews_product.review_avg | replace: '.', ',' }}/5 attribuée par +{{ product.metafields.air_reviews_product.review_count }} clients</span>{% if section.settings.avatar_1 != blank or section.settings.avatar_2 != blank or section.settings.avatar_3 != blank %}<span class="velin-pdp__avatars velin-pdp__avatars--reviews" aria-hidden="true">{% if section.settings.avatar_1 != blank %}<img src="{{ section.settings.avatar_1 | image_url: width: 48 }}" alt="" width="20" height="20" loading="lazy">{% endif %}{% if section.settings.avatar_2 != blank %}<img src="{{ section.settings.avatar_2 | image_url: width: 48 }}" alt="" width="20" height="20" loading="lazy">{% endif %}{% if section.settings.avatar_3 != blank %}<img src="{{ section.settings.avatar_3 | image_url: width: 48 }}" alt="" width="20" height="20" loading="lazy">{% endif %}</span>{% endif %}</div>
       </div>
 
       {% if section.settings.launch_offer_text != blank %}

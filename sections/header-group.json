@@ -13,31 +13,6 @@
   "sections": {
     "blocks_WRXHdq": {
       "type": "_blocks",
-      "blocks": {
-        "ai_gen_block_938a584_fUwhDg": {
-          "type": "ai_gen_block_938a584",
-          "name": "Rotating announcement bar",
-          "settings": {
-            "message_1": "",
-            "promo_title": "DÉSTOCKAGE 📦",
-            "promo_subtitle": "Jusqu'à -50% sur tout le site !",
-            "countdown_end": "",
-            "message_2": "",
-            "message_3": "",
-            "message_4": "",
-            "rotation_interval": 3,
-            "background_color": "#201e4d",
-            "text_color": "#f1eae0",
-            "link_color": "#f1eae0",
-            "font_size": 12,
-            "padding": 5
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "ai_gen_block_938a584_fUwhDg"
-      ],
       "name": "Rotating announcement bar",
       "settings": {}
     },

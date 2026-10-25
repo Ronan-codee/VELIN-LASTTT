@@ -14,7 +14,7 @@
   .vnl :where(button){font:inherit;color:inherit;cursor:pointer;background:none;border:0}
   .vnl img,.vnl video{max-width:100%;display:block}
   .vnl-wrap{max-width:1310px;margin:0 auto;padding:0 40px}
-  .vnl-sec{padding:64px 0}
+  .vnl-sec{padding-top:64px;padding-bottom:64px}
   .vnl-mock{position:absolute;inset:0;display:grid;place-items:center;background:linear-gradient(150deg,#E9DCCF,#D9C4B1);color:var(--dark);text-align:center;padding:12px}
   .vnl-mock span{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;opacity:.6}
   .vnl-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:54px;padding:14px 28px;border-radius:999px;background:var(--brown);color:#fff;font-size:16px;font-weight:700;text-decoration:none;transition:background .2s}
@@ -22,5 +22,5 @@
   .vnl-btn[disabled]{opacity:.5;cursor:not-allowed}
   .vnl-btn.is-loading{opacity:.7;pointer-events:none}
   .vnl-btn--auto{width:auto;display:inline-flex}
-  @media (max-width:900px){.vnl-wrap{padding:0 16px}.vnl-sec{padding:44px 0}}
+  @media (max-width:900px){.vnl-wrap{padding:0 16px}.vnl-sec{padding-top:44px;padding-bottom:44px}}
 </style>

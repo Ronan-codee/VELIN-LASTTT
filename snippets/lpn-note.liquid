@@ -1,0 +1,19 @@
+{%- comment -%} Note moyenne lue dans l'application d'avis (jamais saisie à la main). Sans note, on affiche le bloc de l'application. Params : product, app_blocks {%- endcomment -%}
+{%- assign nt_avg = product.metafields.air_reviews_product.review_avg.value -%}
+{%- assign nt_n = product.metafields.air_reviews_product.review_count.value | default: product.metafields.reviews.rating_count.value | plus: 0 -%}
+{%- if nt_avg != blank and nt_n > 0 -%}
+<style>
+  .lpn-note{display:flex;align-items:center;gap:10px;margin:0 0 10px;flex-wrap:wrap}
+  .lpn-note-stars{position:relative;display:inline-block;font-size:20px;line-height:1;letter-spacing:2px;color:#D9DCE8;white-space:nowrap}
+  .lpn-note-stars::before{content:"★★★★★"}
+  .lpn-note-fill{position:absolute;left:0;top:0;overflow:hidden;white-space:nowrap;color:#F2B705}
+  .lpn-note-fill::before{content:"★★★★★"}
+  .lpn-note-txt{font-size:14px;font-weight:700;color:var(--navy)}
+</style>
+<div class="lpn-note" role="img" aria-label="Note {{ nt_avg | replace: '.', ',' }} sur 5, {{ nt_n }} avis">
+  <span class="lpn-note-stars" aria-hidden="true"><span class="lpn-note-fill" style="width:{{ nt_avg | times: 20 }}%"></span></span>
+  <span class="lpn-note-txt">{{ nt_avg | replace: '.', ',' }}/5 ({{ nt_n }} avis)</span>
+</div>
+{%- else -%}
+  {%- for b in app_blocks -%}<div class="lpn-app" {{ b.shopify_attributes }}>{% render b %}</div>{%- endfor -%}
+{%- endif -%}

@@ -1,0 +1,40 @@
+{%- assign s = section.settings -%}
+{% render 'lpn-head' %}
+<style>
+  .lpn .lpn-end{padding-bottom:0;margin:40px 0 28px}
+  @media (min-width:901px){.lpn .lpn-end{min-height:480px;margin-bottom:60px}}
+</style>
+<div class="lpn"><div class="lpn-wrap">
+  <div class="lpn-duo lpn-end">
+    <div class="lpn-duo-txt">
+      {%- if s.pill != blank -%}<span class="lpn-pill">{{ s.pill }}</span>{%- endif -%}
+      <h2>{{ s.title }}{% if s.title_gold != blank %} <span class="lpn-gold">{{ s.title_gold }}</span>{% endif %}</h2>
+      {%- if s.text != blank -%}<p class="txt">{{ s.text }}</p>{%- endif -%}
+      <ul class="lpn-checks">
+        {%- if s.check_1 != blank -%}<li>{{ s.check_1 }}</li>{%- endif -%}
+        {%- if s.check_2 != blank -%}<li>{{ s.check_2 }}</li>{%- endif -%}
+        {%- if s.check_3 != blank -%}<li>{{ s.check_3 }}</li>{%- endif -%}
+      </ul>
+      {%- if s.button != blank -%}<a class="lpn-btn lpn-btn--auto" href="#acheter">{{ s.button }}</a>{%- endif -%}
+    </div>
+    <div class="lpn-duo-img">{% render 'lpn-media', image: s.image, label: 'Photo famille · 1:1', width: 1000 %}</div>
+  </div>
+</div></div>
+
+{% schema %}
+{
+  "name": "Oreiller · Bandeau final",
+  "settings": [
+    { "type": "text", "id": "pill", "label": "Petit titre", "default": "30 nuits pour juger" },
+    { "type": "text", "id": "title", "label": "Titre", "default": "Il grandit vite." },
+    { "type": "text", "id": "title_gold", "label": "Fin du titre (surlignée)", "default": "Son oreiller doit suivre." },
+    { "type": "textarea", "id": "text", "label": "Texte", "default": "Essayez-le 30 nuits. S'il ne lui convient pas, écrivez-nous : nous l'échangeons contre une autre taille ou nous vous remboursons." },
+    { "type": "text", "id": "check_1", "label": "Point 1", "default": "Livraison offerte" },
+    { "type": "text", "id": "check_2", "label": "Point 2", "default": "Expédié de France sous 24 h" },
+    { "type": "text", "id": "check_3", "label": "Point 3", "default": "30 nuits d'essai" },
+    { "type": "text", "id": "button", "label": "Bouton (vide = masqué)", "default": "Choisir la taille de mon enfant →" },
+    { "type": "image_picker", "id": "image", "label": "Photo (1:1)" }
+  ],
+  "presets": [ { "name": "Oreiller · Bandeau final" } ]
+}
+{% endschema %}

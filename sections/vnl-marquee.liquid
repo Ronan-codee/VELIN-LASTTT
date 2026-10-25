@@ -1,0 +1,40 @@
+{%- comment -%} Bandeau défilant de courtes phrases (usages ou réassurance). Un bloc = une phrase. {%- endcomment -%}
+{%- assign s = section.settings -%}
+{%- if section.blocks.size > 0 -%}
+{% render 'lpn-head' %}
+<style>
+  #vnl-mq-{{ section.id }}{background:{{ s.bg }};color:{{ s.fg }};padding:{{ s.pad }}px 0;overflow:hidden}
+  #vnl-mq-{{ section.id }} .vnl-mq-track{display:flex;width:max-content;animation:vnl-mq {{ s.speed }}s linear infinite}
+  #vnl-mq-{{ section.id }} .vnl-mq-row{display:flex;flex:none}
+  #vnl-mq-{{ section.id }} span{display:inline-flex;align-items:center;gap:22px;padding-right:22px;white-space:nowrap;font-size:15px;font-weight:700;letter-spacing:.02em}
+  #vnl-mq-{{ section.id }} span::after{content:"✦";font-size:11px;opacity:.6}
+  @keyframes vnl-mq{to{transform:translateX(-50%)}}
+  @media (prefers-reduced-motion:reduce){#vnl-mq-{{ section.id }} .vnl-mq-track{animation:none;flex-wrap:wrap;width:auto;justify-content:center}#vnl-mq-{{ section.id }} .vnl-mq-row+.vnl-mq-row{display:none}}
+</style>
+<div class="lpn" id="vnl-mq-{{ section.id }}" role="region" aria-label="{{ s.aria | escape }}">
+  <div class="vnl-mq-track">
+    {%- for k in (1..2) -%}
+    <div class="vnl-mq-row"{% if k == 2 %} aria-hidden="true"{% endif %}>
+      {%- for r in (1..4) -%}{%- for b in section.blocks -%}<span{% if k == 1 and r == 1 %} {{ b.shopify_attributes }}{% endif %}>{{ b.settings.text }}</span>{%- endfor -%}{%- endfor -%}
+    </div>
+    {%- endfor -%}
+  </div>
+</div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Veilleuse · Défilant",
+  "settings": [
+    { "type": "text", "id": "aria", "label": "Nom pour lecteurs d'écran", "default": "Usages" },
+    { "type": "color", "id": "bg", "label": "Fond", "default": "#201E4D" },
+    { "type": "color", "id": "fg", "label": "Texte", "default": "#FFFFFF" },
+    { "type": "range", "id": "pad", "label": "Hauteur (marge haute et basse)", "min": 8, "max": 40, "step": 2, "unit": "px", "default": 16 },
+    { "type": "range", "id": "speed", "label": "Durée d'un tour", "min": 10, "max": 80, "step": 5, "unit": "s", "default": 35 }
+  ],
+  "blocks": [
+    { "type": "item", "name": "Phrase", "settings": [ { "type": "text", "id": "text", "label": "Texte", "default": "Votre phrase" } ] }
+  ],
+  "presets": [ { "name": "Veilleuse · Défilant" } ]
+}
+{% endschema %}

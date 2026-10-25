@@ -1,0 +1,98 @@
+{%- comment -%}
+  Grille des sons intégrés : un bloc = un son. Chaque tuile colorée joue un extrait audio (fichier MP3 déposé dans
+  Contenu > Fichiers, lien collé dans le bloc). Option : une vidéo ou une image remplace le fond coloré.
+  En ligne, seuls les blocs avec un extrait, une vidéo ou une image s'affichent ; la section disparaît s'il n'y en a aucun.
+{%- endcomment -%}
+{%- assign s = section.settings -%}
+{%- assign has_media = false -%}
+{%- for b in section.blocks -%}{%- if b.settings.audio != blank or b.settings.video != blank or b.settings.image != blank -%}{%- assign has_media = true -%}{%- endif -%}{%- endfor -%}
+{%- if has_media or request.design_mode -%}
+{% render 'lpn-head' %}
+<style>
+  #vnl-snd-{{ section.id }}{padding:72px 0 24px}
+  #vnl-snd-{{ section.id }} .head{text-align:center}
+  #vnl-snd-{{ section.id }} h2{margin-top:12px}
+  #vnl-snd-{{ section.id }} .txt{max-width:560px;margin:14px auto 0;color:var(--muted)}
+  #vnl-snd-{{ section.id }} .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:32px}
+  #vnl-snd-{{ section.id }} .card{position:relative;aspect-ratio:1/1;border-radius:22px;overflow:hidden;color:#fff;display:block;width:100%;text-align:center}
+  #vnl-snd-{{ section.id }} .card video,#vnl-snd-{{ section.id }} .card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  #vnl-snd-{{ section.id }} .wave{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);z-index:2;display:flex;align-items:center;gap:5px;height:56px}
+  #vnl-snd-{{ section.id }} .wave i{display:block;width:3px;border-radius:2px;background:currentColor}
+  #vnl-snd-{{ section.id }} .wave b{display:grid;place-items:center;width:34px;height:34px;margin:0 4px;border-radius:50%;background:rgba(255,255,255,.28);font-size:13px}
+  #vnl-snd-{{ section.id }} .card.is-playing .wave i{animation:vnl-w .9s ease-in-out infinite alternate}
+  #vnl-snd-{{ section.id }} .card.is-playing .wave i:nth-child(2n){animation-delay:-.45s}
+  @keyframes vnl-w{to{transform:scaleY(.35)}}
+  #vnl-snd-{{ section.id }} .cap{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:14px}
+  #vnl-snd-{{ section.id }} .cap b{display:block;font-size:15px;font-weight:700}
+  #vnl-snd-{{ section.id }} .cap span{display:block;font-size:12.5px;line-height:1.35;opacity:.85;margin-top:2px}
+  @media (max-width:900px){#vnl-snd-{{ section.id }} .grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media (prefers-reduced-motion:reduce){#vnl-snd-{{ section.id }} .card.is-playing .wave i{animation:none}}
+</style>
+<div class="lpn"><section id="vnl-snd-{{ section.id }}"><div class="lpn-wrap">
+  <div class="head">
+    {%- if s.pill != blank -%}<span class="lpn-pill">{{ s.pill }}</span>{%- endif -%}
+    <h2>{{ s.title }}{% if s.title_gold != blank %} <span class="lpn-gold">{{ s.title_gold }}</span>{% endif %}</h2>
+    {%- if s.text != blank -%}<p class="txt">{{ s.text }}</p>{%- endif -%}
+  </div>
+  <div class="grid">
+    {%- for b in section.blocks -%}
+      {%- if b.settings.audio != blank or b.settings.video != blank or b.settings.image != blank or request.design_mode -%}
+      {%- if b.settings.audio != blank -%}
+      <button type="button" class="card" style="background:{{ b.settings.bg }}" data-audio="{{ b.settings.audio | escape }}" aria-pressed="false" aria-label="Écouter : {{ b.settings.name | escape }}" {{ b.shopify_attributes }}>
+      {%- else -%}
+      <div class="card" style="background:{{ b.settings.bg }}" {{ b.shopify_attributes }}>
+      {%- endif -%}
+        {%- if b.settings.video != blank -%}
+          {{ b.settings.video | video_tag: image_size: '600x', autoplay: true, muted: true, loop: true, playsinline: true, controls: false, preload: 'none' }}
+        {%- elsif b.settings.image != blank -%}
+          {{ b.settings.image | image_url: width: 600 | image_tag: loading: 'lazy', alt: '' }}
+        {%- endif -%}
+        <span class="wave" aria-hidden="true"><i style="height:30%"></i><i style="height:60%"></i><i style="height:100%"></i><i style="height:70%"></i>{% if b.settings.audio != blank %}<b data-ico>▶</b>{% endif %}<i style="height:70%"></i><i style="height:100%"></i><i style="height:60%"></i><i style="height:30%"></i></span>
+        <span class="cap"><b>{{ b.settings.name }}</b>{%- if b.settings.desc != blank -%}<span>{{ b.settings.desc }}</span>{%- endif -%}</span>
+      {%- if b.settings.audio != blank -%}</button>{%- else -%}</div>{%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</div></section></div>
+<script>
+(function () {
+  var root = document.getElementById('vnl-snd-{{ section.id }}'); if (!root || root.dataset.ready) return;
+  root.dataset.ready = '1';
+  var player = new Audio(), on = null;
+  player.loop = true;
+  function stop() { if (!on) return; on.classList.remove('is-playing'); on.setAttribute('aria-pressed', 'false'); var i = on.querySelector('[data-ico]'); if (i) i.textContent = '▶'; on = null; }
+  [].forEach.call(root.querySelectorAll('[data-audio]'), function (c) {
+    c.addEventListener('click', function () {
+      var same = on === c; player.pause(); stop();
+      if (same) return;
+      player.src = c.getAttribute('data-audio'); player.play().catch(function () {});
+      on = c; c.classList.add('is-playing'); c.setAttribute('aria-pressed', 'true');
+      var i = c.querySelector('[data-ico]'); if (i) i.textContent = '❚❚';
+    });
+  });
+})();
+</script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Veilleuse · Sons",
+  "settings": [
+    { "type": "text", "id": "pill", "label": "Petit titre", "default": "Les sons" },
+    { "type": "text", "id": "title", "label": "Titre", "default": "Un fond sonore" },
+    { "type": "text", "id": "title_gold", "label": "Fin du titre (surlignée)", "default": "qui couvre les bruits de la maison" },
+    { "type": "textarea", "id": "text", "label": "Texte", "default": "La télé du salon, la porte qui claque, la rue : un son régulier et doux les estompe. Touchez une tuile pour l'écouter." }
+  ],
+  "blocks": [
+    { "type": "sound", "name": "Son", "settings": [
+      { "type": "url", "id": "audio", "label": "Extrait audio (MP3)", "info": "Déposez le MP3 dans Contenu > Fichiers, copiez son lien et collez-le ici." },
+      { "type": "color", "id": "bg", "label": "Couleur de la tuile", "default": "#201E4D" },
+      { "type": "video", "id": "video", "label": "Ou vidéo de fond (sans son, en boucle)" },
+      { "type": "image_picker", "id": "image", "label": "Ou image de fond (1:1)" },
+      { "type": "text", "id": "name", "label": "Nom", "default": "Bruit blanc" },
+      { "type": "text", "id": "desc", "label": "Description", "default": "Un souffle régulier" }
+    ] }
+  ],
+  "presets": [ { "name": "Veilleuse · Sons" } ]
+}
+{% endschema %}

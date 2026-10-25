@@ -1,0 +1,361 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "vnl-pdp",
+      "blocks": {
+        "app-summary-block_1": {
+          "type": "shopify://apps/ag-product-reviews/blocks/app-summary-block/c4e1e9ca-4d46-4e76-bc39-7e42417cb327",
+          "settings": {}
+        },
+        "clip_1": {
+          "type": "clip",
+          "settings": {}
+        },
+        "clip_2": {
+          "type": "clip",
+          "settings": {}
+        },
+        "clip_3": {
+          "type": "clip",
+          "settings": {}
+        },
+        "info_2": {
+          "type": "info",
+          "settings": {
+            "title": "Description",
+            "text": "<p>Pensée pour les moments où le plafonnier est de trop : l'histoire du soir, le biberon de la nuit, le petit réveil après un cauchemar.</p><p>Une lumière tamisée, un fond sonore régulier, un minuteur qui éteint tout quand il dort. Sans fil, elle passe de sa chambre au salon, puis à la valise des vacances.</p>"
+          }
+        },
+        "info_3": {
+          "type": "info",
+          "settings": {
+            "title": "Fonctions",
+            "text": "<ul><li>Commande tactile et télécommande</li><li>Bruit blanc, rose et marron intégrés</li><li>Bluetooth : diffusez vos berceuses ou histoires audio</li><li>Lumière fixe ou animée, mode dégradé</li><li>Mode lumière rouge pour la nuit</li><li>18 couleurs au total</li><li>Luminosité et volume réglables</li><li>Minuteur d'arrêt : 30, 60 ou 120 minutes</li><li>Utilisable pendant la charge</li></ul>"
+          }
+        },
+        "info_4": {
+          "type": "info",
+          "settings": {
+            "title": "Fiche technique",
+            "text": "<ul><li>Puissance : 6 W</li><li>LED : type 5050, sans scintillement</li><li>Charge : moins d'1 heure, USB-C 5 V (adaptateur conseillé 5 V 2 A)</li><li>Autonomie : 4 à 12 heures selon la luminosité et le volume</li><li>Batterie : lithium-ion</li><li>Dimensions : environ 13 × 13 × 13,5 cm</li><li>Poids : environ 450 g</li></ul>"
+          }
+        },
+        "info_5": {
+          "type": "info",
+          "settings": {
+            "title": "Livraison et retours",
+            "text": "<p>Expédiée sous 24 h ouvrées depuis la France, livrée en 72 h ouvrées en France métropolitaine. Numéro de suivi envoyé dès le départ du colis.</p><p>30 nuits pour l'essayer : écrivez-nous et nous vous remboursons. Garantie légale de conformité de 2 ans.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "app-summary-block_1",
+        "clip_1",
+        "clip_2",
+        "clip_3",
+        "info_2",
+        "info_3",
+        "info_4",
+        "info_5"
+      ],
+      "settings": {}
+    },
+    "usages": {
+      "type": "vnl-marquee",
+      "blocks": {
+        "item_1": {
+          "type": "item",
+          "settings": {
+            "text": "L'histoire du soir"
+          }
+        },
+        "item_2": {
+          "type": "item",
+          "settings": {
+            "text": "Le biberon de 3 h"
+          }
+        },
+        "item_3": {
+          "type": "item",
+          "settings": {
+            "text": "Le réveil après un cauchemar"
+          }
+        },
+        "item_4": {
+          "type": "item",
+          "settings": {
+            "text": "Les nuits chez mamie"
+          }
+        },
+        "item_5": {
+          "type": "item",
+          "settings": {
+            "text": "Les siestes en vacances"
+          }
+        },
+        "item_6": {
+          "type": "item",
+          "settings": {
+            "text": "Le coucher sans plafonnier"
+          }
+        }
+      },
+      "block_order": [
+        "item_1",
+        "item_2",
+        "item_3",
+        "item_4",
+        "item_5",
+        "item_6"
+      ],
+      "settings": {
+        "aria": "Usages",
+        "bg": "#201E4D",
+        "fg": "#FFFFFF"
+      }
+    },
+    "avant_apres": {
+      "type": "vnl-avantapres",
+      "settings": {}
+    },
+    "sons": {
+      "type": "vnl-sons",
+      "blocks": {
+        "sound_1": {
+          "type": "sound",
+          "settings": {
+            "name": "Bruit marron profond",
+            "desc": "Très grave, comme un grondement lointain",
+            "bg": "#2B1A12"
+          }
+        },
+        "sound_2": {
+          "type": "sound",
+          "settings": {
+            "name": "Bruit marron",
+            "desc": "Grave et enveloppant, comme une vague",
+            "bg": "#7A3E10"
+          }
+        },
+        "sound_3": {
+          "type": "sound",
+          "settings": {
+            "name": "Bruit rose",
+            "desc": "Plus doux, comme une pluie fine",
+            "bg": "#B0306E"
+          }
+        },
+        "sound_4": {
+          "type": "sound",
+          "settings": {
+            "name": "Bruit blanc",
+            "desc": "Un souffle régulier, comme un ventilateur",
+            "bg": "#17153F"
+          }
+        }
+      },
+      "block_order": [
+        "sound_1",
+        "sound_2",
+        "sound_3",
+        "sound_4"
+      ],
+      "settings": {}
+    },
+    "qualite": {
+      "type": "vnl-qualite",
+      "settings": {}
+    },
+    "reassurance": {
+      "type": "vnl-marquee",
+      "blocks": {
+        "item_1": {
+          "type": "item",
+          "settings": {
+            "text": "Expédiée de France sous 24 h"
+          }
+        },
+        "item_2": {
+          "type": "item",
+          "settings": {
+            "text": "30 nuits d'essai"
+          }
+        },
+        "item_3": {
+          "type": "item",
+          "settings": {
+            "text": "Paiement en 3 × sans frais"
+          }
+        },
+        "item_4": {
+          "type": "item",
+          "settings": {
+            "text": "Garantie légale 2 ans"
+          }
+        },
+        "item_5": {
+          "type": "item",
+          "settings": {
+            "text": "Une vraie équipe vous répond"
+          }
+        }
+      },
+      "block_order": [
+        "item_1",
+        "item_2",
+        "item_3",
+        "item_4",
+        "item_5"
+      ],
+      "settings": {
+        "aria": "Nos engagements",
+        "bg": "#FFE791",
+        "fg": "#201E4D",
+        "pad": 14
+      }
+    },
+    "faq": {
+      "type": "lpn-faq",
+      "blocks": {
+        "faq_1": {
+          "type": "faq",
+          "settings": {
+            "q": "Dès quel âge peut-on l'utiliser ?",
+            "a": "Dès la naissance, comme veilleuse. Posez-la hors de portée de l'enfant, jamais dans le lit ni le berceau, et ne la laissez pas entre ses mains sans surveillance."
+          }
+        },
+        "faq_2": {
+          "type": "faq",
+          "settings": {
+            "q": "Où la placer et à quel volume ?",
+            "a": "À distance du lit, idéalement à 2 mètres, avec un volume bas : le son doit couvrir les bruits de la maison, pas les dépasser. Le minuteur l'éteint une fois qu'il dort."
+          }
+        },
+        "faq_3": {
+          "type": "faq",
+          "settings": {
+            "q": "Combien de temps tient la batterie ?",
+            "a": "De 4 à 12 heures selon la luminosité et le volume (environ 4 heures au maximum). Elle se recharge en moins d'une heure et peut rester branchée : la charge s'arrête seule quand la batterie est pleine."
+          }
+        },
+        "faq_4": {
+          "type": "faq",
+          "settings": {
+            "q": "Combien de couleurs ?",
+            "a": "18 couleurs, dont un mode lumière rouge, plus des modes animés. Vous pouvez associer n'importe quelle couleur à n'importe quel son."
+          }
+        },
+        "faq_5": {
+          "type": "faq",
+          "settings": {
+            "q": "Peut-on l'utiliser sans le son ?",
+            "a": "Oui. Par défaut, elle s'allume en lumière seule. Le bruit blanc ou le Bluetooth s'activent seulement si vous le souhaitez."
+          }
+        },
+        "faq_6": {
+          "type": "faq",
+          "settings": {
+            "q": "La lumière fatigue-t-elle les yeux ?",
+            "a": "Les LED ne scintillent pas et la luminosité descend jusqu'à une lueur très faible, pensée pour la nuit."
+          }
+        },
+        "faq_7": {
+          "type": "faq",
+          "settings": {
+            "q": "Résiste-t-elle à l'eau ?",
+            "a": "Non, elle n'est pas étanche. Elle supporte la vapeur d'une salle de bain, posée débranchée sur une surface sèche, loin des éclaboussures."
+          }
+        },
+        "faq_8": {
+          "type": "faq",
+          "settings": {
+            "q": "Va-t-il mieux dormir ?",
+            "a": "On ne peut pas le promettre : chaque enfant est différent. La veilleuse aide à installer un rituel calme et régulier. Si ses nuits vous inquiètent, parlez-en à votre pédiatre."
+          }
+        },
+        "faq_9": {
+          "type": "faq",
+          "settings": {
+            "q": "Quand vais-je recevoir ma commande ?",
+            "a": "Expédiée sous 24 h ouvrées depuis la France, livrée en 72 h ouvrées en France métropolitaine. Vous recevez un numéro de suivi dès le départ du colis."
+          }
+        },
+        "faq_10": {
+          "type": "faq",
+          "settings": {
+            "q": "Et si elle ne nous convient pas ?",
+            "a": "Vous avez 30 nuits pour l'essayer. Écrivez-nous et nous vous remboursons."
+          }
+        }
+      },
+      "block_order": [
+        "faq_1",
+        "faq_2",
+        "faq_3",
+        "faq_4",
+        "faq_5",
+        "faq_6",
+        "faq_7",
+        "faq_8",
+        "faq_9",
+        "faq_10"
+      ],
+      "settings": {
+        "pill": "Questions fréquentes",
+        "title": "Encore une",
+        "title_gold": "petite question ?"
+      }
+    },
+    "avis": {
+      "type": "apps",
+      "blocks": {
+        "app-block-review-list_1": {
+          "type": "shopify://apps/ag-product-reviews/blocks/app-block-review-list/c4e1e9ca-4d46-4e76-bc39-7e42417cb327",
+          "settings": {
+            "air_blockreviews_summaryHeading": "Avis clients",
+            "air_blockreviews_layout": "list",
+            "air_blockreviews_singleStarColor": "#16a086",
+            "air_blockreviews_primaryColor": "#121212"
+          }
+        }
+      },
+      "block_order": [
+        "app-block-review-list_1"
+      ],
+      "settings": {}
+    },
+    "fin": {
+      "type": "lpn-fin",
+      "settings": {
+        "pill": "30 nuits pour juger",
+        "title": "Le coucher,",
+        "title_gold": "en plus doux.",
+        "text": "Essayez-la 30 nuits. Si elle ne trouve pas sa place dans votre rituel du soir, écrivez-nous : nous vous remboursons.",
+        "check_1": "Livraison offerte",
+        "check_2": "Expédiée de France sous 24 h",
+        "check_3": "30 nuits d'essai",
+        "button": "Choisir mon pack →"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "usages",
+    "avant_apres",
+    "sons",
+    "qualite",
+    "reassurance",
+    "faq",
+    "avis",
+    "fin"
+  ]
+}

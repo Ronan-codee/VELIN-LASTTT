@@ -1,0 +1,28 @@
+{%- assign s = section.settings -%}
+{% render 'lpn-head' %}
+<div class="lpn"><div class="lpn-wrap">
+  <div class="lpn-faq">
+    <div>{%- if s.pill != blank -%}<span class="lpn-pill">{{ s.pill }}</span>{%- endif -%}<h2>{{ s.title }}{% if s.title_gold != blank %} <span class="lpn-gold">{{ s.title_gold }}</span>{% endif %}</h2></div>
+    <div>
+      {%- for b in section.blocks -%}<details {{ b.shopify_attributes }}><summary>{{ b.settings.q }}</summary><p>{{ b.settings.a }}</p></details>{%- endfor -%}
+    </div>
+  </div>
+</div></div>
+
+{% schema %}
+{
+  "name": "Oreiller · FAQ",
+  "settings": [
+    { "type": "text", "id": "pill", "label": "Petit titre", "default": "Questions fréquentes" },
+    { "type": "text", "id": "title", "label": "Titre", "default": "Encore une" },
+    { "type": "text", "id": "title_gold", "label": "Fin du titre (surlignée)", "default": "petite question ?" }
+  ],
+  "blocks": [
+    { "type": "faq", "name": "Question", "settings": [
+      { "type": "text", "id": "q", "label": "Question", "default": "Votre question ?" },
+      { "type": "textarea", "id": "a", "label": "Réponse", "default": "Votre réponse." }
+    ] }
+  ],
+  "presets": [ { "name": "Oreiller · FAQ" } ]
+}
+{% endschema %}

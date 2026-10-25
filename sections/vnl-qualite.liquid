@@ -1,0 +1,70 @@
+{%- comment -%} Image + texte : ce qu'on évite (liste ✘) et ce que Velin fait (liste ✓). Lignes vides masquées. {%- endcomment -%}
+{%- assign s = section.settings -%}
+{% render 'lpn-head' %}
+<style>
+  #vnl-q-{{ section.id }} .vnl-x{display:grid;gap:10px;margin:18px 0 0}
+  #vnl-q-{{ section.id }} .vnl-x li{display:flex;gap:10px;align-items:center;font-size:16px}
+  #vnl-q-{{ section.id }} .vnl-x li::before{content:"✕";flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#F6E3E1;color:#B3261E;font-size:12px;font-weight:800}
+  #vnl-q-{{ section.id }} .vnl-split{display:grid;grid-template-columns:1fr 1fr;gap:0;padding:0;overflow:hidden;border-radius:var(--r-lg)}
+  #vnl-q-{{ section.id }} .vnl-split>div{position:relative;min-height:100%;aspect-ratio:1/2;background:#2A2550}
+  #vnl-q-{{ section.id }} .vnl-split>div.us{background:var(--yellow)}
+  #vnl-q-{{ section.id }} .vnl-split span{position:absolute;top:18px;left:0;right:0;z-index:2;text-align:center;font-family:'Playfair Display',serif;font-size:clamp(22px,2.6vw,32px);font-weight:600;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.35)}
+  #vnl-q-{{ section.id }} .vnl-q-sub{margin-top:22px;font-weight:800;color:var(--navy)}
+</style>
+<div class="lpn" id="vnl-q-{{ section.id }}"><div class="lpn-wrap">
+  <div class="lpn-duo{% if s.reverse %} rev{% endif %}" style="margin-top:72px">
+    {%- if s.image_other != blank -%}
+    <div class="lpn-duo-img vnl-split">
+      <div><span>{{ s.label_other }}</span>{% render 'lpn-media', image: s.image_other, label: s.label_other, width: 700 %}</div>
+      <div class="us"><span>{{ s.label_us }}</span>{% render 'lpn-media', image: s.image, label: 'Veilleuse Velin · 1:2', width: 700 %}</div>
+    </div>
+    {%- else -%}
+    <div class="lpn-duo-img">{% render 'lpn-media', image: s.image, label: 'Photo produit en situation · 1:1', width: 1000 %}</div>
+    {%- endif -%}
+    <div class="lpn-duo-txt">
+      {%- if s.pill != blank -%}<span class="lpn-pill">{{ s.pill }}</span>{%- endif -%}
+      <h2>{{ s.title }}{% if s.title_gold != blank %} <span class="lpn-gold">{{ s.title_gold }}</span>{% endif %}</h2>
+      {%- if s.intro != blank -%}<p class="txt">{{ s.intro }}</p>{%- endif -%}
+      <ul class="vnl-x">
+        {%- if s.x_1 != blank -%}<li>{{ s.x_1 }}</li>{%- endif -%}
+        {%- if s.x_2 != blank -%}<li>{{ s.x_2 }}</li>{%- endif -%}
+        {%- if s.x_3 != blank -%}<li>{{ s.x_3 }}</li>{%- endif -%}
+        {%- if s.x_4 != blank -%}<li>{{ s.x_4 }}</li>{%- endif -%}
+      </ul>
+      {%- if s.us_title != blank -%}<p class="vnl-q-sub">{{ s.us_title }}</p>{%- endif -%}
+      <ul class="lpn-checks">
+        {%- if s.y_1 != blank -%}<li>{{ s.y_1 }}</li>{%- endif -%}
+        {%- if s.y_2 != blank -%}<li>{{ s.y_2 }}</li>{%- endif -%}
+        {%- if s.y_3 != blank -%}<li>{{ s.y_3 }}</li>{%- endif -%}
+      </ul>
+      {%- if s.button != blank -%}<a class="lpn-btn lpn-btn--auto" href="#acheter">{{ s.button }}</a>{%- endif -%}
+    </div>
+  </div>
+</div></div>
+
+{% schema %}
+{
+  "name": "Veilleuse · Qualité",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Photo Velin (1:1, ou 1:2 avec la photo concurrente)" },
+    { "type": "image_picker", "id": "image_other", "label": "Photo « les autres » (1:2, vide = photo Velin seule)", "info": "Une veilleuse générique sans marque, jamais le produit d'une marque identifiable." },
+    { "type": "text", "id": "label_other", "label": "Étiquette « les autres »", "default": "Les autres" },
+    { "type": "text", "id": "label_us", "label": "Étiquette Velin", "default": "Velin" },
+    { "type": "checkbox", "id": "reverse", "label": "Image à droite", "default": false },
+    { "type": "text", "id": "pill", "label": "Petit titre", "default": "Pourquoi Velin" },
+    { "type": "text", "id": "title", "label": "Titre", "default": "Une veilleuse," },
+    { "type": "text", "id": "title_gold", "label": "Fin du titre (surlignée)", "default": "pas un gadget." },
+    { "type": "textarea", "id": "intro", "label": "Intro", "default": "Les veilleuses premier prix font des économies là où ça se voit la nuit :" },
+    { "type": "text", "id": "x_1", "label": "✕ 1", "default": "Une lumière trop vive ou qui scintille" },
+    { "type": "text", "id": "x_2", "label": "✕ 2", "default": "Un câble à brancher près du lit" },
+    { "type": "text", "id": "x_3", "label": "✕ 3", "default": "Un son qui grésille ou coupe en boucle" },
+    { "type": "text", "id": "x_4", "label": "✕ 4", "default": "Un plastique léger qui ne tient pas" },
+    { "type": "text", "id": "us_title", "label": "Titre de la liste ✓", "default": "Chez Velin :" },
+    { "type": "text", "id": "y_1", "label": "✓ 1", "default": "Une lumière réglable, jusqu'au plus doux" },
+    { "type": "text", "id": "y_2", "label": "✓ 2", "default": "Sans fil, rechargeable" },
+    { "type": "text", "id": "y_3", "label": "✓ 3", "default": "Un minuteur qui l'éteint quand il dort" },
+    { "type": "text", "id": "button", "label": "Bouton (vide = masqué)", "default": "Choisir mon pack →" }
+  ],
+  "presets": [ { "name": "Veilleuse · Qualité" } ]
+}
+{% endschema %}

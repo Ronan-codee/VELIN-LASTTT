@@ -3,7 +3,7 @@
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Nunito+Sans:wght@400;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet"></noscript>
 <style>
-  .vnl{--bg:#F3ECE5;--bg2:#E7D8CA;--bg3:#EBDFD4;--sel:#E4D3C4;--brown:#8C4404;--dark:#260D04;--ink:#000;--muted:#615E5C;--line:rgba(140,68,4,.3);--sale:#D63A2F;--r:12px;--rl:20px;
+  .vnl{--bg:#F3ECE5;--bg2:#E7D8CA;--bg3:#EBDFD4;--sel:#E4D3C4;--brown:#8C4404;--dark:#260D04;--ink:#000;--muted:#000;--line:rgba(140,68,4,.3);--sale:#D63A2F;--r:12px;--rl:20px;
     font-family:'Nunito Sans',system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:clip;text-transform:none;letter-spacing:0}
   .vnl *,.vnl *::before,.vnl *::after{box-sizing:border-box}
   .vnl :where(h1,h2,h3,p,ul,ol,figure){margin:0;padding:0}
@@ -23,4 +23,7 @@
   .vnl-btn.is-loading{opacity:.7;pointer-events:none}
   .vnl-btn--auto{width:auto;display:inline-flex}
   @media (max-width:900px){.vnl-wrap{padding:0 16px}.vnl-sec{padding-top:44px;padding-bottom:44px}}
+  /* Haut de page, uniquement sur la fiche veilleuse : bandeau brun, en-tête crème */
+  [id$="__blocks_WRXHdq"] announcement-bar{background:#8C4404!important}
+  .site-header,.site-header__drawer-nav{background:#F3ECE5!important}
 </style>

@@ -17,6 +17,9 @@
   .vnl-sec{padding-top:64px;padding-bottom:64px}
   .vnl-mock{position:absolute;inset:0;display:grid;place-items:center;background:linear-gradient(150deg,#E9DCCF,#D9C4B1);color:var(--dark);text-align:center;padding:12px}
   .vnl-mock span{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;opacity:.6}
+  .vnl [class]{color:inherit}
+  .vnl .vnl-btn{color:#fff}
+  .vnl .vnl-mock{color:var(--dark)}
   .vnl-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:54px;padding:14px 28px;border-radius:999px;background:var(--brown);color:#fff;font-size:16px;font-weight:700;text-decoration:none;transition:background .2s}
   .vnl-btn:hover{background:#000}
   .vnl-btn[disabled]{opacity:.5;cursor:not-allowed}
@@ -24,6 +27,6 @@
   .vnl-btn--auto{width:auto;display:inline-flex}
   @media (max-width:900px){.vnl-wrap{padding:0 16px}.vnl-sec{padding-top:44px;padding-bottom:44px}}
   /* Haut de page, uniquement sur la fiche veilleuse : bandeau brun, en-tête crème */
-  [id$="__blocks_WRXHdq"] announcement-bar{background:#8C4404!important}
+  [id$="__blocks_WRXHdq"] [class*="ai-announcement-bar"]{background:#8C4404!important}
   .site-header,.site-header__drawer-nav{background:#F3ECE5!important}
 </style>

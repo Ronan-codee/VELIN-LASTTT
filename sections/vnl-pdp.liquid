@@ -121,7 +121,7 @@
 </style>
 
 <div class="vnl" id="vnl-{{ section.id }}">
-<div class="vnl-wrap"><div class="pdp">
+<div class="hero" style="background:{{ s.hero_bg }}"><div class="vnl-wrap"><div class="pdp">
   <div class="gal">
     <div class="stagewrap">
       <button type="button" class="arrow prev" aria-label="Image précédente"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
@@ -155,7 +155,6 @@
     {%- else -%}
       {%- for b in app_blocks -%}<div {{ b.shopify_attributes }}>{% render b %}</div>{%- endfor -%}
     {%- endif -%}
-    <p class="price"><span>{{ unit | money }}</span>{%- if product.compare_at_price > unit -%}<s>{{ product.compare_at_price | money }}</s>{%- endif -%}</p>
 
     <ul class="perks">
       {%- if s.perk_1 != blank -%}<li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>{{ s.perk_1 }}</li>{%- endif -%}
@@ -240,7 +239,7 @@
       {%- endfor -%}
     </div>
   </div>
-</div></div>
+</div></div></div>
 
 <div class="sticky" data-sticky>
   <div class="who">{%- if product.featured_image -%}<img src="{{ product.featured_image | image_url: width: 100 }}" alt="" width="46" height="46" loading="lazy">{%- endif -%}<div><b>{{ s.title | default: product.title }}</b><small data-sticky-sub></small></div></div>
@@ -361,6 +360,8 @@
   "name": "Velin · Fiche veilleuse",
   "tag": "section",
   "settings": [
+    { "type": "header", "content": "Couleurs" },
+    { "type": "color", "id": "hero_bg", "label": "Fond de la zone d'achat (héros)", "default": "#F3ECE5" },
     { "type": "header", "content": "Titre" },
     { "type": "text", "id": "title", "label": "Titre (vide = nom du produit)", "default": "Veilleuse Velin" },
     { "type": "text", "id": "tagline", "label": "Ligne fonctions", "default": "Lumière + sons apaisants + minuteur" },

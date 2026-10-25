@@ -1,0 +1,26 @@
+{%- comment -%} Styles communs de la fiche veilleuse (ambiance crème et brun). Le navigateur ne charge les polices qu'une fois. {%- endcomment -%}
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Nunito+Sans:wght@400;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet"></noscript>
+<style>
+  .vnl{--bg:#F3ECE5;--bg2:#E7D8CA;--bg3:#EBDFD4;--sel:#E4D3C4;--brown:#8C4404;--dark:#260D04;--ink:#000;--muted:#615E5C;--line:rgba(140,68,4,.3);--sale:#D63A2F;--r:12px;--rl:20px;
+    font-family:'Nunito Sans',system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:clip;text-transform:none;letter-spacing:0}
+  .vnl *,.vnl *::before,.vnl *::after{box-sizing:border-box}
+  .vnl :where(h1,h2,h3,p,ul,ol,figure){margin:0;padding:0}
+  .vnl :where(h1,h2,h3){font-family:'Playfair Display',Georgia,serif;font-weight:400;color:var(--ink);line-height:1.15;letter-spacing:0;text-transform:none}
+  .vnl h1{font-size:clamp(30px,3.4vw,42px)}
+  .vnl h2{font-size:clamp(28px,3.6vw,42px);text-align:center}
+  .vnl ul,.vnl ol{list-style:none}
+  .vnl :where(button){font:inherit;color:inherit;cursor:pointer;background:none;border:0}
+  .vnl img,.vnl video{max-width:100%;display:block}
+  .vnl-wrap{max-width:1310px;margin:0 auto;padding:0 40px}
+  .vnl-sec{padding:64px 0}
+  .vnl-mock{position:absolute;inset:0;display:grid;place-items:center;background:linear-gradient(150deg,#E9DCCF,#D9C4B1);color:var(--dark);text-align:center;padding:12px}
+  .vnl-mock span{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;opacity:.6}
+  .vnl-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:54px;padding:14px 28px;border-radius:999px;background:var(--brown);color:#fff;font-size:16px;font-weight:700;text-decoration:none;transition:background .2s}
+  .vnl-btn:hover{background:#000}
+  .vnl-btn[disabled]{opacity:.5;cursor:not-allowed}
+  .vnl-btn.is-loading{opacity:.7;pointer-events:none}
+  .vnl-btn--auto{width:auto;display:inline-flex}
+  @media (max-width:900px){.vnl-wrap{padding:0 16px}.vnl-sec{padding:44px 0}}
+</style>

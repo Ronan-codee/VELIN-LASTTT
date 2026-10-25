@@ -7,13 +7,11 @@
 {%- assign has_media = false -%}
 {%- for b in section.blocks -%}{%- if b.settings.audio != blank or b.settings.video != blank or b.settings.image != blank -%}{%- assign has_media = true -%}{%- endif -%}{%- endfor -%}
 {%- if has_media or request.design_mode -%}
-{% render 'lpn-head' %}
+{% render 'vnl-head' %}
 <style>
-  #vnl-snd-{{ section.id }}{padding:72px 0 24px}
   #vnl-snd-{{ section.id }} .head{text-align:center}
-  #vnl-snd-{{ section.id }} h2{margin-top:12px}
-  #vnl-snd-{{ section.id }} .txt{max-width:560px;margin:14px auto 0;color:var(--muted)}
-  #vnl-snd-{{ section.id }} .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:32px}
+  #vnl-snd-{{ section.id }} .txt{max-width:560px;margin:12px auto 0;color:var(--muted)}
+  #vnl-snd-{{ section.id }} .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:28px}
   #vnl-snd-{{ section.id }} .card{position:relative;aspect-ratio:1/1;border-radius:22px;overflow:hidden;color:#fff;display:block;width:100%;text-align:center}
   #vnl-snd-{{ section.id }} .card video,#vnl-snd-{{ section.id }} .card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
   #vnl-snd-{{ section.id }} .wave{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);z-index:2;display:flex;align-items:center;gap:5px;height:56px}
@@ -22,16 +20,15 @@
   #vnl-snd-{{ section.id }} .card.is-playing .wave i{animation:vnl-w .9s ease-in-out infinite alternate}
   #vnl-snd-{{ section.id }} .card.is-playing .wave i:nth-child(2n){animation-delay:-.45s}
   @keyframes vnl-w{to{transform:scaleY(.35)}}
-  #vnl-snd-{{ section.id }} .cap{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:14px}
-  #vnl-snd-{{ section.id }} .cap b{display:block;font-size:15px;font-weight:700}
-  #vnl-snd-{{ section.id }} .cap span{display:block;font-size:12.5px;line-height:1.35;opacity:.85;margin-top:2px}
+  #vnl-snd-{{ section.id }} .cap{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:16px 12px}
+  #vnl-snd-{{ section.id }} .cap b{display:block;font-size:14px;font-weight:600}
+  #vnl-snd-{{ section.id }} .cap span{display:block;font-size:12px;line-height:1.35;opacity:.8;margin-top:2px}
   @media (max-width:900px){#vnl-snd-{{ section.id }} .grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
   @media (prefers-reduced-motion:reduce){#vnl-snd-{{ section.id }} .card.is-playing .wave i{animation:none}}
 </style>
-<div class="lpn"><section id="vnl-snd-{{ section.id }}"><div class="lpn-wrap">
+<div class="vnl" id="vnl-snd-{{ section.id }}"><div class="vnl-wrap vnl-sec">
   <div class="head">
-    {%- if s.pill != blank -%}<span class="lpn-pill">{{ s.pill }}</span>{%- endif -%}
-    <h2>{{ s.title }}{% if s.title_gold != blank %} <span class="lpn-gold">{{ s.title_gold }}</span>{% endif %}</h2>
+    {%- if s.title != blank -%}<h2>{{ s.title }}</h2>{%- endif -%}
     {%- if s.text != blank -%}<p class="txt">{{ s.text }}</p>{%- endif -%}
   </div>
   <div class="grid">
@@ -53,7 +50,7 @@
       {%- endif -%}
     {%- endfor -%}
   </div>
-</div></section></div>
+</div></div>
 <script>
 (function () {
   var root = document.getElementById('vnl-snd-{{ section.id }}'); if (!root || root.dataset.ready) return;
@@ -78,10 +75,8 @@
 {
   "name": "Veilleuse · Sons",
   "settings": [
-    { "type": "text", "id": "pill", "label": "Petit titre", "default": "Les sons" },
-    { "type": "text", "id": "title", "label": "Titre", "default": "Un fond sonore" },
-    { "type": "text", "id": "title_gold", "label": "Fin du titre (surlignée)", "default": "qui couvre les bruits de la maison" },
-    { "type": "textarea", "id": "text", "label": "Texte", "default": "La télé du salon, la porte qui claque, la rue : un son régulier et doux les estompe. Touchez une tuile pour l'écouter." }
+    { "type": "text", "id": "title", "label": "Titre (vide = masqué)", "default": "Un son pour chaque nuit" },
+    { "type": "textarea", "id": "text", "label": "Texte", "default": "Touchez une tuile pour l'écouter." }
   ],
   "blocks": [
     { "type": "sound", "name": "Son", "settings": [

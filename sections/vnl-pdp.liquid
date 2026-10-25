@@ -1,6 +1,6 @@
 {%- comment -%}
-  Velin — fiche produit « veilleuse ». Structure inspirée d'un funnel à packs (galerie, promesse, packs 1/2/3, accordéons), copy Velin.
-  Reprend le style des fiches oreiller (lpn-head) sans modifier leurs fichiers.
+  Velin — fiche produit « veilleuse ». Mise en page et ambiance calquées sur un funnel à packs (galerie + vignettes, prix,
+  3 engagements, mini-vidéos, packs en cartes, option coffret, accordéons). Textes et visuels propres à Velin.
   Packs = quantités : le panier reçoit N lignes de vraies variantes. Les prix des lots doivent être identiques aux remises
   automatiques Shopify (quantité minimale 2 / 3) ; ceux saisis ici servent uniquement à l'affichage.
   Si le produit a plusieurs variantes (ex. coloris), chaque unité du pack a son menu de choix.
@@ -13,168 +13,244 @@
 {%- assign unit = product.price -%}
 {%- assign multi = true -%}
 {%- if product.has_only_default_variant -%}{%- assign multi = false -%}{%- endif -%}
+{%- assign up = s.upsell_product -%}
+{%- assign up_v = up.selected_or_first_available_variant -%}
+{%- assign r_avg = product.metafields.air_reviews_product.review_avg.value -%}
+{%- assign r_n = product.metafields.air_reviews_product.review_count.value | default: product.metafields.reviews.rating_count.value | plus: 0 -%}
 
-{% render 'lpn-head' %}
+{% render 'vnl-head' %}
 <style>
-  .vnl .vnl-tagline{margin:6px 0 0;font-size:13px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-  .vnl .vnl-promise{display:grid;gap:8px;margin:18px 0 6px;padding:14px 16px;border-radius:var(--r);background:var(--ice)}
-  .vnl .vnl-promise li{display:flex;gap:10px;align-items:center;font-size:14.5px;font-weight:600}
-  .vnl .vnl-promise li::before{content:"✓";flex:none;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:var(--yellow);color:var(--navy);font-size:12px;font-weight:800}
-  .vnl .vnl-sold{margin:10px 0 0;font-size:13.5px;font-weight:700;color:var(--navy)}
-  .vnl .vnl-acc-text{white-space:normal}
-  .vnl .vnl-clips{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin:16px 0 4px}
-  .vnl .vnl-clips::-webkit-scrollbar{display:none}
-  .vnl .vnl-clip{position:relative;flex:0 0 calc(33.333% - 7px);min-width:110px;aspect-ratio:9/14;border-radius:var(--r);overflow:hidden;background:#E8EAF3;scroll-snap-align:start}
-  .vnl .vnl-clip video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  #vnl-{{ section.id }} .pdp{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);gap:48px;align-items:start;padding:32px 0 56px}
+  #vnl-{{ section.id }} .gal{position:sticky;top:90px;min-width:0}
+  #vnl-{{ section.id }} .stagewrap{position:relative}
+  #vnl-{{ section.id }} .stage{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;border-radius:var(--rl)}
+  #vnl-{{ section.id }} .stage::-webkit-scrollbar{display:none}
+  #vnl-{{ section.id }} .slide{position:relative;flex:0 0 100%;aspect-ratio:1/1;scroll-snap-align:start;background:var(--bg2);overflow:hidden}
+  #vnl-{{ section.id }} .slide img{width:100%;height:100%;object-fit:cover}
+  #vnl-{{ section.id }} .arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:3;width:38px;height:38px;border-radius:50%;background:#fff;color:#000;display:grid;place-items:center;box-shadow:0 2px 10px rgba(0,0,0,.12)}
+  #vnl-{{ section.id }} .arrow.prev{left:14px}#vnl-{{ section.id }} .arrow.next{right:14px}
+  #vnl-{{ section.id }} .thumbs{display:flex;gap:10px;margin-top:12px;overflow-x:auto;scrollbar-width:none}
+  #vnl-{{ section.id }} .thumb{position:relative;flex:0 0 calc(20% - 8px);aspect-ratio:1/1;border-radius:10px;overflow:hidden;background:var(--bg2);opacity:.75;outline:2px solid transparent;outline-offset:-2px}
+  #vnl-{{ section.id }} .thumb.is-active{opacity:1;outline-color:var(--dark)}
+  #vnl-{{ section.id }} .thumb img{width:100%;height:100%;object-fit:cover}
+  #vnl-{{ section.id }} .thumb .vnl-mock span{font-size:8px}
+
+  #vnl-{{ section.id }} .info{min-width:0}
+  #vnl-{{ section.id }} .tagline{margin-top:8px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  #vnl-{{ section.id }} .desc{margin-top:12px;font-size:15.5px}
+  #vnl-{{ section.id }} .stars{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:14px;color:inherit;text-decoration:none}
+  #vnl-{{ section.id }} .stars i{position:relative;display:inline-block;font-style:normal;letter-spacing:2px;color:#D9C9BA}
+  #vnl-{{ section.id }} .stars i::before{content:"★★★★★"}
+  #vnl-{{ section.id }} .stars i b{position:absolute;left:0;top:0;overflow:hidden;white-space:nowrap;color:var(--brown)}
+  #vnl-{{ section.id }} .stars i b::before{content:"★★★★★"}
+  #vnl-{{ section.id }} .price{display:flex;align-items:baseline;gap:10px;margin-top:10px;font-size:22px;font-weight:800}
+  #vnl-{{ section.id }} .price s{font-size:16px;font-weight:600;color:var(--muted)}
+  #vnl-{{ section.id }} .perks{display:grid;gap:8px;margin-top:16px}
+  #vnl-{{ section.id }} .perks li{display:flex;align-items:center;gap:10px;font-size:14.5px}
+  #vnl-{{ section.id }} .perks svg{flex:none}
+  #vnl-{{ section.id }} .clips{display:flex;gap:10px;margin-top:18px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+  #vnl-{{ section.id }} .clips::-webkit-scrollbar{display:none}
+  #vnl-{{ section.id }} .clip{position:relative;flex:0 0 calc(36% - 7px);aspect-ratio:9/14;border-radius:var(--r);overflow:hidden;background:var(--bg2);scroll-snap-align:start}
+  #vnl-{{ section.id }} .clip video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+
+  #vnl-{{ section.id }} .bt{display:flex;align-items:center;gap:12px;margin:22px 0 14px;font-size:14px;font-weight:800;color:var(--brown);white-space:nowrap}
+  #vnl-{{ section.id }} .bt::before,#vnl-{{ section.id }} .bt::after{content:"";flex:1;height:2px;background:var(--line)}
+  #vnl-{{ section.id }} .packs{display:grid;gap:14px}
+  #vnl-{{ section.id }} .pack{position:relative;border:1px solid var(--line);border-radius:var(--r);background:var(--bg);transition:background .15s}
+  #vnl-{{ section.id }} .pack.is-active{border:2px solid var(--brown);background:var(--bg2)}
+  #vnl-{{ section.id }} .pack-head{display:grid;grid-template-columns:auto auto 1fr auto;align-items:center;gap:12px;padding:14px 16px;cursor:pointer}
+  #vnl-{{ section.id }} .pack-head input{position:absolute;opacity:0;pointer-events:none}
+  #vnl-{{ section.id }} .radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--brown);display:grid;place-items:center}
+  #vnl-{{ section.id }} .pack.is-active .radio::after{content:"";width:8px;height:8px;border-radius:50%;background:var(--brown)}
+  #vnl-{{ section.id }} .thumbs-n{display:flex}
+  #vnl-{{ section.id }} .thumbs-n span{width:40px;height:40px;border-radius:6px;overflow:hidden;background:var(--bg3);border:2px solid var(--bg);margin-left:-14px}
+  #vnl-{{ section.id }} .thumbs-n span:first-child{margin-left:0}
+  #vnl-{{ section.id }} .thumbs-n img{width:100%;height:100%;object-fit:cover}
+  #vnl-{{ section.id }} .pid b{display:block;font-size:17px;font-weight:800}
+  #vnl-{{ section.id }} .pid small{display:block;font-size:13.5px;color:var(--muted)}
+  #vnl-{{ section.id }} .pp{text-align:right;white-space:nowrap}
+  #vnl-{{ section.id }} .pp b{font-size:17px;font-weight:800;color:var(--brown)}
+  #vnl-{{ section.id }} .pp small{font-size:12.5px;color:var(--muted);font-weight:600}
+  #vnl-{{ section.id }} .pp s{display:block;font-size:13px;color:var(--muted)}
+  #vnl-{{ section.id }} .badge{position:absolute;top:-11px;right:14px;z-index:2;padding:3px 10px;border-radius:6px;background:var(--brown);color:#fff;font-size:11.5px;font-weight:800;line-height:1.4}
+  #vnl-{{ section.id }} .pack-body{display:none;padding:0 16px 14px}
+  #vnl-{{ section.id }} .pack.is-active .pack-body{display:grid;gap:10px}
+  #vnl-{{ section.id }} .pack-body:not(:has(> :not([hidden]))){display:none}
+  #vnl-{{ section.id }} .sel-row{display:flex;flex-wrap:wrap;gap:8px}
+  #vnl-{{ section.id }} .sel-row label{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700}
+  #vnl-{{ section.id }} .sel-row select{min-height:38px;padding:6px 30px 6px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;font:inherit;font-size:14px}
+  #vnl-{{ section.id }} .upsell{display:flex;align-items:center;gap:10px;margin:0 -14px -12px;padding:10px 14px;border-radius:0 0 10px 10px;background:var(--bg3);color:var(--dark);font-size:13.5px;cursor:pointer}
+  #vnl-{{ section.id }} .upsell.is-on{background:var(--sel)}
+  #vnl-{{ section.id }} .upsell input{width:16px;height:16px;accent-color:var(--brown)}
+  #vnl-{{ section.id }} .upsell img{width:30px;height:30px;border-radius:5px;object-fit:cover}
+  #vnl-{{ section.id }} .upsell span{flex:1}
+  #vnl-{{ section.id }} .upsell b{font-weight:800}
+  #vnl-{{ section.id }} .stock{font-size:13px;font-weight:700;color:var(--sale)}
+  #vnl-{{ section.id }} .sold{display:flex;justify-content:center;margin:14px 0 0}
+  #vnl-{{ section.id }} .sold span{padding:4px 14px;border-radius:999px;background:var(--bg2);font-size:13px;font-weight:700}
+  #vnl-{{ section.id }} .cta{margin-top:14px}
+  #vnl-{{ section.id }} .err{margin:8px 0 0;font-size:13px;font-weight:700;color:var(--sale)}
+  #vnl-{{ section.id }} .pay{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:14px}
+  #vnl-{{ section.id }} .pay svg{width:38px;height:24px}
+  #vnl-{{ section.id }} .acc{margin-top:22px;border-top:1px solid var(--dark)}
+  #vnl-{{ section.id }} .acc details{border-bottom:1px solid var(--dark)}
+  #vnl-{{ section.id }} .acc summary{display:flex;justify-content:space-between;align-items:center;padding:18px 0;list-style:none;cursor:pointer;font-family:'Playfair Display',Georgia,serif;font-size:18px}
+  #vnl-{{ section.id }} .acc summary::-webkit-details-marker{display:none}
+  #vnl-{{ section.id }} .acc summary::after{content:"+";font-family:'Nunito Sans',sans-serif;font-size:24px;font-weight:300;line-height:1}
+  #vnl-{{ section.id }} .acc details[open] summary::after{content:"−"}
+  #vnl-{{ section.id }} .acc .txt{padding:0 0 18px;font-size:15px}
+  #vnl-{{ section.id }} .acc .txt ul{list-style:disc;padding-left:20px}
+  #vnl-{{ section.id }} .acc .txt p+p{margin-top:10px}
+
+  #vnl-{{ section.id }} .sticky{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:10px max(16px,calc((100vw - 1310px)/2 + 40px));background:var(--bg);box-shadow:0 -4px 18px rgba(38,13,4,.12);transform:translateY(110%);transition:transform .25s}
+  #vnl-{{ section.id }} .sticky.show{transform:none}
+  #vnl-{{ section.id }} .sticky .who{display:flex;align-items:center;gap:12px;min-width:0}
+  #vnl-{{ section.id }} .sticky .who img{width:46px;height:46px;border-radius:8px;object-fit:cover}
+  #vnl-{{ section.id }} .sticky .who b{display:block;font-size:15px}
+  #vnl-{{ section.id }} .sticky .who small{display:block;font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #vnl-{{ section.id }} .sticky .vnl-btn{width:auto;min-height:46px;padding:10px 26px}
+
+  @media (max-width:900px){
+    #vnl-{{ section.id }} .pdp{grid-template-columns:minmax(0,1fr);gap:24px;padding:16px 0 40px}
+    #vnl-{{ section.id }} .gal{position:static}
+    #vnl-{{ section.id }} .pack-head{gap:10px;padding:12px}
+    #vnl-{{ section.id }} .thumbs-n span{width:34px;height:34px}
+    #vnl-{{ section.id }} .sticky .who{display:none}
+    #vnl-{{ section.id }} .sticky .vnl-btn{width:100%}
+  }
 </style>
 
-<div class="lpn vnl" id="lpn-{{ section.id }}">
-<div class="lpn-buy">
-  <div class="lpn-wrap">
-    <div class="lpn-gallery">
-      <div class="lpn-stagewrap">
-        <button type="button" class="lpn-arrow prev" aria-label="Image précédente"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
-        <div class="lpn-stage" data-stage>
-          {%- assign block_has_img = false -%}
-          {%- for b in slide_blocks -%}{%- if b.settings.image != blank -%}{%- assign block_has_img = true -%}{%- endif -%}{%- endfor -%}
-          {%- if block_has_img -%}
-            {%- for b in slide_blocks -%}
-              {%- if b.settings.image != blank -%}<div class="lpn-slide" {{ b.shopify_attributes }}>{% render 'lpn-media', image: b.settings.image, label: 'Image galerie', width: 1000, first: forloop.first %}</div>{%- endif -%}
-            {%- endfor -%}
-          {%- elsif product.media.size > 0 -%}
-            {%- for m in product.media -%}
-              {%- if m.media_type == 'image' -%}
-                <div class="lpn-slide">{% render 'lpn-media', image: m, label: m.alt, alt: m.alt, width: 1000, first: forloop.first %}</div>
-              {%- endif -%}
-            {%- endfor -%}
-          {%- else -%}
-            {%- assign mock_labels = "Veilleuse allumée, tenue en main · 1:1|Démo des ambiances lumineuses · 1:1|Chambre d'enfant, lumière douce · 1:1|Sur la table de nuit, avec télécommande · 1:1|Deux veilleuses, chambre de fratrie · 1:1|Récapitulatif des fonctions · 1:1" | split: '|' -%}
-            {%- for l in mock_labels -%}
-              <div class="lpn-slide">{% render 'lpn-media', image: nil, label: l, width: 1000 %}</div>
-            {%- endfor -%}
-          {%- endif -%}
-        </div>
-        <button type="button" class="lpn-arrow next" aria-label="Image suivante"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+<div class="vnl" id="vnl-{{ section.id }}">
+<div class="vnl-wrap"><div class="pdp">
+  <div class="gal">
+    <div class="stagewrap">
+      <button type="button" class="arrow prev" aria-label="Image précédente"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <div class="stage" data-stage>
+        {%- assign block_has_img = false -%}
+        {%- for b in slide_blocks -%}{%- if b.settings.image != blank -%}{%- assign block_has_img = true -%}{%- endif -%}{%- endfor -%}
+        {%- if block_has_img -%}
+          {%- for b in slide_blocks -%}
+            {%- if b.settings.image != blank -%}<div class="slide" {{ b.shopify_attributes }}>{%- if forloop.first -%}{{ b.settings.image | image_url: width: 1200 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '500, 800, 1000, 1200', sizes: '(max-width: 900px) 100vw, 55vw' }}{%- else -%}{{ b.settings.image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '500, 800, 1000, 1200', sizes: '(max-width: 900px) 100vw, 55vw' }}{%- endif -%}</div>{%- endif -%}
+          {%- endfor -%}
+        {%- elsif product.media.size > 0 -%}
+          {%- for m in product.media -%}
+            {%- if m.media_type == 'image' -%}<div class="slide">{%- if forloop.first -%}{{ m | image_url: width: 1200 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '500, 800, 1000, 1200', sizes: '(max-width: 900px) 100vw, 55vw' }}{%- else -%}{{ m | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '500, 800, 1000, 1200', sizes: '(max-width: 900px) 100vw, 55vw' }}{%- endif -%}</div>{%- endif -%}
+          {%- endfor -%}
+        {%- else -%}
+          {%- assign mock_labels = "Veilleuse allumée, tenue en main|Démo des ambiances lumineuses|Chambre d'enfant, lumière douce|Deux veilleuses sur le lit|Sur la table de nuit, avec télécommande|Récapitulatif des fonctions" | split: '|' -%}
+          {%- for l in mock_labels -%}<div class="slide"><div class="vnl-mock"><span>{{ l }} · 1:1</span></div></div>{%- endfor -%}
+        {%- endif -%}
       </div>
-      <div class="lpn-thumbs" data-thumbs></div>
+      <button type="button" class="arrow next" aria-label="Image suivante"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
     </div>
+    <div class="thumbs" data-thumbs></div>
+  </div>
 
-    <div class="lpn-info">
-      {% render 'lpn-note', product: product, app_blocks: app_blocks %}
-      <h1>{{ s.title }}</h1>
-      {%- if s.tagline != blank -%}<p class="vnl-tagline">{{ s.tagline }}</p>{%- endif -%}
-      {%- if s.subtitle != blank -%}<p class="lpn-sub">{{ s.subtitle }}</p>{%- endif -%}
+  <div class="info">
+    <h1>{{ s.title | default: product.title }}</h1>
+    {%- if s.tagline != blank -%}<p class="tagline">{{ s.tagline }}</p>{%- endif -%}
+    {%- if s.subtitle != blank -%}<p class="desc">{{ s.subtitle }}</p>{%- endif -%}
+    {%- if r_avg != blank and r_n > 0 -%}
+      <a class="stars" href="#avis" aria-label="Note {{ r_avg | replace: '.', ',' }} sur 5, {{ r_n }} avis"><i aria-hidden="true"><b style="width:{{ r_avg | times: 20 }}%"></b></i>{{ r_n }} avis</a>
+    {%- else -%}
+      {%- for b in app_blocks -%}<div {{ b.shopify_attributes }}>{% render b %}</div>{%- endfor -%}
+    {%- endif -%}
+    <p class="price"><span>{{ unit | money }}</span>{%- if product.compare_at_price > unit -%}<s>{{ product.compare_at_price | money }}</s>{%- endif -%}</p>
 
-      <ul class="vnl-promise">
-        {%- if s.promise_1 != blank -%}<li>{{ s.promise_1 }}</li>{%- endif -%}
-        {%- if s.promise_2 != blank -%}<li>{{ s.promise_2 }}</li>{%- endif -%}
-        {%- if s.promise_3 != blank -%}<li>{{ s.promise_3 }}</li>{%- endif -%}
-      </ul>
+    <ul class="perks">
+      {%- if s.perk_1 != blank -%}<li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>{{ s.perk_1 }}</li>{%- endif -%}
+      {%- if s.perk_2 != blank -%}<li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>{{ s.perk_2 }}</li>{%- endif -%}
+      {%- if s.perk_3 != blank -%}<li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>{{ s.perk_3 }}</li>{%- endif -%}
+    </ul>
 
-      {%- assign clip_any = false -%}
-      {%- for b in clip_blocks -%}{%- if b.settings.video != blank -%}{%- assign clip_any = true -%}{%- endif -%}{%- endfor -%}
-      {%- if clip_any or request.design_mode and clip_blocks.size > 0 -%}
-      <div class="vnl-clips">
-        {%- for b in clip_blocks -%}
-          <div class="vnl-clip" {{ b.shopify_attributes }}>
-            {%- if b.settings.video != blank -%}
-              {{ b.settings.video | video_tag: image_size: '400x', autoplay: true, muted: true, loop: true, playsinline: true, controls: false, preload: 'none' }}
-            {%- else -%}
-              <div class="lpn-mock"><span>Vidéo courte · 9:14</span></div>
+    {%- assign clip_any = false -%}
+    {%- for b in clip_blocks -%}{%- if b.settings.video != blank -%}{%- assign clip_any = true -%}{%- endif -%}{%- endfor -%}
+    {%- if clip_any or request.design_mode and clip_blocks.size > 0 -%}
+    <div class="clips">
+      {%- for b in clip_blocks -%}
+        {%- if b.settings.video != blank or request.design_mode -%}
+        <div class="clip" {{ b.shopify_attributes }}>
+          {%- if b.settings.video != blank -%}
+            {{ b.settings.video | video_tag: image_size: '400x', autoplay: true, muted: true, loop: true, playsinline: true, controls: false, preload: 'none' }}
+          {%- else -%}<div class="vnl-mock"><span>Vidéo 9:14</span></div>{%- endif -%}
+        </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+    {%- endif -%}
+
+    <div id="acheter" style="scroll-margin-top:96px"></div>
+    <p class="bt">{{ s.packs_title }}</p>
+    <div class="packs" role="radiogroup" aria-label="{{ s.packs_title | escape }}">
+      {%- for n in (1..3) -%}
+        {%- assign total = unit | times: n -%}
+        {%- assign price = total -%}
+        {%- if n == 2 and s.pack2_price != blank -%}{%- assign price = s.pack2_price | replace: ',', '.' | times: 100 | round -%}{%- endif -%}
+        {%- if n == 3 and s.pack3_price != blank -%}{%- assign price = s.pack3_price | replace: ',', '.' | times: 100 | round -%}{%- endif -%}
+        {%- assign each = price | times: 1.0 | divided_by: n | round -%}
+        {%- case n -%}
+          {%- when 1 -%}{%- assign p_name = s.pack1_name -%}{%- assign p_sub = s.pack1_sub -%}{%- assign p_badge = s.pack1_badge -%}
+          {%- when 2 -%}{%- assign p_name = s.pack2_name -%}{%- assign p_sub = s.pack2_sub -%}{%- assign p_badge = s.pack2_badge -%}
+          {%- when 3 -%}{%- assign p_name = s.pack3_name -%}{%- assign p_sub = s.pack3_sub -%}{%- assign p_badge = s.pack3_badge -%}
+        {%- endcase -%}
+        <div class="pack{% if n == 2 %} is-active{% endif %}" data-n="{{ n }}" data-price="{{ price }}" data-label="{{ price | money | escape }}"{% if up != blank and up_v.available %} data-label-up="{{ up_v.price | times: n | plus: price | money | escape }}"{% endif %}>
+          {%- if p_badge != blank -%}<span class="badge">{{ p_badge }}</span>{%- endif -%}
+          <label class="pack-head">
+            <input type="radio" name="vnl-pack-{{ section.id }}" value="{{ n }}"{% if n == 2 %} checked{% endif %}>
+            <span class="radio" aria-hidden="true"></span>
+            <span class="thumbs-n" aria-hidden="true">{%- assign pack_img = s.pack_img | default: product.featured_image -%}{% for i in (1..n) %}<span>{% if pack_img %}<img src="{{ pack_img | image_url: width: 120 }}" alt="" width="40" height="40" loading="lazy">{% endif %}</span>{% endfor %}</span>
+            <span class="pid"><b>{{ p_name }}</b>{%- if p_sub != blank -%}<small>{{ p_sub }}</small>{%- endif -%}</span>
+            <span class="pp"><b>{{ each | money }}</b> <small>{{ s.each_label }}</small>{%- if each < unit -%}<s>{{ unit | money }}</s>{%- endif -%}</span>
+          </label>
+          <div class="pack-body">
+            {%- if multi -%}
+            <div class="sel-row">
+              {%- for i in (1..n) -%}
+                <label>{% if n > 1 %}#{{ i }}{% endif %}
+                  <select data-variant-select aria-label="{{ s.variant_label | escape }} {{ i }}">
+                    {%- for v in product.variants -%}<option value="{{ v.id }}"{% unless v.available %} disabled{% endunless %}>{{ v.title }}{% unless v.available %} (épuisé){% endunless %}</option>{%- endfor -%}
+                  </select>
+                </label>
+              {%- endfor -%}
+            </div>
+            {%- endif -%}
+            <p class="stock" data-stock hidden></p>
+            {%- if up != blank and up_v.available -%}
+            <label class="upsell" data-upsell>
+              <input type="checkbox" data-upsell-box>
+              {%- if up.featured_image -%}<img src="{{ up.featured_image | image_url: width: 80 }}" alt="" width="30" height="30" loading="lazy">{%- endif -%}
+              <span>{{ s.upsell_text }}</span>
+              <b>{{ up_v.price | times: n | money }}</b>
+            </label>
             {%- endif -%}
           </div>
-        {%- endfor -%}
-      </div>
-      {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
 
-      <div id="acheter" style="scroll-margin-top:96px"></div>
-      <div class="lpn-eyebrow">{{ s.packs_eyebrow }}</div>
-      <h3 class="lpn-packs-title">{{ s.packs_title }}</h3>
+    {%- if s.sold_line != blank -%}<p class="sold"><span>{{ s.sold_line }}</span></p>{%- endif -%}
+    <div class="cta">
+      <button type="button" class="vnl-btn" data-atc>Ajouter au panier · <span data-atc-price>{{ unit | money }}</span></button>
+    </div>
+    <div class="pay">{%- for type in shop.enabled_payment_types -%}{{ type | payment_type_svg_tag }}{%- endfor -%}</div>
 
-      <div class="lpn-packs" role="radiogroup" aria-label="{{ s.packs_title | escape }}">
-        {%- for n in (1..3) -%}
-          {%- assign total = unit | times: n -%}
-          {%- assign price = total -%}
-          {%- if n == 2 and s.pack2_price != blank -%}{%- assign price = s.pack2_price | replace: ',', '.' | times: 100 | round -%}{%- endif -%}
-          {%- if n == 3 and s.pack3_price != blank -%}{%- assign price = s.pack3_price | replace: ',', '.' | times: 100 | round -%}{%- endif -%}
-          {%- case n -%}
-            {%- when 1 -%}{%- assign p_name = s.pack1_name -%}{%- assign p_sub = s.pack1_sub -%}
-            {%- when 2 -%}{%- assign p_name = s.pack2_name -%}{%- assign p_sub = s.pack2_sub -%}
-            {%- when 3 -%}{%- assign p_name = s.pack3_name -%}{%- assign p_sub = s.pack3_sub -%}
-          {%- endcase -%}
-          <div class="lpn-pack{% if n == 2 %} is-active{% endif %}" data-n="{{ n }}" data-price="{{ price | money }}">
-            <span class="lpn-tag">{{ n }} {% if n > 1 %}{{ s.unit_plural }}{% else %}{{ s.unit_singular }}{% endif %}</span>
-            {%- if n == 2 and s.pack2_badge != blank -%}<span class="lpn-badge">{{ s.pack2_badge }}</span>{%- elsif n == 3 and s.pack3_badge != blank -%}<span class="lpn-badge">{{ s.pack3_badge }}</span>{%- endif -%}
-            <label class="lpn-pack-head">
-              <input type="radio" name="lpn-pack-{{ section.id }}" value="{{ n }}"{% if n == 2 %} checked{% endif %}>
-              <span class="lpn-radio" aria-hidden="true"></span>
-              <span class="lpn-stack" aria-hidden="true">{%- assign pack_img = s.pack_img | default: product.featured_image -%}{% for i in (1..n) %}<span class="lpn-mini">{% if pack_img %}<img src="{{ pack_img | image_url: width: 120 }}" alt="" width="44" height="44" loading="lazy">{% endif %}</span>{% endfor %}</span>
-              <span class="lpn-pack-id">
-                <b>{{ p_name }}</b>{%- if p_sub != blank -%}<small>{{ p_sub }}</small>{%- endif -%}
-                {%- if n > 1 -%}<em>soit {{ price | times: 1.0 | divided_by: n | round | money }} l'unité</em>{%- endif -%}
-              </span>
-              <span class="lpn-pack-price">{{ price | money }}{% if price < total %}<s>{{ total | money }}</s>{% endif %}</span>
-            </label>
-            <div class="lpn-pack-body">
-              {%- if s.klarna_on -%}
-              <p class="lpn-klarna">ou <strong>3 × {{ price | divided_by: 3.0 | round | money }}</strong> sans frais avec <em>Klarna</em></p>
-              {%- endif -%}
-              <p class="lpn-stock" data-stock hidden></p>
-              {%- if multi -%}
-              <span class="lpn-label">{% if n > 1 %}{{ s.variant_label_multi }}{% else %}{{ s.variant_label }}{% endif %}</span>
-              <div class="lpn-selects">
-                {%- for i in (1..n) -%}
-                  <label class="lpn-select">{% if n > 1 %}<span>{{ i }}</span>{% endif %}
-                    <select data-variant-select aria-label="{{ s.variant_label | escape }} {{ i }}">
-                      {%- for v in product.variants -%}<option value="{{ v.id }}"{% unless v.available %} disabled{% endunless %}>{{ v.title }}{% unless v.available %} (épuisé){% endunless %}</option>{%- endfor -%}
-                    </select>
-                  </label>
-                {%- endfor -%}
-              </div>
-              {%- endif -%}
-              {%- if n == 1 and s.pack1_tip != blank -%}<p class="lpn-tip">{{ s.pack1_tip }}</p>{%- endif -%}
-            </div>
-          </div>
-        {%- endfor -%}
-      </div>
-
-      <div class="lpn-cta">
-        {%- if s.ship_banner != blank -%}
-        <div class="lpn-ship"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>{{ s.ship_banner }}</div>
-        {%- endif -%}
-        <button type="button" class="lpn-btn lpn-btn--stack" data-atc><span>Ajouter au panier</span><span class="lpn-btn-p" data-atc-price>{{ unit | money }}</span></button>
-      </div>
-      {%- if s.sold_line != blank -%}<p class="vnl-sold">{{ s.sold_line }}</p>{%- endif -%}
-
-      {%- if s.trial_title != blank -%}
-      <div class="lpn-card lpn-card--cream" style="margin-top:18px">
-        <span class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></span>
-        <div><b>{{ s.trial_title }}</b>{%- if s.trial_text != blank -%}<p>{{ s.trial_text }}</p>{%- endif -%}</div>
-      </div>
-      {%- endif -%}
-
-      <p class="lpn-secure"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Paiement 100 % sécurisé</p>
-      <div class="lpn-pay">{%- for type in shop.enabled_payment_types -%}{%- unless type == 'american_express' -%}{{ type | payment_type_svg_tag }}{%- endunless -%}{%- endfor -%}</div>
-
-      <div class="lpn-acc">
-        {%- for b in info_blocks -%}
-        <details {{ b.shopify_attributes }}><summary>{{ b.settings.title }}</summary><div class="vnl-acc-text">{{ b.settings.text }}</div></details>
-        {%- endfor -%}
-      </div>
+    <div class="acc">
+      {%- for b in info_blocks -%}
+      <details {{ b.shopify_attributes }}><summary>{{ b.settings.title }}</summary><div class="txt">{{ b.settings.text }}</div></details>
+      {%- endfor -%}
     </div>
   </div>
+</div></div>
+
+<div class="sticky" data-sticky>
+  <div class="who">{%- if product.featured_image -%}<img src="{{ product.featured_image | image_url: width: 100 }}" alt="" width="46" height="46" loading="lazy">{%- endif -%}<div><b>{{ s.title | default: product.title }}</b><small data-sticky-sub></small></div></div>
+  <button type="button" class="vnl-btn" data-atc-sticky>Ajouter au panier · <span data-sticky-price>{{ unit | money }}</span></button>
 </div>
 
-<div class="lpn-sticky" data-sticky>
-  <div class="info"><span class="th"></span><div><b>{{ product.title }}</b><span class="sub" data-sticky-sub>1 {{ s.unit_singular }}</span></div></div>
-  <button type="button" class="lpn-btn lpn-btn--stack" data-atc-sticky><span>Ajouter au panier</span><span class="lpn-btn-p" data-sticky-price>{{ unit | money }}</span></button>
-</div>
-<div class="lpn-sticky-m" data-sticky-m><a class="lpn-btn lpn-btn--yellow" href="#acheter">{{ s.sticky_mobile }}</a></div>
-
-<script type="application/json" id="vnl-data-{{ section.id }}">{"default":{{ product.selected_or_first_available_variant.id | default: 0 }},"variants":[{% for v in product.variants %}{"id":{{ v.id }},"title":{{ v.title | json }},"a":{{ v.available }},"q":{% if v.inventory_management != blank and v.inventory_policy != 'continue' %}{{ v.inventory_quantity | at_least: 0 }}{% else %}null{% endif %}}{% unless forloop.last %},{% endunless %}{% endfor %}]}</script>
+<script type="application/json" id="vnl-data-{{ section.id }}">{"default":{{ product.selected_or_first_available_variant.id | default: 0 }},"upsell":{% if up != blank and up_v.available %}{{ up_v.id }}{% else %}null{% endif %},"variants":[{% for v in product.variants %}{"id":{{ v.id }},"title":{{ v.title | json }},"a":{{ v.available }},"q":{% if v.inventory_management != blank and v.inventory_policy != 'continue' %}{{ v.inventory_quantity | at_least: 0 }}{% else %}null{% endif %}}{% unless forloop.last %},{% endunless %}{% endfor %}]}</script>
 <script>
 (function () {
-  var root = document.getElementById('lpn-{{ section.id }}');
+  var root = document.getElementById('vnl-{{ section.id }}');
   if (!root || root.dataset.ready) return;
   root.dataset.ready = '1';
   var data = JSON.parse(document.getElementById('vnl-data-{{ section.id }}').textContent);
@@ -183,29 +259,27 @@
   var $$ = function (q, c) { return [].slice.call((c || root).querySelectorAll(q)); };
   function byId(id) { return data.variants.filter(function (v) { return v.id === id; })[0]; }
 
-  /* Galerie */
-  var stage = $('[data-stage]'), slides = $$('.lpn-slide', stage), thumbs = $('[data-thumbs]'), cur = 0;
-  function mark() { $$('.lpn-thumb', thumbs).forEach(function (t, k) { t.classList.toggle('is-active', k === cur); }); }
-  function go(i) { if (!slides.length) return; cur = Math.max(0, Math.min(slides.length - 1, i)); stage.scrollTo({ left: slides[cur].offsetLeft, behavior: 'smooth' }); mark(); }
+  /* Galerie : vignettes en dessous, flèches en boucle, glisser */
+  var stage = $('[data-stage]'), slides = $$('.slide', stage), thumbs = $('[data-thumbs]'), cur = 0;
+  function mark() { $$('.thumb', thumbs).forEach(function (t, k) { t.classList.toggle('is-active', k === cur); }); }
+  function go(i) { if (!slides.length) return; cur = (i + slides.length) % slides.length; stage.scrollTo({ left: slides[cur].offsetLeft, behavior: 'smooth' }); mark(); }
   slides.forEach(function (sl, i) {
-    var b = document.createElement('button'); b.type = 'button'; b.className = 'lpn-thumb';
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'thumb';
     b.setAttribute('aria-label', 'Voir l’image ' + (i + 1)); b.innerHTML = sl.innerHTML;
-    $$('img', b).forEach(function (im) { im.loading = 'lazy'; im.removeAttribute('fetchpriority'); im.sizes = '70px'; });
+    $$('img', b).forEach(function (im) { im.loading = 'lazy'; im.removeAttribute('fetchpriority'); im.sizes = '120px'; });
     b.addEventListener('click', function () { go(i); }); thumbs.appendChild(b);
   });
   mark();
-  $('.lpn-arrow.prev').addEventListener('click', function () { go(cur - 1); });
-  $('.lpn-arrow.next').addEventListener('click', function () { go(cur + 1); });
+  $('.arrow.prev').addEventListener('click', function () { go(cur - 1); });
+  $('.arrow.next').addEventListener('click', function () { go(cur + 1); });
   stage.addEventListener('scroll', function () {
     if (!slides.length) return;
-    var w = slides[0].offsetWidth + (parseFloat(getComputedStyle(stage).columnGap) || 0);
-    var i = Math.round(stage.scrollLeft / w); if (i !== cur) { cur = i; mark(); }
+    var i = Math.round(stage.scrollLeft / slides[0].offsetWidth); if (i !== cur) { cur = i; mark(); }
   }, { passive: true });
 
   /* Packs */
-  var packs = $$('.lpn-pack'), active = $('.lpn-pack.is-active') || packs[0], cta = $('.lpn-cta');
-  var atc = $('[data-atc]'), atcPrice = $('[data-atc-price]');
-  function place() { var b = $('.lpn-pack-body', active); if (cta && b) b.appendChild(cta); }
+  var packs = $$('.pack'), active = $('.pack.is-active') || packs[0];
+  var atc = $('[data-atc]'), sticky = $('[data-atc-sticky]'), upOn = false;
   function picks() {
     var sel = $$('[data-variant-select]', active);
     if (sel.length) return sel.map(function (x) { return +x.value; });
@@ -214,44 +288,45 @@
   function lines() {
     var q = {}, order = [];
     picks().forEach(function (id) { if (!q[id]) { q[id] = 0; order.push(id); } q[id]++; });
-    return order.map(function (id) { return { id: id, quantity: q[id] }; });
+    var out = order.map(function (id) { return { id: id, quantity: q[id] }; });
+    if (upOn && data.upsell) out.push({ id: data.upsell, quantity: +active.dataset.n });
+    return out;
   }
-  function ok() { return lines().every(function (l) { var v = byId(l.id); return v && v.a && (v.q === null || l.quantity <= v.q); }); }
+  function ok() { return lines().every(function (l) { if (l.id === data.upsell) return true; var v = byId(l.id); return v && v.a && (v.q === null || l.quantity <= v.q); }); }
   function stockMsg() {
     var el = $('[data-stock]', active); if (!el) return;
-    var msg = '', alert = false;
+    var msg = '';
     lines().forEach(function (l) {
       var v = byId(l.id); if (!v || msg) return;
-      if (!v.a || (v.q !== null && l.quantity > v.q)) { alert = true; msg = v.q > 0 ? 'Il ne reste que ' + v.q + ' en stock. Choisissez un pack plus petit.' : 'Épuisé pour le moment.'; }
-      else if (v.q !== null && v.q <= LOW) { msg = 'Plus que ' + v.q + ' en stock'; }
+      if (!v.a || (v.q !== null && l.quantity > v.q)) msg = v.q > 0 ? 'Il ne reste que ' + v.q + ' en stock. Choisissez un pack plus petit.' : 'Épuisé pour le moment.';
+      else if (v.q !== null && v.q <= LOW) msg = 'Plus que ' + v.q + ' en stock';
     });
-    el.classList.toggle('is-alert', alert);
-    el.textContent = '';
-    if (msg) { var row = document.createElement('span'); row.className = 'lpn-stock-l'; row.appendChild(document.createElement('i')); row.appendChild(document.createTextNode(msg)); el.appendChild(row); }
-    el.hidden = !msg;
+    el.textContent = msg; el.hidden = !msg;
   }
   function sync() {
     var n = +active.dataset.n, names = $$('[data-variant-select]', active).map(function (x) { return byId(+x.value).title; });
-    atcPrice.textContent = active.dataset.price;
-    $('[data-sticky-price]').textContent = active.dataset.price;
+    var p = (upOn && active.dataset.labelUp) || active.dataset.label;
+    $('[data-atc-price]').textContent = p; $('[data-sticky-price]').textContent = p;
     $('[data-sticky-sub]').textContent = n + ' ' + (n > 1 ? UNITS : UNIT) + (names.length ? ' · ' + names.join(' + ') : '');
+    $$('[data-upsell]').forEach(function (u) { u.classList.toggle('is-on', upOn); $('[data-upsell-box]', u).checked = upOn; });
     stockMsg();
-    atc.disabled = !ok();
+    atc.disabled = sticky.disabled = !ok();
   }
   function setActive(p) {
     var first = $('[data-variant-select]', active), firstVal = first && first.value;
     packs.forEach(function (x) { x.classList.toggle('is-active', x === p); });
-    active = p; active.querySelector('input').checked = true; place();
+    active = p; active.querySelector('input[type=radio]').checked = true;
     var f = $('[data-variant-select]', active); if (f && firstVal) f.value = firstVal;
     sync();
   }
   packs.forEach(function (p) {
-    p.querySelector('input').addEventListener('change', function () { setActive(p); });
+    p.querySelector('input[type=radio]').addEventListener('change', function () { setActive(p); });
     $$('[data-variant-select]', p).forEach(function (x) { x.addEventListener('change', sync); });
   });
-  place(); sync();
+  $$('[data-upsell-box]').forEach(function (b) { b.addEventListener('change', function () { upOn = b.checked; sync(); }); });
+  sync();
 
-  /* Ajout au panier : le thème ouvre le tiroir panier via son hook sur fetch('/cart/add') */
+  /* Ajout au panier : le thème ouvre son tiroir panier via son hook sur fetch('/cart/add'), sinon on va au panier */
   function add(btn) {
     if (!ok()) return;
     btn.classList.add('is-loading');
@@ -259,25 +334,22 @@
       method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify({ items: lines() })
     }).then(function (r) { return r.json().then(function (d) { if (!r.ok) throw d; return d; }); })
-      .then(function () { var e = $('.lpn-add-err'); if (e) e.remove(); if (!window.VelinCartDrawer) window.location.href = '/cart'; })
+      .then(function () { var e = $('.err'); if (e) e.remove(); if (!window.VelinCartDrawer) window.location.href = '/cart'; })
       .catch(function (err) {
-        var m = $('.lpn-add-err');
-        if (!m) { m = document.createElement('p'); m.className = 'lpn-add-err'; m.style.cssText = 'margin:8px 0 0;font-size:13px;font-weight:700;color:#B3261E'; cta.appendChild(m); }
+        var m = $('.err');
+        if (!m) { m = document.createElement('p'); m.className = 'err'; $('.cta').appendChild(m); }
         m.textContent = (err && err.description) || "Impossible d'ajouter au panier pour le moment. Réessayez ou écrivez-nous.";
       })
       .then(function () { btn.classList.remove('is-loading'); });
   }
   atc.addEventListener('click', function () { add(atc); });
-  $('[data-atc-sticky]').addEventListener('click', function () { add($('[data-atc-sticky]')); });
+  sticky.addEventListener('click', function () { add(sticky); });
 
-  /* Barres sticky : visibles quand le bouton d'ajout est hors écran, une fois la zone d'achat dépassée */
-  var st = $('[data-sticky]'), stm = $('[data-sticky-m]');
+  /* Barre collante : visible une fois le bouton d'ajout dépassé */
+  var st = $('[data-sticky]');
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(function (es) {
-      es.forEach(function (e) {
-        var show = !e.isIntersecting && e.boundingClientRect.top < 0;
-        st.classList.toggle('show', show); stm.classList.toggle('show', show);
-      });
+      es.forEach(function (e) { st.classList.toggle('show', !e.isIntersecting && e.boundingClientRect.top < 0); });
     }).observe(atc);
   }
 })();
@@ -290,44 +362,41 @@
   "tag": "section",
   "settings": [
     { "type": "header", "content": "Titre" },
-    { "type": "text", "id": "title", "label": "Titre (H1)", "default": "La veilleuse qui apaise le coucher" },
-    { "type": "text", "id": "tagline", "label": "Ligne fonctions", "default": "Lumière douce · sons apaisants · minuteur" },
-    { "type": "textarea", "id": "subtitle", "label": "Sous-titre", "default": "Une lumière tamisée et un fond sonore régulier pour transformer le coucher en rituel calme, dans sa chambre comme en vacances." },
-    { "type": "header", "content": "Promesses (3 lignes, vide = masquée)" },
-    { "type": "text", "id": "promise_1", "label": "Ligne 1", "default": "Sans fil et rechargeable : elle le suit partout" },
-    { "type": "text", "id": "promise_2", "label": "Ligne 2", "default": "Essayez-la 30 nuits, satisfait ou remboursé" },
-    { "type": "text", "id": "promise_3", "label": "Ligne 3", "default": "Expédiée de France sous 24 h" },
+    { "type": "text", "id": "title", "label": "Titre (vide = nom du produit)", "default": "Veilleuse Velin" },
+    { "type": "text", "id": "tagline", "label": "Ligne fonctions", "default": "Lumière + sons apaisants + minuteur" },
+    { "type": "textarea", "id": "subtitle", "label": "Description courte", "default": "Une lumière tamisée et un fond sonore doux pour transformer le coucher en petit rituel calme. 🧡" },
+    { "type": "header", "content": "Engagements (3 lignes, vide = masquée)" },
+    { "type": "text", "id": "perk_1", "label": "Ligne bouclier", "default": "Garantie légale de 2 ans" },
+    { "type": "text", "id": "perk_2", "label": "Ligne flèche retour", "default": "30 nuits pour l'essayer, satisfait ou remboursé" },
+    { "type": "text", "id": "perk_3", "label": "Ligne camion", "default": "Expédiée de France sous 24 h" },
     { "type": "header", "content": "Packs" },
-    { "type": "text", "id": "packs_eyebrow", "label": "Petit titre", "default": "Économisez avec les packs" },
-    { "type": "text", "id": "packs_title", "label": "Titre", "default": "Choisissez votre pack" },
+    { "type": "text", "id": "packs_title", "label": "Titre des packs", "default": "Choisissez votre lumière" },
     { "type": "text", "id": "unit_singular", "label": "Unité (singulier)", "default": "veilleuse" },
     { "type": "text", "id": "unit_plural", "label": "Unité (pluriel)", "default": "veilleuses" },
+    { "type": "text", "id": "each_label", "label": "Libellé du prix unitaire", "default": "/ unité" },
     { "type": "image_picker", "id": "pack_img", "label": "Vignette des packs (carrée)", "info": "Vide = image principale du produit." },
-    { "type": "text", "id": "pack1_name", "label": "Pack 1 · nom", "default": "Pour sa chambre" },
-    { "type": "text", "id": "pack1_sub", "label": "Pack 1 · détail", "default": "pour un enfant" },
-    { "type": "text", "id": "pack1_tip", "label": "Pack 1 · conseil (vide = masqué)", "default": "💡 Beaucoup de parents en prennent une deuxième pour les nuits chez les grands-parents." },
-    { "type": "text", "id": "pack2_name", "label": "Pack 2 · nom", "default": "Le duo" },
-    { "type": "text", "id": "pack2_sub", "label": "Pack 2 · détail", "default": "une par chambre, ou une pour les vacances" },
-    { "type": "text", "id": "pack2_badge", "label": "Pack 2 · badge", "default": "⭐ Notre conseil" },
+    { "type": "text", "id": "pack1_name", "label": "Pack 1 · nom", "default": "Une" },
+    { "type": "text", "id": "pack1_sub", "label": "Pack 1 · détail", "default": "Pour sa chambre" },
+    { "type": "text", "id": "pack1_badge", "label": "Pack 1 · badge (vide = aucun)" },
+    { "type": "text", "id": "pack2_name", "label": "Pack 2 · nom", "default": "Deux" },
+    { "type": "text", "id": "pack2_sub", "label": "Pack 2 · détail", "default": "Une par chambre, ou une pour les vacances" },
+    { "type": "text", "id": "pack2_badge", "label": "Pack 2 · badge", "default": "Le plus choisi" },
     { "type": "text", "id": "pack2_price", "label": "Prix du lot de 2 (ex. 99,90)", "info": "Identique à la remise automatique Shopify. Vide = 2 × prix unitaire." },
-    { "type": "text", "id": "pack3_name", "label": "Pack 3 · nom", "default": "La fratrie" },
-    { "type": "text", "id": "pack3_sub", "label": "Pack 3 · détail", "default": "une par enfant, ou à offrir" },
-    { "type": "text", "id": "pack3_badge", "label": "Pack 3 · badge", "default": "👑 Meilleur prix" },
+    { "type": "text", "id": "pack3_name", "label": "Pack 3 · nom", "default": "Trois" },
+    { "type": "text", "id": "pack3_sub", "label": "Pack 3 · détail", "default": "Pour la fratrie, ou à offrir" },
+    { "type": "text", "id": "pack3_badge", "label": "Pack 3 · badge (vide = aucun)" },
     { "type": "text", "id": "pack3_price", "label": "Prix du lot de 3 (ex. 134,90)", "info": "Identique à la remise automatique Shopify. Vide = 3 × prix unitaire." },
-    { "type": "text", "id": "variant_label", "label": "Libellé du choix de variante", "default": "Quel coloris ?" },
-    { "type": "text", "id": "variant_label_multi", "label": "Libellé du choix (packs)", "default": "Quel coloris pour chaque veilleuse ?" },
-    { "type": "checkbox", "id": "klarna_on", "label": "Afficher « 3 × sans frais avec Klarna »", "default": true, "info": "Activez d'abord Klarna dans Réglages > Paiements." },
-    { "type": "header", "content": "Réassurance" },
-    { "type": "text", "id": "ship_banner", "label": "Bandeau au-dessus du bouton", "default": "Livraison offerte · expédiée de France sous 24 h" },
-    { "type": "text", "id": "sold_line", "label": "Ligne de ventes (chiffre réel uniquement, vide = masquée)" },
-    { "type": "text", "id": "trial_title", "label": "Encadré garantie · titre (vide = masqué)", "default": "30 nuits pour l'essayer" },
-    { "type": "textarea", "id": "trial_text", "label": "Encadré garantie · texte", "default": "Si elle ne trouve pas sa place dans votre rituel du soir, écrivez-nous dans les 30 jours : nous vous remboursons." },
-    { "type": "text", "id": "sticky_mobile", "label": "Bouton mobile collant", "default": "Choisir mon pack" }
+    { "type": "text", "id": "variant_label", "label": "Libellé du choix de variante", "default": "Coloris" },
+    { "type": "header", "content": "Option ajoutée au pack (ex. coffret cadeau)" },
+    { "type": "product", "id": "upsell_product", "label": "Produit en option (vide = masqué)", "info": "Ajouté en autant d'exemplaires que de veilleuses, au prix du produit." },
+    { "type": "text", "id": "upsell_text", "label": "Texte de l'option", "default": "+ Coffret cadeau" },
+    { "type": "header", "content": "Sous les packs" },
+    { "type": "text", "id": "sold_line", "label": "Pastille de ventes (chiffre réel uniquement, vide = masquée)" }
   ],
   "blocks": [
     { "type": "@app" },
+    { "type": "slide", "name": "Image de galerie", "settings": [ { "type": "image_picker", "id": "image", "label": "Image (1:1)" } ] },
     { "type": "clip", "name": "Vidéo courte", "settings": [ { "type": "video", "id": "video", "label": "Vidéo 9:14, sans son, en boucle" } ] },
-    { "type": "slide", "name": "Image de galerie", "settings": [ { "type": "image_picker", "id": "image", "label": "Image (1:1 conseillé)" } ] },
     { "type": "info", "name": "Accordéon", "settings": [
       { "type": "text", "id": "title", "label": "Titre" },
       { "type": "richtext", "id": "text", "label": "Texte" }

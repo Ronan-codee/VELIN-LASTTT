@@ -1,0 +1,32 @@
+{%- comment -%} FAQ centrée, lignes fines avec + / −. Un bloc = une question. {%- endcomment -%}
+{%- assign s = section.settings -%}
+{% render 'vnl-head' %}
+<style>
+  #vnl-faq-{{ section.id }} .list{max-width:1100px;margin:28px auto 0;border-top:1px solid var(--dark)}
+  #vnl-faq-{{ section.id }} details{border-bottom:1px solid var(--dark)}
+  #vnl-faq-{{ section.id }} summary{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px 0;list-style:none;cursor:pointer;font-family:'Playfair Display',Georgia,serif;font-size:19px}
+  #vnl-faq-{{ section.id }} summary::-webkit-details-marker{display:none}
+  #vnl-faq-{{ section.id }} summary::after{content:"+";flex:none;font-family:'Nunito Sans',sans-serif;font-size:26px;font-weight:300;line-height:1}
+  #vnl-faq-{{ section.id }} details[open] summary::after{content:"−"}
+  #vnl-faq-{{ section.id }} p{padding:0 0 20px;font-size:15px}
+</style>
+<div class="vnl" id="vnl-faq-{{ section.id }}"><div class="vnl-wrap vnl-sec">
+  <h2>{{ s.title }}</h2>
+  <div class="list">
+    {%- for b in section.blocks -%}<details {{ b.shopify_attributes }}><summary>{{ b.settings.q }}</summary><p>{{ b.settings.a }}</p></details>{%- endfor -%}
+  </div>
+</div></div>
+
+{% schema %}
+{
+  "name": "Veilleuse · FAQ",
+  "settings": [ { "type": "text", "id": "title", "label": "Titre", "default": "FAQ" } ],
+  "blocks": [
+    { "type": "faq", "name": "Question", "settings": [
+      { "type": "text", "id": "q", "label": "Question", "default": "Votre question ?" },
+      { "type": "textarea", "id": "a", "label": "Réponse", "default": "Votre réponse." }
+    ] }
+  ],
+  "presets": [ { "name": "Veilleuse · FAQ" } ]
+}
+{% endschema %}

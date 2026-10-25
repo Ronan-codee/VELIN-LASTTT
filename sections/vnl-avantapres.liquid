@@ -3,32 +3,28 @@
 {%- assign ba_show = request.design_mode -%}
 {%- if s.before != blank and s.after != blank -%}{%- assign ba_show = true -%}{%- endif -%}
 {%- if ba_show -%}
-{% render 'lpn-head' %}
+{% render 'vnl-head' %}
 <style>
-  #vnl-ba-{{ section.id }}{padding:72px 0 24px;text-align:center}
-  #vnl-ba-{{ section.id }} h2{margin:12px 0 0}
-  #vnl-ba-{{ section.id }} .txt{max-width:560px;margin:14px auto 0;color:var(--muted)}
-  #vnl-ba-{{ section.id }} .vnl-ba{position:relative;max-width:900px;margin:32px auto 0;aspect-ratio:4/3;border-radius:var(--r-lg);overflow:hidden;background:#E8EAF3;user-select:none;--x:50%}
-  #vnl-ba-{{ section.id }} .vnl-ba>div{position:absolute;inset:0}
-  #vnl-ba-{{ section.id }} .vnl-ba .after{clip-path:inset(0 0 0 var(--x))}
-  #vnl-ba-{{ section.id }} .vnl-ba-lab{position:absolute;top:14px;z-index:2;padding:6px 12px;border-radius:999px;background:rgba(32,30,77,.8);color:#fff;font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
-  #vnl-ba-{{ section.id }} .vnl-ba-line{position:absolute;top:0;bottom:0;left:var(--x);width:3px;margin-left:-1.5px;background:#fff;z-index:2;pointer-events:none}
-  #vnl-ba-{{ section.id }} .vnl-ba-line::after{content:"⇆";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;background:#fff;color:var(--navy);display:grid;place-items:center;font-weight:800;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+  #vnl-ba-{{ section.id }} .ba{position:relative;margin-top:32px;aspect-ratio:16/10;border-radius:var(--rl);overflow:hidden;background:var(--bg2);user-select:none;--x:50%}
+  #vnl-ba-{{ section.id }} .ba>div{position:absolute;inset:0}
+  #vnl-ba-{{ section.id }} .ba img{width:100%;height:100%;object-fit:cover}
+  #vnl-ba-{{ section.id }} .ba .after{clip-path:inset(0 0 0 var(--x))}
+  #vnl-ba-{{ section.id }} .lab{position:absolute;top:16px;z-index:2;padding:4px 12px;border-radius:6px;background:#fff;color:#000;font-size:13px}
+  #vnl-ba-{{ section.id }} .line{position:absolute;top:0;bottom:0;left:var(--x);width:3px;margin-left:-1.5px;background:#fff;z-index:2;pointer-events:none}
+  #vnl-ba-{{ section.id }} .line::after{content:"|||";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:40px;height:40px;border-radius:50%;background:#fff;color:#000;display:grid;place-items:center;font-size:11px;letter-spacing:1px}
   #vnl-ba-{{ section.id }} input[type=range]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:ew-resize;z-index:3;margin:0}
 </style>
-<div class="lpn"><section id="vnl-ba-{{ section.id }}"><div class="lpn-wrap">
-  {%- if s.pill != blank -%}<span class="lpn-pill">{{ s.pill }}</span>{%- endif -%}
-  <h2>{{ s.title }}{% if s.title_gold != blank %} <span class="lpn-gold">{{ s.title_gold }}</span>{% endif %}</h2>
-  {%- if s.text != blank -%}<p class="txt">{{ s.text }}</p>{%- endif -%}
-  <div class="vnl-ba" data-ba>
-    <div class="before">{% render 'lpn-media', image: s.before, label: 'Avant · plafonnier allumé · 4:3', width: 1400 %}</div>
-    <div class="after">{% render 'lpn-media', image: s.after, label: 'Après · veilleuse seule · 4:3', width: 1400 %}</div>
-    <span class="vnl-ba-lab" style="left:14px">{{ s.before_label }}</span>
-    <span class="vnl-ba-lab" style="right:14px">{{ s.after_label }}</span>
-    <span class="vnl-ba-line" aria-hidden="true"></span>
+<div class="vnl" id="vnl-ba-{{ section.id }}"><div class="vnl-wrap vnl-sec">
+  <h2>{{ s.title }}</h2>
+  <div class="ba" data-ba>
+    <div class="before">{%- if s.before != blank -%}{{ s.before | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '600, 900, 1200, 1600', alt: s.before_label }}{%- else -%}<div class="vnl-mock"><span>Avant · plafonnier allumé · 16:10</span></div>{%- endif -%}</div>
+    <div class="after">{%- if s.after != blank -%}{{ s.after | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '600, 900, 1200, 1600', alt: s.after_label }}{%- else -%}<div class="vnl-mock" style="background:linear-gradient(150deg,#C26A1E,#8C4404)"><span style="color:#fff">Après · veilleuse seule · 16:10</span></div>{%- endif -%}</div>
+    <span class="lab" style="left:16px">{{ s.before_label }}</span>
+    <span class="lab" style="right:16px">{{ s.after_label }}</span>
+    <span class="line" aria-hidden="true"></span>
     <input type="range" min="0" max="100" value="50" aria-label="Comparer avant et après">
   </div>
-</div></section></div>
+</div></div>
 <script>
 (function () {
   var box = document.querySelector('#vnl-ba-{{ section.id }} [data-ba]'); if (!box) return;
@@ -42,14 +38,11 @@
 {
   "name": "Veilleuse · Avant / après",
   "settings": [
-    { "type": "text", "id": "pill", "label": "Petit titre", "default": "Avant / après" },
-    { "type": "text", "id": "title", "label": "Titre", "default": "Le grand plafonnier," },
-    { "type": "text", "id": "title_gold", "label": "Fin du titre (surlignée)", "default": "ou une lumière douce ?" },
-    { "type": "textarea", "id": "text", "label": "Texte", "default": "Faites glisser le curseur : la même chambre, à l'heure de l'histoire du soir." },
-    { "type": "image_picker", "id": "before", "label": "Photo avant (4:3)" },
-    { "type": "text", "id": "before_label", "label": "Étiquette avant", "default": "Plafonnier" },
-    { "type": "image_picker", "id": "after", "label": "Photo après (4:3, même cadrage)" },
-    { "type": "text", "id": "after_label", "label": "Étiquette après", "default": "Veilleuse" }
+    { "type": "text", "id": "title", "label": "Titre", "default": "Plafonnier ou petite lueur ?" },
+    { "type": "image_picker", "id": "before", "label": "Photo avant (16:10)" },
+    { "type": "text", "id": "before_label", "label": "Étiquette avant", "default": "Avant" },
+    { "type": "image_picker", "id": "after", "label": "Photo après (16:10, même cadrage)" },
+    { "type": "text", "id": "after_label", "label": "Étiquette après", "default": "Après" }
   ],
   "presets": [ { "name": "Veilleuse · Avant / après" } ]
 }

@@ -75,39 +75,51 @@
         "item_1": {
           "type": "item",
           "settings": {
-            "text": "L'histoire du soir"
+            "icon": "heart",
+            "text": "Pour l'histoire du soir"
           }
         },
         "item_2": {
           "type": "item",
           "settings": {
-            "text": "Le biberon de 3 h"
+            "icon": "baby",
+            "text": "Prête pour la chambre de bébé"
           }
         },
         "item_3": {
           "type": "item",
           "settings": {
-            "text": "Le réveil après un cauchemar"
+            "icon": "moon",
+            "text": "Pour les réveils de nuit"
           }
         },
         "item_4": {
           "type": "item",
           "settings": {
-            "text": "Les nuits chez mamie"
+            "icon": "sun",
+            "text": "Une ambiance douce et chaleureuse"
           }
         },
         "item_5": {
           "type": "item",
           "settings": {
-            "text": "Les siestes en vacances"
+            "icon": "book",
+            "text": "Pour les nuits chez mamie"
           }
         },
         "item_6": {
           "type": "item",
           "settings": {
-            "text": "Le coucher sans plafonnier"
+            "icon": "heart",
+            "text": "Un rituel du coucher plus calme"
           }
         }
+      },
+      "settings": {
+        "aria": "Usages",
+        "bg": "#8C4404",
+        "fg": "#F3ECE5",
+        "serif": true
       },
       "block_order": [
         "item_1",
@@ -116,12 +128,7 @@
         "item_4",
         "item_5",
         "item_6"
-      ],
-      "settings": {
-        "aria": "Usages",
-        "bg": "#201E4D",
-        "fg": "#FFFFFF"
-      }
+      ]
     },
     "avant_apres": {
       "type": "vnl-avantapres",
@@ -169,7 +176,9 @@
         "sound_3",
         "sound_4"
       ],
-      "settings": {}
+      "settings": {
+        "title": ""
+      }
     },
     "qualite": {
       "type": "vnl-qualite",
@@ -181,50 +190,49 @@
         "item_1": {
           "type": "item",
           "settings": {
+            "icon": "truck",
             "text": "Expédiée de France sous 24 h"
           }
         },
         "item_2": {
           "type": "item",
           "settings": {
+            "icon": "return",
             "text": "30 nuits d'essai"
           }
         },
         "item_3": {
           "type": "item",
           "settings": {
-            "text": "Paiement en 3 × sans frais"
+            "icon": "shield",
+            "text": "Garantie légale 2 ans"
           }
         },
         "item_4": {
           "type": "item",
           "settings": {
-            "text": "Garantie légale 2 ans"
-          }
-        },
-        "item_5": {
-          "type": "item",
-          "settings": {
+            "icon": "mail",
             "text": "Une vraie équipe vous répond"
           }
         }
+      },
+      "settings": {
+        "aria": "Nos engagements",
+        "bg": "#260D04",
+        "fg": "#FFFFFF",
+        "serif": false,
+        "pad": 20,
+        "speed": 40
       },
       "block_order": [
         "item_1",
         "item_2",
         "item_3",
-        "item_4",
-        "item_5"
-      ],
-      "settings": {
-        "aria": "Nos engagements",
-        "bg": "#FFE791",
-        "fg": "#201E4D",
-        "pad": 14
-      }
+        "item_4"
+      ]
     },
     "faq": {
-      "type": "lpn-faq",
+      "type": "vnl-faq",
       "blocks": {
         "faq_1": {
           "type": "faq",
@@ -310,9 +318,7 @@
         "faq_10"
       ],
       "settings": {
-        "pill": "Questions fréquentes",
-        "title": "Encore une",
-        "title_gold": "petite question ?"
+        "title": "FAQ"
       }
     },
     "avis": {
@@ -332,19 +338,6 @@
         "app-block-review-list_1"
       ],
       "settings": {}
-    },
-    "fin": {
-      "type": "lpn-fin",
-      "settings": {
-        "pill": "30 nuits pour juger",
-        "title": "Le coucher,",
-        "title_gold": "en plus doux.",
-        "text": "Essayez-la 30 nuits. Si elle ne trouve pas sa place dans votre rituel du soir, écrivez-nous : nous vous remboursons.",
-        "check_1": "Livraison offerte",
-        "check_2": "Expédiée de France sous 24 h",
-        "check_3": "30 nuits d'essai",
-        "button": "Choisir mon pack →"
-      }
     }
   },
   "order": [
@@ -355,7 +348,6 @@
     "qualite",
     "reassurance",
     "faq",
-    "avis",
-    "fin"
+    "avis"
   ]
 }

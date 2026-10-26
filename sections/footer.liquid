@@ -3,11 +3,20 @@
 {% endcomment %}
 
 {%- assign sec_id = section.id -%}
+{%- comment -%} Fiche veilleuse : couleurs et texte propres (le reste du site garde les réglages ci-dessous). {%- endcomment -%}
+{%- assign ft_bg = section.settings.bg_color -%}
+{%- assign ft_fg = section.settings.text_color -%}
+{%- assign ft_about = section.settings.about_text -%}
+{%- if template.suffix == 'veilleuse' -%}
+  {%- assign ft_bg = section.settings.veilleuse_bg -%}
+  {%- assign ft_fg = section.settings.veilleuse_text_color -%}
+  {%- assign ft_about = section.settings.about_text_veilleuse -%}
+{%- endif -%}
 
 <style>
   #velin-footer-{{ sec_id }} {
-    background-color: {{ section.settings.bg_color }};
-    color: {{ section.settings.text_color }};
+    background-color: {{ ft_bg }};
+    color: {{ ft_fg }};
     padding: 50px 0 50px 0;
     font-family: var(--font-body-family), sans-serif;
     box-sizing: border-box;
@@ -70,7 +79,7 @@
 
   #velin-footer-{{ sec_id }} .btn-outlined {
     background-color: transparent;
-    color: {{ section.settings.text_color }};
+    color: {{ ft_fg }};
     padding: 10px 24px;
     font-size: 12px;
     font-weight: 600;
@@ -78,7 +87,7 @@
     text-decoration: none;
     border-radius: 4px;
     letter-spacing: 1px;
-    border: 1px solid {{ section.settings.text_color }};
+    border: 1px solid {{ ft_fg }};
     transition: background 0.3s, color 0.3s;
   }
 
@@ -99,7 +108,7 @@
     text-transform: uppercase;
     margin: 0 0 25px 0;
     letter-spacing: 1px;
-    color: {{ section.settings.text_color }};
+    color: {{ ft_fg }};
   }
 
   #velin-footer-{{ sec_id }} .footer-links-list {
@@ -113,7 +122,7 @@
   }
 
   #velin-footer-{{ sec_id }} .footer-links-list a {
-    color: {{ section.settings.text_color }};
+    color: {{ ft_fg }};
     text-decoration: none;
     font-size: 13px;
     opacity: 0.85;
@@ -145,7 +154,7 @@
     flex-shrink: 0;
     margin-top: 2px;
     fill: none;
-    stroke: {{ section.settings.text_color }};
+    stroke: {{ ft_fg }};
     stroke-width: 1.5;
   }
 
@@ -211,7 +220,7 @@
         <h2 style="margin: 0 0 20px 0; font-size: 24px; font-weight: 700;">{{ shop.name }}</h2>
       {%- endif -%}
       
-      <p class="footer-about-text">{{ section.settings.about_text }}</p>
+      <p class="footer-about-text">{{ ft_about }}</p>
       
       <div class="footer-buttons-group">
         {%- if section.settings.btn1_text != blank -%}
@@ -338,6 +347,28 @@
       "id": "about_text",
       "label": "About Brand Text",
       "default": "Velin is a modern luxury brand redefining elegance through craftsmanship, minimalism, and timeless design."
+    },
+    {
+      "type": "header",
+      "content": "Fiche veilleuse uniquement"
+    },
+    {
+      "type": "color",
+      "id": "veilleuse_bg",
+      "label": "Fond du footer (fiche veilleuse)",
+      "default": "#260D04"
+    },
+    {
+      "type": "color",
+      "id": "veilleuse_text_color",
+      "label": "Texte du footer (fiche veilleuse)",
+      "default": "#F3ECE5"
+    },
+    {
+      "type": "textarea",
+      "id": "about_text_veilleuse",
+      "label": "Texte de présentation (fiche veilleuse)",
+      "default": "Velin imagine des produits doux pour accompagner le coucher des enfants : une lumière tamisée, des sons apaisants et des soirées plus calmes. Expédié de France sous 24 h."
     },
     {
       "type": "range",

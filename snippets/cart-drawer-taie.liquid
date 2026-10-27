@@ -1,0 +1,35 @@
+{%- comment -%} Upsell housse de protection du panier (mode oreiller). Params : cd_taie (produit), cd_first_size (taille du premier oreiller). {%- endcomment -%}
+{%- assign cd_sizes = cd_taie.options_with_values[0].values -%}
+{%- assign cd_motifs = cd_taie.options_with_values[1].values -%}
+{%- assign cd_def_size = cd_first_size -%}
+{%- unless cd_sizes contains cd_def_size -%}{%- assign cd_def_size = cd_sizes.first -%}{%- endunless -%}
+{%- assign cd_def_motif = cd_motifs.first -%}
+{%- assign cd_default_variant = nil -%}
+{%- for v in cd_taie.variants -%}
+  {%- if v.available and v.option1 == cd_def_size and v.option2 == cd_def_motif -%}{%- assign cd_default_variant = v -%}{%- endif -%}
+{%- endfor -%}
+{%- unless cd_default_variant -%}
+  {%- for v in cd_taie.variants -%}
+    {%- if v.available and cd_default_variant == nil -%}{%- assign cd_default_variant = v -%}{%- endif -%}
+  {%- endfor -%}
+{%- endunless -%}
+{%- capture cd_taie_json -%}[{%- for v in cd_taie.variants -%}{"id":{{ v.id }},"s":{{ v.option1 | json }},"m":{{ v.option2 | json }},"a":{{ v.available }},"i":{% if v.featured_image %}{{ v.featured_image | image_url: width: 120 | json }}{% else %}""{% endif %}}{% unless forloop.last %},{% endunless %}{%- endfor -%}]{%- endcapture -%}
+<div class="cart-drawer__taie" data-taie-upsell data-variant-id="{{ cd_default_variant.id }}" data-size="{{ cd_default_variant.option1 }}" data-motif="{{ cd_default_variant.option2 }}" data-variants="{{ cd_taie_json | escape }}">
+  <p class="cart-drawer__taie-kicker">Pour aller avec son oreiller</p>
+  <div class="cart-drawer__taie-head">
+    <span class="cart-drawer__taie-thumb">{% assign cd_thumb = cd_default_variant.featured_image | default: cd_taie.featured_image %}{% if cd_thumb %}<img src="{{ cd_thumb | image_url: width: 120 }}" alt="" loading="lazy" data-taie-thumb>{% else %}<img alt="" data-taie-thumb hidden>{% endif %}</span>
+    <span class="cart-drawer__taie-id"><b>Housse de protection</b><small>À la taille de son oreiller</small></span>
+    <span class="cart-drawer__taie-price">+{{ cd_taie.price | money }}</span>
+  </div>
+  <div class="cart-drawer__taie-chips cart-drawer__taie-chips--motif" role="radiogroup" aria-label="Motif de la housse">
+    {%- for m in cd_motifs -%}
+      <button type="button" class="cart-drawer__taie-chip{% if m == cd_default_variant.option2 %} is-selected{% endif %}" data-taie-chip data-axis="m" data-value="{{ m | escape }}" role="radio" aria-checked="{% if m == cd_default_variant.option2 %}true{% else %}false{% endif %}">{{ m }}</button>
+    {%- endfor -%}
+  </div>
+  <div class="cart-drawer__taie-chips" role="radiogroup" aria-label="Taille de la housse">
+    {%- for sz in cd_sizes -%}
+      <button type="button" class="cart-drawer__taie-chip{% if sz == cd_default_variant.option1 %} is-selected{% endif %}" data-taie-chip data-axis="s" data-value="{{ sz | escape }}" role="radio" aria-checked="{% if sz == cd_default_variant.option1 %}true{% else %}false{% endif %}">{{ sz }}</button>
+    {%- endfor -%}
+  </div>
+  <button type="button" class="cart-drawer__taie-add" data-taie-add>Ajouter la housse</button>
+</div>

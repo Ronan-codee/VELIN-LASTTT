@@ -1,0 +1,193 @@
+{%- comment -%} Panier coulissant : mise en page compacte du mode oreiller + plus de page panier. Rendu une fois dans layout/theme.liquid (le tiroir lui-même est re-rendu après chaque modification du panier). {%- endcomment -%}
+<style>
+  .cart-drawer--pillow .cart-drawer__close { top: 10px; right: 12px; }
+  .cart-drawer--pillow .cart-drawer__brand { padding: 14px 20px 6px; }
+  .cart-drawer--pillow .cart-drawer__brand-badge { font-size: 14px; padding: 5px 16px; }
+  .cart-drawer--pillow .cart-drawer__brand-trust { font-size: 11.5px; margin-top: 6px; }
+  .cart-drawer--pillow .cart-drawer__header { padding: 2px 20px 8px; }
+  .cart-drawer--pillow .cart-drawer__title { font-size: 20px; }
+  .cart-drawer--pillow .cart-drawer__body { padding: 12px 20px; }
+  .cart-drawer--pillow .cart-drawer__items { gap: 10px; }
+  .cart-drawer--pillow .cart-drawer__item { gap: 12px; }
+  .cart-drawer--pillow .cart-drawer__item-image { width: 56px; height: 56px; border-radius: 12px; }
+  .cart-drawer--pillow .cart-drawer__item-title { font-size: 14px; }
+  .cart-drawer--pillow .cart-drawer__item-variant { font-size: 10px; gap: 6px; }
+  .cart-drawer--pillow .cart-drawer__item-variant b { padding: 2px 8px; font-size: 11.5px; }
+  .cart-drawer--pillow .cart-drawer__qty { padding: 1px 8px; gap: 8px; }
+  .cart-drawer--pillow .cart-drawer__qty-btn { width: 20px; height: 20px; font-size: 15px; }
+  .cart-drawer--pillow .cart-drawer__qty-value { font-size: 13px; }
+  .cart-drawer--pillow .cart-drawer__item-was { font-size: 11.5px; }
+  .cart-drawer--pillow .cart-drawer__item-price { font-size: 15px; }
+  .cart-drawer--pillow .cart-drawer__taie { margin-top: 12px; padding: 10px 12px; border-radius: 16px; }
+  .cart-drawer--pillow .cart-drawer__taie-kicker { margin: 0 0 6px; font-size: 10px; }
+  .cart-drawer--pillow .cart-drawer__taie-thumb { flex-basis: 36px; width: 36px; height: 36px; border-radius: 10px; }
+  .cart-drawer--pillow .cart-drawer__taie-id b { font-size: 14px; }
+  .cart-drawer--pillow .cart-drawer__taie-id small { font-size: 11.5px; }
+  .cart-drawer--pillow .cart-drawer__taie-price { font-size: 14px; }
+  .cart-drawer--pillow .cart-drawer__taie-chips { margin: 8px 0; gap: 6px; }
+  .cart-drawer--pillow .cart-drawer__taie-chip { height: 34px; border-radius: 10px; font-size: 13px; }
+  .cart-drawer--pillow .cart-drawer__taie-add { height: 40px; font-size: 14px; }
+  .cart-drawer--pillow .cart-drawer__saving { margin-top: 10px; padding: 8px 12px; border-radius: 12px; font-size: 14px; }
+  .cart-drawer--pillow .cart-drawer__footer { padding: 10px 20px 14px; gap: 6px; }
+  .cart-drawer--pillow .cart-drawer__subtotal-row { font-size: 18px; }
+  .cart-drawer--pillow .cart-drawer__delivery { font-size: 12px; }
+  .cart-drawer--pillow .cart-drawer__klarna { font-size: 12.5px; }
+  .cart-drawer--pillow .cart-drawer__klarna em { font-size: 11.5px; padding: 2px 9px; }
+  .cart-drawer--pillow .cart-drawer__checkout-btn { height: 56px; font-size: 17px; }
+  .cart-drawer--pillow .cart-drawer__pay { gap: 4px; }
+  .cart-drawer--pillow .cart-drawer__pay svg { height: 20px; }
+  .cart-drawer__item-offerte { display: block; width: fit-content; max-width: 100%; align-self: flex-start; margin: 4px 0 0; padding: 3px 9px; border-radius: 8px; background: #E9F7EF; color: #1E7A46; font-size: 11.5px; font-weight: 800; }
+  .cart-drawer__item-price--free { color: #1E7A46; }
+  .vh-modal { position: fixed; inset: 0; z-index: 2147483000; display: flex; align-items: flex-end; justify-content: center; background: rgba(23,21,63,.55); font-family: 'DM Sans', sans-serif; color: #201E4D; }
+  .vh-modal[hidden] { display: none; }
+  .vh-box { position: relative; width: 100%; max-width: 460px; max-height: 92vh; overflow: auto; background: #fff; border-radius: 22px 22px 0 0; padding: 22px 18px 18px; box-shadow: 0 -10px 40px rgba(23,21,63,.25); }
+  @media (min-width: 700px) { .vh-modal { align-items: center; } .vh-box { border-radius: 22px; } }
+  .vh-x { position: absolute; top: 10px; right: 12px; width: 34px; height: 34px; border: 0; border-radius: 50%; background: #F3F6FC; font-size: 18px; line-height: 1; color: #201E4D; cursor: pointer; }
+  .vh-head { display: flex; gap: 12px; align-items: center; margin: 0 36px 14px 0; }
+  .vh-head img { flex: 0 0 56px; width: 56px; height: 56px; border-radius: 12px; object-fit: cover; background: #FFFAE8; }
+  .vh-head h3 { margin: 0; font-size: 20px; line-height: 1.2; font-weight: 800; color: #201E4D; }
+  .vh-head p { margin: 2px 0 0; font-size: 13.5px; color: #6A7088; }
+  .vh-label { margin: 12px 0 6px; font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: #6A7088; }
+  .vh-chips { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .vh-chips--m { grid-template-columns: repeat(2, 1fr); margin-top: 8px; }
+  .vh-chip { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; padding: 6px 8px; border: 1.5px solid #E6EAF2; border-radius: 12px; background: #fff; font: 700 14px 'DM Sans', sans-serif; color: #201E4D; cursor: pointer; }
+  .vh-chip img { width: 26px; height: 26px; border-radius: 6px; object-fit: cover; }
+  .vh-chip.is-on { border-color: #201E4D; background: #EEF3FF; box-shadow: inset 0 0 0 1px #201E4D; }
+  .vh-item { margin-top: 12px; padding: 12px; border: 1.5px solid #E6EAF2; border-radius: 16px; background: #F3F6FC; }
+  .vh-item b { display: block; margin-bottom: 8px; font-size: 14px; }
+  .vh-go { display: block; width: 100%; height: 54px; margin-top: 16px; border: 0; border-radius: 14px; background: #201E4D; color: #fff; font: 800 16px 'DM Sans', sans-serif; cursor: pointer; }
+  .vh-go[disabled] { opacity: .6; cursor: wait; }
+  .vh-skip { display: block; width: 100%; margin-top: 8px; padding: 10px; border: 0; background: none; font: 700 14px 'DM Sans', sans-serif; color: #6A7088; text-decoration: underline; cursor: pointer; }
+</style>
+{%- assign vh = all_products['taie-oreiller-enfant-velin'] -%}
+{%- if vh != blank and vh.available -%}
+<script>
+  window.VelinHousse = { handle: {{ vh.handle | json }}, pillow: 'oreiller-enfant-velin', price: {{ vh.price }}, img: {% if vh.featured_image %}{{ vh.featured_image | image_url: width: 160 | json }}{% else %}''{% endif %},
+    sizes: [{%- for x in vh.options_with_values[0].values -%}{{ x | append: '' | json }}{% unless forloop.last %},{% endunless %}{%- endfor -%}], motifs: [{%- for x in vh.options_with_values[1].values -%}{{ x | append: '' | json }}{% unless forloop.last %},{% endunless %}{%- endfor -%}],
+    v: [{%- for v in vh.variants -%}{"id":{{ v.id }},"s":{{ v.option1 | json }},"m":{{ v.option2 | json }},"a":{{ v.available }},"i":{% if v.featured_image %}{{ v.featured_image | image_url: width: 80 | json }}{% else %}""{% endif %}}{% unless forloop.last %},{% endunless %}{%- endfor -%}] };
+</script>
+{%- endif -%}
+<script>
+  (function () {
+    // Plus de page panier : tout lien vers /cart ouvre le tiroir, un formulaire d'ajout classique passe par fetch,
+    // et /cart redirige vers la fiche oreiller avec le tiroir ouvert (l'accueil renvoie déjà vers un produit).
+    var CART_RE = /^\/(?:[a-z]{2}(?:-[a-z]{2})?\/)?cart\/?$/i;
+    function isCartUrl(href) {
+      try { var u = new URL(href, location.origin); return u.origin === location.origin && CART_RE.test(u.pathname); } catch (e) { return false; }
+    }
+    function openDrawer() {
+      var d = window.VelinCartDrawer;
+      if (d) d.refreshAndOpen();
+    }
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('a[href]');
+      if (a && !a.hasAttribute('data-cart-drawer-toggle') && isCartUrl(a.getAttribute('href')) && !e.defaultPrevented) { e.preventDefault(); openDrawer(); }
+    }, true);
+    document.addEventListener('submit', function (e) {
+      var f = e.target;
+      if (!f || !f.action || f.action.indexOf('/cart/add') === -1 || e.defaultPrevented) return;
+      e.preventDefault();
+      fetch('/cart/add.js', { method: 'POST', body: new FormData(f), headers: { 'Accept': 'application/json' } });
+    });
+    if (CART_RE.test(location.pathname)) {
+      location.replace('/products/oreiller-enfant-velin?cart=open');
+    } else if (/[?&]cart=open\b/.test(location.search)) {
+      history.replaceState(null, '', location.pathname);
+      window.addEventListener('load', openDrawer);
+    }
+
+    // Le bandeau promo peut mémoriser le code (appliqué au paiement par Shopify). Aucun champ dans le panier.
+    window.VelinPromo = { set: function (code) {
+      code = String(code || '').trim().toUpperCase();
+      if (!code) return Promise.resolve();
+      return fetch('/discount/' + encodeURIComponent(code) + '?redirect=' + encodeURIComponent('/cart.js'), { credentials: 'same-origin' }).catch(function () {});
+    } };
+
+    // Au clic sur « Commander » : on repropose les housses (une par oreiller), quel que soit le contenu du panier.
+    var VH = window.VelinHousse;
+    if (VH && VH.v.length) {
+      var VH_ORDER = 1299, money = function (c) { return (c / 100).toFixed(2).replace('.', ',') + ' €'; };
+      var esc = function (t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+      var vhModal = null, vhCart = null, vhN = 1, vhSel = [];
+      // Estimation du total : remise « housse offerte » (12,99 €, dès 4 articles), sauf avec le lot de 2 qui reste plus avantageux.
+      var vhDisc = function (count, p) { return count >= 4 && p !== 2 ? VH_ORDER : 0; };
+      function chips(cls, axis, i, vals, cur, imgs) {
+        return '<div class="vh-chips' + cls + '">' + vals.map(function (v) {
+          return '<button type="button" class="vh-chip' + (v === cur ? ' is-on' : '') + '" data-vh-i="' + i + '" data-vh-ax="' + axis + '" data-vh-v="' + esc(v) + '">' + (imgs && imgs[v] ? '<img src="' + esc(imgs[v]) + '" alt="">' : '') + esc(v) + '</button>';
+        }).join('') + '</div>';
+      }
+      function vhLines() {
+        var q = {};
+        vhSel.slice(0, vhN).forEach(function (x) {
+          var v = VH.v.filter(function (y) { return y.a && y.s === x.s && y.m === x.m; })[0];
+          if (v) q[v.id] = (q[v.id] || 0) + 1;
+        });
+        return Object.keys(q).map(function (id) { return { id: +id, quantity: q[id] }; });
+      }
+      function vhPaint() {
+        var c = vhCart, imgs = {};
+        VH.v.forEach(function (v) { if (v.i && !imgs[v.m]) imgs[v.m] = v.i; });
+        var add = vhLines().reduce(function (a, l) { return a + l.quantity; }, 0);
+        var after = c.total - vhDisc(c.count, c.p) + add * VH.price + vhDisc(c.count + add, c.p);
+        var h = '<button type="button" class="vh-x" data-vh-close aria-label="Fermer">×</button>' +
+          '<div class="vh-head">' + (VH.img ? '<img src="' + esc(VH.img) + '" alt="">' : '') + '<div><h3>Une housse pour chaque oreiller</h3><p>Elle protège l’oreiller et passe en machine · ' + money(VH.price) + ' la housse</p></div></div>' +
+          '<p class="vh-label">Combien de housses ?</p>' + chips('', 'n', -1, c.choices.map(String), String(vhN));
+        for (var i = 0; i < vhN; i++) {
+          h += '<div class="vh-item"><b>Housse ' + (i + 1) + '</b>' + chips('', 's', i, VH.sizes, vhSel[i].s) + chips(' vh-chips--m', 'm', i, VH.motifs, vhSel[i].m, imgs) + '</div>';
+        }
+        h += '<button type="button" class="vh-go" data-vh-add' + (add ? '' : ' disabled') + '>Ajouter ' + (add > 1 ? 'les housses' : 'la housse') + ' · payer ' + money(after) + '</button>' +
+          '<button type="button" class="vh-skip" data-vh-skip>Payer directement · ' + money(c.total) + '</button>';
+        vhModal.firstChild.innerHTML = h;
+      }
+      function vhClose() { if (vhModal) vhModal.hidden = true; document.documentElement.style.overflow = ''; }
+      function vhCheckout() { location.href = '/checkout'; }
+      function vhOpen(cart) {
+        var p = 0, hq = 0, need = [];
+        cart.items.forEach(function (it) {
+          if (it.handle === VH.pillow) { p += it.quantity; for (var k = 0; k < it.quantity; k++) need.push(it.variant_options[0]); }
+          else if (it.handle === VH.handle) hq += it.quantity;
+        });
+        // Housses déjà couvertes retirées des tailles à proposer
+        cart.items.forEach(function (it) { if (it.handle === VH.handle) for (var k = 0; k < it.quantity; k++) { var j = need.indexOf(it.variant_options[0]); if (j > -1) need.splice(j, 1); } });
+        var max = Math.min(Math.max(p - hq, 1), 6), choices = [];
+        for (var n = 1; n <= max; n++) choices.push(n);
+        vhCart = { total: cart.total_price, count: cart.item_count, p: p, choices: choices };
+        vhN = max; vhSel = [];
+        for (var i = 0; i < max; i++) vhSel.push({ s: VH.sizes.indexOf(need[i]) > -1 ? need[i] : VH.sizes[0], m: VH.motifs[0] });
+        if (!vhModal) {
+          vhModal = document.createElement('div'); vhModal.className = 'vh-modal'; vhModal.hidden = true;
+          vhModal.setAttribute('role', 'dialog'); vhModal.setAttribute('aria-modal', 'true'); vhModal.setAttribute('aria-label', 'Housses de protection');
+          vhModal.appendChild(document.createElement('div')).className = 'vh-box';
+          document.body.appendChild(vhModal);
+          vhModal.addEventListener('click', function (e) {
+            var t = e.target;
+            if (t === vhModal || t.closest('[data-vh-close]')) return vhClose();
+            if (t.closest('[data-vh-skip]')) return vhCheckout();
+            var c = t.closest('[data-vh-ax]');
+            if (c) {
+              var ax = c.getAttribute('data-vh-ax'), v = c.getAttribute('data-vh-v'), i = +c.getAttribute('data-vh-i');
+              if (ax === 'n') vhN = +v; else vhSel[i][ax] = v;
+              return vhPaint();
+            }
+            var go = t.closest('[data-vh-add]');
+            if (go) {
+              go.disabled = true;
+              fetch('/cart/add.js', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify({ items: vhLines() }) })
+                .then(vhCheckout, vhCheckout);
+            }
+          });
+          document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && vhModal && !vhModal.hidden) vhClose(); });
+        }
+        vhPaint();
+        vhModal.hidden = false; document.documentElement.style.overflow = 'hidden';
+      }
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest && e.target.closest('.cart-drawer__checkout-btn');
+        if (!b || e.defaultPrevented) return;
+        e.preventDefault(); e.stopPropagation();
+        fetch('/cart.js', { headers: { 'Accept': 'application/json' } }).then(function (r) { return r.json(); })
+          .then(function (cart) { if (cart.item_count > 0 && cart.items.some(function (it) { return it.handle === VH.pillow; })) vhOpen(cart); else vhCheckout(); }, vhCheckout);
+      }, true);
+    }
+  })();
+</script>

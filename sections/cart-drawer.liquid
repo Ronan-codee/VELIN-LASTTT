@@ -1,24 +1,57 @@
 {% comment %} Velin - Sliding cart drawer, opened from the header cart icon (or after a quick add). Re-fetched via the Section Rendering API (?section_id=cart-drawer) after any cart change, so it always reflects the live cart.
-  Deux modes : le tiroir d'origine (inchangé) et le mode « veilleuse » (classe cart-drawer--pillow, reprise du panier de la fiche oreiller), actif seulement quand le panier ne contient que des produits au gabarit « veilleuse ». {% endcomment %}
+  Two modes : le tiroir d'origine (maroquinerie, inchangé) et le mode « oreiller » (cart-drawer--pillow), actif seulement quand le panier contient l'oreiller enfant et rien d'autre que des oreillers / taies. {% endcomment %}
 
 {%- liquid
-  assign cd_veil_qty = 0
+  assign cd_pillow_handle = 'oreiller-enfant-velin'
+  assign cd_taie_handle = 'taie-oreiller-enfant-velin'
+  assign cd_pillow_qty = 0
+  assign cd_taie_qty = 0
   assign cd_other_qty = 0
-  assign cd_gift_key = ''
+  assign cd_veil_qty = 0
+  assign cd_first_size = ''
   for item in cart.items
     if item.final_price == 0
       continue
     endif
     if item.product.template_suffix == 'veilleuse'
       assign cd_veil_qty = cd_veil_qty | plus: item.quantity
+    elsif item.product.handle == cd_pillow_handle
+      assign cd_pillow_qty = cd_pillow_qty | plus: item.quantity
+      if cd_first_size == ''
+        assign cd_first_size = item.variant.option1
+      endif
+    elsif item.product.handle == cd_taie_handle
+      assign cd_taie_qty = cd_taie_qty | plus: item.quantity
     else
       assign cd_other_qty = cd_other_qty | plus: item.quantity
     endif
   endfor
   assign cd_pillow_mode = false
-  if cd_veil_qty > 0 and cd_other_qty == 0
-    assign cd_pillow_mode = true
+  if cd_pillow_qty > 0 or cd_taie_qty > 0 or cd_veil_qty > 0
+    if cd_other_qty == 0
+      assign cd_pillow_mode = true
+    endif
   endif
+  comment
+    Housse offerte du lot de 3 : la ligne marquée _offerte (sinon la première housse) s'affiche gratuite dès 3 oreillers.
+    La remise réelle est une remise sur commande de 12,99 € (Shopify), elle ne modifie donc pas le prix de la ligne.
+  endcomment
+  assign cd_gift_key = ''
+  if cd_pillow_mode and cd_pillow_qty >= 3
+    for item in cart.items
+      if item.product.handle == cd_taie_handle and item.properties._offerte != blank and cd_gift_key == ''
+        assign cd_gift_key = item.key
+      endif
+    endfor
+    if cd_gift_key == ''
+      for item in cart.items
+        if item.product.handle == cd_taie_handle and item.final_price > 0 and cd_gift_key == ''
+          assign cd_gift_key = item.key
+        endif
+      endfor
+    endif
+  endif
+  assign cd_taie = all_products[cd_taie_handle]
   assign cd_s = section.settings
 -%}
 
@@ -89,7 +122,7 @@
                 </div>
                 {% if item.variant.title != 'Default Title' %}
                   {%- if cd_pillow_mode -%}
-                    <p class="cart-drawer__item-variant"><span>{{ cd_s.veil_variant_label }}</span><b>{{ item.variant.title }}</b></p>
+                    <p class="cart-drawer__item-variant"><span>{% if item.product.template_suffix == 'veilleuse' %}{{ cd_s.veil_variant_label }}{% else %}Taille{% endif %}</span><b>{{ item.variant.title }}</b></p>
                   {%- else -%}
                     <p class="cart-drawer__item-variant">{{ item.variant.title }}</p>
                   {%- endif -%}
@@ -146,7 +179,10 @@
         {% endif %}
 
         {%- if cd_pillow_mode -%}
-          {%- comment -%} Pas d'upsell dans le panier de la veilleuse. {%- endcomment -%}
+          {%- comment -%} Upsell taies : une taie par oreiller, à la taille de l'oreiller. Aucune urgence, aucun faux prix barré. {%- endcomment -%}
+          {%- if cd_taie != blank and cd_taie.available and cd_taie_qty < cd_pillow_qty -%}
+            {% render 'cart-drawer-taie', cd_taie: cd_taie, cd_first_size: cd_first_size %}
+          {%- endif -%}
         {%- else -%}
           {%- assign cd_wallet = all_products['le-croco-portefeuille-cuir-verni'] -%}
           {%- assign cd_wallet_in_cart = false -%}
@@ -215,703 +251,19 @@
   </aside>
 </div>
 
-<style>
-  .cart-drawer {
-    position: fixed;
-    inset: 0;
-    z-index: 1000;
-    visibility: hidden;
-    pointer-events: none;
-    font-family: 'Merriweather', serif;
-    color: #000;
-  }
+{% render 'cart-drawer-css' %}
 
-  .cart-drawer.is-open {
-    visibility: visible;
-    pointer-events: auto;
-  }
-
-  .cart-drawer__overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.45);
-    opacity: 0;
-    transition: opacity 0.25s ease;
-  }
-
-  .cart-drawer.is-open .cart-drawer__overlay {
-    opacity: 1;
-  }
-
-  .cart-drawer__panel {
-    position: absolute;
-    top: 0;
-    right: 0;
-    height: 100%;
-    width: 420px;
-    max-width: 92vw;
-    background: #fff;
-    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.12);
-    display: flex;
-    flex-direction: column;
-    transform: translateX(100%);
-    transition: transform 0.3s ease;
-  }
-
-  .cart-drawer.is-open .cart-drawer__panel {
-    transform: translateX(0);
-  }
-
-  .cart-drawer__close {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 1;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 4px;
-    color: #000;
-  }
-
-  .cart-drawer__brand {
-    flex: 0 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    padding: 32px 24px 20px;
-    text-align: center;
-  }
-
-  .cart-drawer__brand-badge {
-    display: inline-block;
-    padding: 6px 16px;
-    border-radius: 999px;
-    background: #FFE791;
-    color: #201e50;
-    font-family: 'Merriweather', serif;
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: 0.01em;
-    margin: 0;
-  }
-
-  .cart-drawer__brand-trust {
-    margin: 8px 0 0;
-    font-size: 12px;
-    font-weight: 500;
-    color: #201e50;
-  }
-
-  .cart-drawer__header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 24px 16px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  }
-
-  .cart-drawer__title {
-    margin: 0;
-    font-family: 'Lusitana', serif;
-    font-weight: 400;
-    font-size: 20px;
-    text-transform: uppercase;
-    letter-spacing: -0.01em;
-  }
-
-  .cart-drawer__body {
-    flex: 1 1 auto;
-    overflow-y: auto;
-    padding: 16px 24px;
-  }
-
-  .cart-drawer__empty {
-    text-align: center;
-    padding: 60px 0;
-  }
-
-  .cart-drawer__empty-btn {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 14px 28px;
-    background: #FFE791;
-    color: #201e50;
-    text-decoration: none;
-    border-radius: 6px;
-    text-transform: uppercase;
-    font-size: 14px;
-  }
-
-  .cart-drawer__group-label {
-    margin: 0 0 12px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: rgba(0, 0, 0, 0.5);
-  }
-
-  .cart-drawer__group-label:not(:first-child) {
-    margin-top: 24px;
-  }
-
-  .cart-drawer__group-label--gift {
-    color: #201e50;
-  }
-
-  .cart-drawer__items {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .cart-drawer__items--gifts {
-    padding: 12px;
-    background: #f8f5f0;
-    border-radius: 8px;
-  }
-
-  .cart-drawer__item {
-    display: flex;
-    gap: 14px;
-  }
-
-  .cart-drawer__item-image {
-    flex: 0 0 auto;
-    width: 84px;
-    height: 84px;
-    border-radius: 8px;
-    overflow: hidden;
-    background: #f4f1ec;
-    display: block;
-  }
-
-  .cart-drawer__item-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .cart-drawer__item-info {
-    flex: 1 1 auto;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .cart-drawer__item-head {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 10px;
-  }
-
-  .cart-drawer__item-title {
-    margin: 0;
-    font-size: 14px;
-    text-transform: uppercase;
-    color: #000;
-    text-decoration: none;
-    line-height: 1.3;
-  }
-
-  .cart-drawer__item-remove {
-    flex: 0 0 auto;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 2px;
-  }
-
-  .cart-drawer__item-variant {
-    margin: 0;
-    font-size: 12px;
-    color: rgba(0, 0, 0, 0.6);
-  }
-
-  .cart-drawer__item-included {
-    display: inline-block;
-    align-self: flex-start;
-    width: fit-content;
-    margin: 6px 0 0;
-    padding: 2px 8px;
-    border-radius: 999px;
-    background: #FFE791;
-    font-size: 11px;
-    font-weight: 600;
-    line-height: 1.4;
-    color: #201e50;
-  }
-
-  .cart-drawer__item-foot {
-    margin-top: auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-  }
-
-  .cart-drawer__qty {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 4px 10px;
-    border-radius: 6px;
-    border: 0.5px solid rgba(17, 17, 17, 0.4);
-  }
-
-  .cart-drawer__qty-btn {
-    width: 16px;
-    height: 16px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
-    line-height: 1;
-    color: #111;
-    padding: 0;
-  }
-
-  .cart-drawer__qty-value {
-    min-width: 14px;
-    text-align: center;
-    font-size: 13px;
-  }
-
-  .cart-drawer__item-price {
-    font-size: 14px;
-    white-space: nowrap;
-  }
-
-  .cart-drawer__gift-label {
-    font-size: 12px;
-    color: rgba(0, 0, 0, 0.6);
-    text-transform: uppercase;
-  }
-
-  .cart-drawer__upsell-line {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 16px;
-    padding: 10px 12px;
-    background: #f8f5f0;
-    border-radius: 8px;
-    flex-shrink: 0;
-  }
-
-  .cart-drawer__upsell-line-thumb {
-    flex: 0 0 auto;
-    width: 48px;
-    height: 48px;
-    border-radius: 6px;
-    object-fit: cover;
-    background: #fff;
-  }
-
-  .cart-drawer__upsell-line-text {
-    flex: 1 1 auto;
-    min-width: 0;
-    font-size: 12.5px;
-    line-height: 1.35;
-    color: rgba(0, 0, 0, 0.75);
-  }
-
-  .cart-drawer__upsell-line-text strong {
-    color: #201e50;
-  }
-
-  .cart-drawer__upsell-line-add {
-    flex: 0 0 auto;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    border: 1px solid rgba(0, 0, 0, 0.18);
-    background: #fff;
-    color: #201e50;
-    font-size: 18px;
-    line-height: 1;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-  }
-
-  .cart-drawer__upsell-line-add:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .cart-drawer__footer {
-    flex: 0 0 auto;
-    padding: 16px 24px 24px;
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  {%- comment -%}
-    Urgency line, above the items: while the 10-minute reservation runs it sits under the header's rule with its own thin rule below; once it has
-    run out it becomes a rounded card with the stock message.
-  {%- endcomment -%}
-  .cart-drawer__urgency {
-    margin: 0;
-    padding: 12px 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    border-bottom: 1px solid #e6e6e6;
-    font-family: 'Manrope', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    line-height: 1.3;
-    text-align: center;
-    text-wrap: balance;
-    color: #6b7390;
-  }
-
-  .cart-drawer__urgency.is-expired {
-    margin: 12px 24px 0;
-    border: 1px solid #e6e6e6;
-    border-radius: 14px;
-  }
-
-  .cart-drawer__summary-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 13px;
-    color: #201e50;
-  }
-
-  .cart-drawer__discount-amount {
-    font-weight: 600;
-  }
-
-  .cart-drawer__shipping-free {
-    font-weight: 700;
-    color: #1F6D3B;
-  }
-
-  .cart-drawer__subtotal-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 18px;
-    text-transform: uppercase;
-  }
-
-  .cart-drawer__delivery {
-    margin: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    font-family: 'Manrope', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    line-height: 1.3;
-    text-align: center;
-    color: #201e50;
-  }
-
-  .cart-drawer__delivery svg {
-    flex: 0 0 auto;
-  }
-
-  .cart-drawer__checkout-btn {
-    width: 100%;
-    height: 52px;
-    border: none;
-    cursor: pointer;
-    background: #201E4D;
-    color: #FFFFFF;
-    font-size: 15px;
-    text-transform: uppercase;
-  }
-
-
-  /* Drawer opens right after the add succeeds, before the fresh cart HTML has arrived: dim the stale body and show a spinner. */
-  .cart-drawer.is-loading .cart-drawer__body {
-    position: relative;
-    opacity: 0.45;
-    pointer-events: none;
-    transition: opacity 0.15s ease;
-  }
-
-  .cart-drawer.is-loading .cart-drawer__body::after {
-    content: "";
-    position: absolute;
-    top: 48px;
-    left: 50%;
-    width: 28px;
-    height: 28px;
-    margin-left: -14px;
-    border: 3px solid rgba(32, 30, 80, 0.2);
-    border-top-color: #201e50;
-    border-radius: 50%;
-    animation: cart-drawer-spin 0.7s linear infinite;
-  }
-
-  @keyframes cart-drawer-spin {
-    to { transform: rotate(360deg); }
-  }
-
-  @media screen and (max-width: 480px) {
-    .cart-drawer__panel {
-      width: 100%;
-      max-width: 100vw;
-    }
-  }
-
-</style>
-{% render 'vnl-cart-css' %}
-<script>
-  (function () {
-    // Cart reservation timer: starts the first time the drawer shows a non-empty cart, survives page
-    // changes (localStorage) and, once it has run out, stays on the stock message until the cart is emptied.
-    var KEY = "velin_cart_timer_start";
-    var DURATION = 10 * 60 * 1000;
-    function read() { try { return parseInt(localStorage.getItem(KEY), 10) || 0; } catch (e) { return 0; } }
-    function write(v) { try { if (v) localStorage.setItem(KEY, String(v)); else localStorage.removeItem(KEY); } catch (e) {} }
-    function pad(n) { return (n < 10 ? "0" : "") + n; }
-
-    function tick() {
-      if (document.querySelector("[data-cart-urgency-reset]")) { write(0); return; }
-      var box = document.querySelector("[data-cart-urgency]");
-      if (!box) return;
-      var start = read();
-      if (!start) { start = Date.now(); write(start); }
-      var left = DURATION - (Date.now() - start);
-      var text = box.querySelector("[data-cart-urgency-text]");
-      if (left <= 0) {
-        box.classList.add("is-expired");
-        text.textContent = "Finalise ta commande avant que les stocks partent !";
-        return;
-      }
-      box.classList.remove("is-expired");
-      var secs = Math.ceil(left / 1000);
-      text.textContent = "Ton panier est réservé pendant " + pad(Math.floor(secs / 60)) + ":" + pad(secs % 60);
-    }
-
-    tick();
-    setInterval(tick, 500);
-    // The drawer is replaced after every cart change: refresh the fresh copy right away.
-    var drawer = document.querySelector("[data-cart-drawer]");
-    if (drawer && drawer.parentNode) new MutationObserver(tick).observe(drawer.parentNode, { childList: true });
-  })();
-</script>
-
-<script>
-  (function () {
-    function drawerRoot() {
-      return document.querySelector('[data-cart-drawer]');
-    }
-
-    function updateCounts(cart) {
-      document.querySelectorAll('[data-cart-count]').forEach(function (el) {
-        el.textContent = cart.item_count;
-        el.classList.toggle('is-empty', cart.item_count === 0);
-      });
-    }
-
-    function formatMoney(cents) {
-      return (cents / 100).toLocaleString('fr-FR', {
-        style: 'currency',
-        currency: window.Shopify && Shopify.currency ? Shopify.currency.active : 'EUR',
-      });
-    }
-
-    function open() {
-      var root = drawerRoot();
-      if (!root) return;
-      root.classList.add('is-open');
-      root.setAttribute('aria-hidden', 'false');
-      document.documentElement.style.overflow = 'hidden';
-    }
-
-    function close() {
-      var root = drawerRoot();
-      if (!root) return;
-      root.classList.remove('is-open');
-      root.setAttribute('aria-hidden', 'true');
-      document.documentElement.style.overflow = '';
-    }
-
-    function refresh(cart) {
-      if (cart) updateCounts(cart);
-      return fetch(window.location.pathname + '?section_id=cart-drawer', { cache: 'no-store' })
-        .then(function (res) { return res.text(); })
-        .then(function (html) {
-          var tmp = document.createElement('div');
-          tmp.innerHTML = html;
-          var fresh = tmp.querySelector('[data-cart-drawer]');
-          var root = drawerRoot();
-          if (!fresh || !root) return;
-          var wasOpen = root.classList.contains('is-open');
-          root.replaceWith(fresh);
-          if (wasOpen) open();
-        });
-    }
-
-
-    // Adds are followed by /cart.js (counts) + the re-rendered drawer. Run both at once, open the drawer
-    // as soon as the add succeeded (dimmed, with a spinner) and share one run between every caller, so
-    // an add handled by both the page script and the fetch hook below does the work only once.
-    var refreshing = null;
-    function refreshAndOpen() {
-      if (refreshing) return refreshing;
-      var current = drawerRoot();
-      if (current) {
-        current.classList.add('is-loading');
-        open();
-      }
-      refreshing = Promise.all([
-        nativeFetch('/cart.js', { cache: 'no-store' }).then(function (res) { return res.json(); }).catch(function () { return null; }),
-        nativeFetch(window.location.pathname + '?section_id=cart-drawer', { cache: 'no-store' }).then(function (res) { return res.text(); }),
-      ])
-        .then(function (results) {
-          if (results[0]) updateCounts(results[0]);
-          var tmp = document.createElement('div');
-          tmp.innerHTML = results[1];
-          var fresh = tmp.querySelector('[data-cart-drawer]');
-          var root = drawerRoot();
-          if (fresh && root) root.replaceWith(fresh);
-          open();
-        })
-        .catch(function () {
-          var root = drawerRoot();
-          if (root) root.classList.remove('is-loading');
-        })
-        .then(function () { refreshing = null; });
-      return refreshing;
-    }
-
-    function changeLine(line, quantity) {
-      return fetch('/cart/change.js', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ line: line, quantity: quantity }),
-      })
-        .then(function (res) { return res.json(); })
-        .then(function (cart) { return refresh(cart); });
-    }
-
-    document.addEventListener('click', function (e) {
-      if (e.target.closest('[data-cart-drawer-toggle]')) {
-        e.preventDefault();
-        open();
-        return;
-      }
-
-      if (e.target.closest('[data-cart-drawer-close]')) {
-        var link = e.target.closest('a[data-cart-drawer-close]');
-        if (!link) e.preventDefault();
-        close();
-        return;
-      }
-
-      var incBtn = e.target.closest('[data-cart-drawer-increase]');
-      if (incBtn) {
-        var incRow = incBtn.closest('[data-cart-drawer-line]');
-        var incQtyEl = incRow.querySelector('[data-cart-drawer-qty-value]');
-        var incPriceEl = incRow.querySelector('[data-cart-drawer-line-price]');
-        var newIncQty = parseInt(incQtyEl.textContent, 10) + 1;
-        incQtyEl.textContent = newIncQty;
-        if (incPriceEl) {
-          var incUnit = parseFloat(incPriceEl.getAttribute('data-cart-drawer-line-price'));
-          incPriceEl.textContent = formatMoney(incUnit * newIncQty);
-        }
-        changeLine(parseInt(incRow.getAttribute('data-cart-drawer-line'), 10), newIncQty);
-        return;
-      }
-
-      var decBtn = e.target.closest('[data-cart-drawer-decrease]');
-      if (decBtn) {
-        var decRow = decBtn.closest('[data-cart-drawer-line]');
-        var decQtyEl = decRow.querySelector('[data-cart-drawer-qty-value]');
-        var nextQty = parseInt(decQtyEl.textContent, 10) - 1;
-        if (nextQty < 1) return;
-        decQtyEl.textContent = nextQty;
-        var decPriceEl = decRow.querySelector('[data-cart-drawer-line-price]');
-        if (decPriceEl) {
-          var decUnit = parseFloat(decPriceEl.getAttribute('data-cart-drawer-line-price'));
-          decPriceEl.textContent = formatMoney(decUnit * nextQty);
-        }
-        changeLine(parseInt(decRow.getAttribute('data-cart-drawer-line'), 10), nextQty);
-        return;
-      }
-
-      var rmBtn = e.target.closest('[data-cart-drawer-remove]');
-      if (rmBtn) {
-        var rmRow = rmBtn.closest('[data-cart-drawer-line]');
-        var rmLine = parseInt(rmRow.getAttribute('data-cart-drawer-line'), 10);
-        rmRow.remove();
-        changeLine(rmLine, 0);
-        return;
-      }
-
-      var wLineAdd = e.target.closest('[data-cart-drawer-upsell-line-add]');
-      if (wLineAdd) {
-        var wLineWrap = wLineAdd.closest('[data-cart-drawer-upsell-line]');
-        var wVariantId = wLineWrap.getAttribute('data-variant-id');
-        wLineAdd.disabled = true;
-        fetch('/cart/add.js', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ items: [{ id: wVariantId, quantity: 1 }] }),
-        })
-          .then(function (res) { return res.json(); })
-          .then(function () { return fetch('/cart.js'); })
-          .then(function (res) { return res.json(); })
-          .then(function (cart) { return refresh(cart); })
-          .finally(function () { wLineAdd.disabled = false; });
-        return;
-      }
-    });
-
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') close();
-    });
-
-    window.VelinCartDrawer = { open: open, close: close, refresh: refresh, refreshAndOpen: refreshAndOpen };
-
-    // Opens the drawer after ANY successful /cart/add call, including ones
-    // triggered by third-party apps (e.g. the bundle picker) that don't know
-    // about window.VelinCartDrawer. Our own quick-add flows already call
-    // open()/refresh() directly; this just adds a safety net for the rest.
-    var nativeFetch = window.fetch;
-    window.fetch = function (input, init) {
-      var url = typeof input === 'string' ? input : (input && input.url) || '';
-      var isCartAdd = url.indexOf('/cart/add') !== -1;
-      return nativeFetch.apply(this, arguments).then(function (response) {
-        if (isCartAdd && response.ok) {
-          refreshAndOpen();
-        }
-        return response;
-      });
-    };
-  })();
-</script>
+{% render 'cart-drawer-js' %}
 
 {% schema %}
 {
   "name": "Cart drawer",
   "settings": [
-    { "type": "header", "content": "Panier veilleuse (en-tête et pied)" },
-    { "type": "text", "id": "pillow_badge", "label": "Pastille en haut", "default": "Expédiée de France sous 24 h", "info": "Doit rester vrai et vérifiable." },
-    { "type": "text", "id": "pillow_trust", "label": "Ligne sous la pastille", "default": "30 nuits pour l'essayer, satisfait ou remboursé", "info": "Doit correspondre à la politique de remboursement." },
-    { "type": "text", "id": "pillow_ship", "label": "Ligne de livraison", "default": "Expédiée sous 24 h, livrée en 72 h ouvrées" },
-    { "type": "text", "id": "veil_variant_label", "label": "Libellé de la variante", "default": "Coloris" },
+    { "type": "header", "content": "Panier oreiller (en-tête et pied)" },
+    { "type": "text", "id": "pillow_badge", "label": "Pastille en haut", "default": "+3000 Clients Satisfaits", "info": "Doit rester vrai et vérifiable." },
+    { "type": "text", "id": "pillow_trust", "label": "Ligne sous la pastille", "default": "Retour gratuit sous 30 jours / Livraison offerte", "info": "Doit correspondre à la politique de remboursement." },
+    { "type": "text", "id": "pillow_ship", "label": "Ligne de livraison", "default": "Expédié sous 24 h, livré en 72 h ouvrées" },
+    { "type": "text", "id": "veil_variant_label", "label": "Libellé de la variante (veilleuse)", "default": "Coloris" },
     { "type": "checkbox", "id": "klarna_on", "label": "Afficher « 3 × sans frais avec Klarna »", "default": true, "info": "Activez d'abord Klarna dans Réglages > Paiements." }
   ]
 }

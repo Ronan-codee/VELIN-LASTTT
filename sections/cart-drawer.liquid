@@ -54,6 +54,10 @@
     endif
   endif
   assign cd_taie = all_products[cd_taie_handle]
+  assign cd_veil_only = false
+  if cd_pillow_mode and cd_veil_qty > 0 and cd_pillow_qty == 0 and cd_taie_qty == 0
+    assign cd_veil_only = true
+  endif
   assign cd_s = section.settings
 -%}
 
@@ -65,7 +69,7 @@
   <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap" rel="stylesheet"></noscript>
 {%- endif -%}
 
-<div class="cart-drawer{% if cd_pillow_mode %} cart-drawer--pillow{% endif %}" data-cart-drawer aria-hidden="true">
+<div class="cart-drawer{% if cd_pillow_mode %} cart-drawer--pillow{% endif %}{% if cd_veil_only %} cart-drawer--veil{% endif %}" data-cart-drawer aria-hidden="true">
   <div class="cart-drawer__overlay" data-cart-drawer-close></div>
   <aside class="cart-drawer__panel" role="dialog" aria-modal="true" aria-label="Panier">
     <button type="button" class="cart-drawer__close" data-cart-drawer-close aria-label="Fermer le panier">
@@ -254,6 +258,7 @@
 </div>
 
 {% render 'cart-drawer-css' %}
+{%- if cd_veil_only -%}{% render 'vnl-cart-veil' %}{%- endif -%}
 
 {% render 'cart-drawer-js' %}
 

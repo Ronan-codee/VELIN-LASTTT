@@ -10,12 +10,14 @@
   assign cd_veil_qty = 0
   assign cd_first_size = ''
   for item in cart.items
+    if item.product.template_suffix == 'veilleuse'
+      assign cd_veil_qty = cd_veil_qty | plus: item.quantity
+      continue
+    endif
     if item.final_price == 0
       continue
     endif
-    if item.product.template_suffix == 'veilleuse'
-      assign cd_veil_qty = cd_veil_qty | plus: item.quantity
-    elsif item.product.handle == cd_pillow_handle
+    if item.product.handle == cd_pillow_handle
       assign cd_pillow_qty = cd_pillow_qty | plus: item.quantity
       if cd_first_size == ''
         assign cd_first_size = item.variant.option1
@@ -104,7 +106,7 @@
         -%}
         {% for item in cart.items %}
           {%- assign cd_is_gift = false -%}
-          {%- if item.final_price == 0 -%}{%- assign cd_is_gift = true -%}{%- endif -%}
+          {%- if item.final_price == 0 and item.product.template_suffix != 'veilleuse' -%}{%- assign cd_is_gift = true -%}{%- endif -%}
           {%- capture cd_item_html -%}
             <li class="cart-drawer__item" data-cart-drawer-line="{{ forloop.index }}">
               <a href="{{ item.url }}" class="cart-drawer__item-image" data-cart-drawer-close>

@@ -1,10 +1,36 @@
-{% comment %} Velin - Sliding cart drawer, opened from the header cart icon (or after a quick add). Re-fetched via the Section Rendering API (?section_id=cart-drawer) after any cart change, so it always reflects the live cart. {% endcomment %}
+{% comment %} Velin - Sliding cart drawer, opened from the header cart icon (or after a quick add). Re-fetched via the Section Rendering API (?section_id=cart-drawer) after any cart change, so it always reflects the live cart.
+  Deux modes : le tiroir d'origine (inchangé) et le mode « veilleuse » (classe cart-drawer--pillow, reprise du panier de la fiche oreiller), actif seulement quand le panier ne contient que des produits au gabarit « veilleuse ». {% endcomment %}
+
+{%- liquid
+  assign cd_veil_qty = 0
+  assign cd_other_qty = 0
+  assign cd_gift_key = ''
+  for item in cart.items
+    if item.final_price == 0
+      continue
+    endif
+    if item.product.template_suffix == 'veilleuse'
+      assign cd_veil_qty = cd_veil_qty | plus: item.quantity
+    else
+      assign cd_other_qty = cd_other_qty | plus: item.quantity
+    endif
+  endfor
+  assign cd_pillow_mode = false
+  if cd_veil_qty > 0 and cd_other_qty == 0
+    assign cd_pillow_mode = true
+  endif
+  assign cd_s = section.settings
+-%}
 
 {%- comment -%} Manrope for the urgency line and the delivery line; preload+onload keeps it off the critical path (preconnects live in layout/theme.liquid). {%- endcomment -%}
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+{%- if cd_pillow_mode -%}
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap" rel="stylesheet"></noscript>
+{%- endif -%}
 
-<div class="cart-drawer" data-cart-drawer aria-hidden="true">
+<div class="cart-drawer{% if cd_pillow_mode %} cart-drawer--pillow{% endif %}" data-cart-drawer aria-hidden="true">
   <div class="cart-drawer__overlay" data-cart-drawer-close></div>
   <aside class="cart-drawer__panel" role="dialog" aria-modal="true" aria-label="Panier">
     <button type="button" class="cart-drawer__close" data-cart-drawer-close aria-label="Fermer le panier">
@@ -12,15 +38,20 @@
     </button>
 
     <div class="cart-drawer__brand">
-      <p class="cart-drawer__brand-badge">+3000 Clients Satisfaits</p>
-      <p class="cart-drawer__brand-trust">Retour gratuit sous 30 jours / Livraison offerte</p>
+      {%- if cd_pillow_mode -%}
+        <p class="cart-drawer__brand-badge">{{ cd_s.pillow_badge }}</p>
+        <p class="cart-drawer__brand-trust">{{ cd_s.pillow_trust }}</p>
+      {%- else -%}
+        <p class="cart-drawer__brand-badge">+3000 Clients Satisfaits</p>
+        <p class="cart-drawer__brand-trust">Retour gratuit sous 30 jours / Livraison offerte</p>
+      {%- endif -%}
     </div>
 
     <div class="cart-drawer__header">
-      <h2 class="cart-drawer__title">Votre panier {% if cart.item_count > 0 %}({{ cart.item_count }}){% endif %}</h2>
+      <h2 class="cart-drawer__title">Votre panier {% if cart.item_count > 0 and cd_pillow_mode == false %}({{ cart.item_count }}){% endif %}</h2>
     </div>
 
-    {% if cart.item_count > 0 %}
+    {% if cart.item_count > 0 and cd_pillow_mode == false %}
       <p class="cart-drawer__urgency" data-cart-urgency>
         <span aria-hidden="true">&#9203;</span>
         <span data-cart-urgency-text>Ton panier est réservé pendant 10:00</span>
@@ -44,7 +75,7 @@
           {%- capture cd_item_html -%}
             <li class="cart-drawer__item" data-cart-drawer-line="{{ forloop.index }}">
               <a href="{{ item.url }}" class="cart-drawer__item-image" data-cart-drawer-close>
-                <img src="{{ item.image | image_url: width: 200 }}" alt="{{ item.title | escape }}" loading="lazy">
+                {%- if item.image -%}<img src="{{ item.image | image_url: width: 200 }}" alt="{{ item.title | escape }}" loading="lazy">{%- endif -%}
               </a>
               <div class="cart-drawer__item-info">
                 <div class="cart-drawer__item-head">
@@ -57,8 +88,13 @@
                   </button>
                 </div>
                 {% if item.variant.title != 'Default Title' %}
-                  <p class="cart-drawer__item-variant">{{ item.variant.title }}</p>
+                  {%- if cd_pillow_mode -%}
+                    <p class="cart-drawer__item-variant"><span>{{ cd_s.veil_variant_label }}</span><b>{{ item.variant.title }}</b></p>
+                  {%- else -%}
+                    <p class="cart-drawer__item-variant">{{ item.variant.title }}</p>
+                  {%- endif -%}
                 {% endif %}
+                {%- if item.key == cd_gift_key -%}<p class="cart-drawer__item-offerte">🎁 Offerte avec ton pack</p>{%- endif -%}
                 {% unless cd_is_gift %}
                   {% if item.product.handle == 'velin-housse-de-couette-2-en-1' %}
                     <p class="cart-drawer__item-included">🎁 {{ item.quantity | times: 2 }} taies d'oreiller offertes</p>
@@ -68,13 +104,26 @@
                   {% if cd_is_gift %}
                     <span class="cart-drawer__gift-label">Cadeau offert · Qté {{ item.quantity }}</span>
                     <span class="cart-drawer__item-price">Offert</span>
+                  {% elsif item.key == cd_gift_key and item.quantity == 1 %}
+                    <span class="cart-drawer__gift-label">Qté 1</span>
+                    <span class="cart-drawer__item-pricebox">
+                      <s class="cart-drawer__item-was">{{ item.original_line_price | money }}</s>
+                      <span class="cart-drawer__item-price cart-drawer__item-price--free">{{ 0 | money }}</span>
+                    </span>
                   {% else %}
                     <div class="cart-drawer__qty">
                       <button type="button" class="cart-drawer__qty-btn" data-cart-drawer-decrease aria-label="Diminuer la quantité">−</button>
                       <span class="cart-drawer__qty-value" data-cart-drawer-qty-value>{{ item.quantity }}</span>
                       <button type="button" class="cart-drawer__qty-btn" data-cart-drawer-increase aria-label="Augmenter la quantité">+</button>
                     </div>
-                    <span class="cart-drawer__item-price" data-cart-drawer-line-price="{{ item.final_price }}">{{ item.final_price | money }}</span>
+                    <span class="cart-drawer__item-pricebox">
+                      {%- assign cd_line = item.final_line_price -%}
+                      {%- if item.key == cd_gift_key -%}{%- assign cd_line = cd_line | minus: item.final_price -%}{%- endif -%}
+                      {%- if cd_pillow_mode and item.original_line_price > cd_line -%}
+                        <s class="cart-drawer__item-was">{{ item.original_line_price | money }}</s>
+                      {%- endif -%}
+                      <span class="cart-drawer__item-price" data-cart-drawer-line-price="{{ item.final_price }}">{% if cd_pillow_mode %}{{ cd_line | money }}{% else %}{{ item.final_price | money }}{% endif %}</span>
+                    </span>
                   {% endif %}
                 </div>
               </div>
@@ -88,7 +137,7 @@
         {% endfor %}
 
         {% if paid_html != blank %}
-          <p class="cart-drawer__group-label">Produits</p>
+          {%- unless cd_pillow_mode -%}<p class="cart-drawer__group-label">Produits</p>{%- endunless -%}
           <ul class="cart-drawer__items">{{ paid_html }}</ul>
         {% endif %}
         {% if gift_html != blank %}
@@ -96,44 +145,71 @@
           <ul class="cart-drawer__items cart-drawer__items--gifts">{{ gift_html }}</ul>
         {% endif %}
 
-        {%- assign cd_wallet = all_products['le-croco-portefeuille-cuir-verni'] -%}
-        {%- assign cd_wallet_in_cart = false -%}
-        {%- for item in cart.items -%}
-          {%- if item.product_id == cd_wallet.id -%}{%- assign cd_wallet_in_cart = true -%}{%- endif -%}
-        {%- endfor -%}
-        {%- if cd_wallet != blank and cd_wallet_in_cart == false -%}
-          <div class="cart-drawer__upsell-line" data-cart-drawer-upsell-line data-variant-id="{{ cd_wallet.variants.first.id }}">
-            <img src="{{ cd_wallet.featured_image | image_url: width: 96 }}" alt="{{ cd_wallet.title | escape }}" class="cart-drawer__upsell-line-thumb" loading="lazy">
-            <span class="cart-drawer__upsell-line-text">Portefeuille cuir — <strong>29,00&nbsp;€</strong> au lieu de {{ cd_wallet.price | money }}</span>
-            <button type="button" class="cart-drawer__upsell-line-add" data-cart-drawer-upsell-line-add aria-label="Ajouter le portefeuille au panier">+</button>
-          </div>
+        {%- if cd_pillow_mode -%}
+          {%- comment -%} Pas d'upsell dans le panier de la veilleuse. {%- endcomment -%}
+        {%- else -%}
+          {%- assign cd_wallet = all_products['le-croco-portefeuille-cuir-verni'] -%}
+          {%- assign cd_wallet_in_cart = false -%}
+          {%- for item in cart.items -%}
+            {%- if item.product_id == cd_wallet.id -%}{%- assign cd_wallet_in_cart = true -%}{%- endif -%}
+          {%- endfor -%}
+          {%- if cd_wallet != blank and cd_wallet_in_cart == false -%}
+            <div class="cart-drawer__upsell-line" data-cart-drawer-upsell-line data-variant-id="{{ cd_wallet.variants.first.id }}">
+              <img src="{{ cd_wallet.featured_image | image_url: width: 96 }}" alt="{{ cd_wallet.title | escape }}" class="cart-drawer__upsell-line-thumb" loading="lazy">
+              <span class="cart-drawer__upsell-line-text">Portefeuille cuir — <strong>29,00&nbsp;€</strong> au lieu de {{ cd_wallet.price | money }}</span>
+              <button type="button" class="cart-drawer__upsell-line-add" data-cart-drawer-upsell-line-add aria-label="Ajouter le portefeuille au panier">+</button>
+            </div>
+          {%- endif -%}
+        {%- endif -%}
+
+        {%- if cd_pillow_mode and cart.total_discount > 0 -%}
+          <p class="cart-drawer__saving">Vous économisez <strong>{{ cart.total_discount | money }}</strong></p>
         {%- endif -%}
       {% endif %}
     </div>
 
     {% if cart.item_count > 0 %}
       <div class="cart-drawer__footer">
-        {% if cart.total_discount > 0 %}
+        {% if cart.total_discount > 0 and cd_pillow_mode == false %}
           <div class="cart-drawer__summary-row">
             <span>Remise</span>
             <span class="cart-drawer__discount-amount">−{{ cart.total_discount | money }}</span>
           </div>
         {% endif %}
-        <div class="cart-drawer__summary-row">
-          <span>Livraison</span>
-          <span class="cart-drawer__shipping-free">Gratuite</span>
-        </div>
+        {%- unless cd_pillow_mode -%}
+          <div class="cart-drawer__summary-row">
+            <span>Livraison</span>
+            <span class="cart-drawer__shipping-free">Gratuite</span>
+          </div>
+        {%- endunless -%}
         <div class="cart-drawer__subtotal-row">
           <span>Sous-total</span>
           <span>{{ cart.total_price | money }}</span>
         </div>
-        <p class="cart-drawer__delivery">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7Z" stroke="currentColor" stroke-width="1.6"/><path d="M14 10h3.3a1 1 0 0 1 .8.4l2.4 3.2a1 1 0 0 1 .2.6V16a1 1 0 0 1-1 1H14v-7Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="7" cy="18" r="1.6" stroke="currentColor" stroke-width="1.6"/><circle cx="17.5" cy="18" r="1.6" stroke="currentColor" stroke-width="1.6"/></svg>
-          <span data-velin-delivery>Livrée en 5 à 9 jours ouvrables</span>
-        </p>
+        {%- if cd_pillow_mode -%}
+          <p class="cart-drawer__delivery cart-drawer__delivery--pillow">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7Z" stroke="currentColor" stroke-width="1.6"/><path d="M14 10h3.3a1 1 0 0 1 .8.4l2.4 3.2a1 1 0 0 1 .2.6V16a1 1 0 0 1-1 1H14v-7Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="7" cy="18" r="1.6" stroke="currentColor" stroke-width="1.6"/><circle cx="17.5" cy="18" r="1.6" stroke="currentColor" stroke-width="1.6"/></svg>
+            <span>{{ cd_s.pillow_ship }}</span>
+          </p>
+          {%- if cd_s.klarna_on -%}
+            <p class="cart-drawer__klarna">ou <strong>3 ×</strong> {{ cart.total_price | divided_by: 3.0 | round | money }} sans frais avec <em>Klarna</em></p>
+          {%- endif -%}
+        {%- else -%}
+          <p class="cart-drawer__delivery">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7Z" stroke="currentColor" stroke-width="1.6"/><path d="M14 10h3.3a1 1 0 0 1 .8.4l2.4 3.2a1 1 0 0 1 .2.6V16a1 1 0 0 1-1 1H14v-7Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="7" cy="18" r="1.6" stroke="currentColor" stroke-width="1.6"/><circle cx="17.5" cy="18" r="1.6" stroke="currentColor" stroke-width="1.6"/></svg>
+            <span data-velin-delivery>Livrée en 5 à 9 jours ouvrables</span>
+          </p>
+        {%- endif -%}
         <form action="/cart" method="post">
-          <button type="submit" name="checkout" class="cart-drawer__checkout-btn">Acheter maintenant</button>
+          {%- if cd_pillow_mode -%}
+            <button type="submit" name="checkout" class="cart-drawer__checkout-btn">Commander · {{ cart.total_price | money }}</button>
+          {%- else -%}
+            <button type="submit" name="checkout" class="cart-drawer__checkout-btn">Acheter maintenant</button>
+          {%- endif -%}
         </form>
+        {%- if cd_pillow_mode -%}
+          <div class="cart-drawer__pay">{%- for type in shop.enabled_payment_types -%}{%- unless type == 'american_express' -%}{{ type | payment_type_svg_tag }}{%- endunless -%}{%- endfor -%}</div>
+        {%- endif -%}
       </div>
     {% endif %}
   </aside>
@@ -598,7 +674,7 @@
   }
 
 </style>
-
+{% render 'vnl-cart-css' %}
 <script>
   (function () {
     // Cart reservation timer: starts the first time the drawer shows a non-empty cart, survives page
@@ -830,6 +906,13 @@
 {% schema %}
 {
   "name": "Cart drawer",
-  "settings": []
+  "settings": [
+    { "type": "header", "content": "Panier veilleuse (en-tête et pied)" },
+    { "type": "text", "id": "pillow_badge", "label": "Pastille en haut", "default": "Expédiée de France sous 24 h", "info": "Doit rester vrai et vérifiable." },
+    { "type": "text", "id": "pillow_trust", "label": "Ligne sous la pastille", "default": "30 nuits pour l'essayer, satisfait ou remboursé", "info": "Doit correspondre à la politique de remboursement." },
+    { "type": "text", "id": "pillow_ship", "label": "Ligne de livraison", "default": "Expédiée sous 24 h, livrée en 72 h ouvrées" },
+    { "type": "text", "id": "veil_variant_label", "label": "Libellé de la variante", "default": "Coloris" },
+    { "type": "checkbox", "id": "klarna_on", "label": "Afficher « 3 × sans frais avec Klarna »", "default": true, "info": "Activez d'abord Klarna dans Réglages > Paiements." }
+  ]
 }
 {% endschema %}

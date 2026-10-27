@@ -16,6 +16,7 @@
     {%- for b in section.blocks -%}<details {{ b.shopify_attributes }}><summary>{{ b.settings.q }}</summary><p>{{ b.settings.a }}</p></details>{%- endfor -%}
   </div>
 </div></div>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{% for b in section.blocks %}{"@type":"Question","name":{{ b.settings.q | json }},"acceptedAnswer":{"@type":"Answer","text":{{ b.settings.a | json }}}}{% unless forloop.last %},{% endunless %}{% endfor %}]}</script>
 
 {% schema %}
 {

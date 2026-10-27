@@ -12,10 +12,6 @@
     "main": {
       "type": "vnl-pdp",
       "blocks": {
-        "app-summary-block_1": {
-          "type": "shopify://apps/ag-product-reviews/blocks/app-summary-block/c4e1e9ca-4d46-4e76-bc39-7e42417cb327",
-          "settings": {}
-        },
         "clip_1": {
           "type": "clip",
           "settings": {}
@@ -32,33 +28,32 @@
           "type": "info",
           "settings": {
             "title": "Description",
-            "text": "<p>Pensée pour les moments où le plafonnier est de trop : l'histoire du soir, le biberon de la nuit, le petit réveil après un cauchemar.</p><p>Une lumière tamisée, un fond sonore régulier, un minuteur qui éteint tout quand il dort. Sans fil, elle passe de sa chambre au salon, puis à la valise des vacances.</p>"
+            "text": "<p>Pensée pour les moments où le plafonnier est de trop : l'histoire du soir, le biberon de 3 h, le petit réveil après un cauchemar.</p><p>Une lumière rouge qui ne l'éblouit pas, un fond sonore régulier qui couvre les bruits de la maison, un minuteur qui éteint tout quand il dort. Sans fil, elle passe de sa chambre au salon, puis à la valise des vacances.</p><p>Et plus besoin de laisser votre téléphone tourner toute la nuit sur une vidéo de bruit blanc.</p>"
           }
         },
         "info_3": {
           "type": "info",
           "settings": {
             "title": "Fonctions",
-            "text": "<ul><li>Commande tactile et télécommande</li><li>Bruit blanc, rose et marron intégrés</li><li>Bluetooth : diffusez vos berceuses ou histoires audio</li><li>Lumière fixe ou animée, mode dégradé</li><li>Mode lumière rouge pour la nuit</li><li>18 couleurs au total</li><li>Luminosité et volume réglables</li><li>Minuteur d'arrêt : 30, 60 ou 120 minutes</li><li>Utilisable pendant la charge</li></ul>"
+            "text": "<ul><li>Mode lumière rouge pour la nuit</li><li>Bruit blanc, rose, marron et marron profond intégrés</li><li>Minuteur d'arrêt : 30, 60 ou 120 minutes</li><li>Télécommande : tout se règle sans entrer dans la chambre</li><li>Commande tactile sur le dessus</li><li>Luminosité et volume réglables</li><li>18 couleurs, lumière fixe, animée ou en dégradé</li><li>Bluetooth : diffusez vos berceuses ou histoires audio</li><li>Sans fil, utilisable pendant la charge</li></ul>"
           }
         },
         "info_4": {
           "type": "info",
           "settings": {
             "title": "Fiche technique",
-            "text": "<ul><li>Puissance : 6 W</li><li>LED : type 5050, sans scintillement</li><li>Charge : moins d'1 heure, USB-C 5 V (adaptateur conseillé 5 V 2 A)</li><li>Autonomie : 4 à 12 heures selon la luminosité et le volume</li><li>Batterie : lithium-ion</li><li>Dimensions : environ 13 × 13 × 13,5 cm</li><li>Poids : environ 450 g</li></ul>"
+            "text": "<ul><li>Puissance : 6 W</li><li>LED : type 5050, sans scintillement</li><li>Charge : moins d'1 heure, USB-C 5 V (adaptateur conseillé 5 V 2 A)</li><li>Autonomie : 4 à 12 heures selon la luminosité et le volume</li><li>Batterie : lithium-ion</li><li>Dimensions : environ 13 × 13 × 13,5 cm</li><li>Poids : environ 450 g</li><li>Conseil d'usage : à placer à environ 2 m du lit, volume bas, jamais dans le lit ni à portée de l'enfant.</li></ul>"
           }
         },
         "info_5": {
           "type": "info",
           "settings": {
             "title": "Livraison et retours",
-            "text": "<p>Expédiée sous 24 h ouvrées depuis la France, livrée en 72 h ouvrées en France métropolitaine. Numéro de suivi envoyé dès le départ du colis.</p><p>30 nuits pour l'essayer : écrivez-nous et nous vous remboursons. Garantie légale de conformité de 2 ans.</p>"
+            "text": "<p>Expédiée sous 24 h ouvrées, livrée en 5 à 9 jours ouvrés. Numéro de suivi envoyé par e-mail dès l'expédition.</p><p>30 nuits pour l'essayer : si elle ne vous convient pas, écrivez-nous et nous vous remboursons. Garantie légale de conformité de 2 ans.</p>"
           }
         }
       },
       "block_order": [
-        "app-summary-block_1",
         "clip_1",
         "clip_2",
         "clip_3",
@@ -67,7 +62,27 @@
         "info_4",
         "info_5"
       ],
-      "settings": {}
+      "settings": {
+        "title": "Veilleuse Velin",
+        "tagline": "LUMIÈRE ROUGE + BRUIT BLANC + MINUTEUR",
+        "subtitle": "Une lueur douce et un souffle régulier pour un coucher plus calme, et des réveils de nuit sans allumer le plafonnier. 🧡",
+        "perk_1": "Garantie 2 ans",
+        "perk_2": "30 nuits pour l'essayer, satisfait ou remboursé",
+        "perk_3": "Expédiée sous 24 h, livrée en 5 à 9 jours ouvrés",
+        "packs_title": "Choisissez votre lumière",
+        "pack1_name": "Une",
+        "pack1_sub": "Pour sa chambre",
+        "pack1_badge": "",
+        "pack2_name": "Deux",
+        "pack2_sub": "Sa chambre + chez mamie ou en vacances",
+        "pack2_badge": "Recommandé",
+        "pack2_price": "98",
+        "pack3_name": "Trois",
+        "pack3_sub": "Pour la fratrie, ou à offrir",
+        "pack3_badge": "Meilleur prix",
+        "pack3_price": "132",
+        "secure_line": "Paiement sécurisé · Une vraie personne répond à vos e-mails"
+      }
     },
     "usages": {
       "type": "vnl-marquee",
@@ -75,43 +90,43 @@
         "item_1": {
           "type": "item",
           "settings": {
+            "icon": "book",
+            "text": "Pour les nuits chez mamie"
+          }
+        },
+        "item_2": {
+          "type": "item",
+          "settings": {
+            "icon": "heart",
+            "text": "Un rituel du coucher plus calme"
+          }
+        },
+        "item_3": {
+          "type": "item",
+          "settings": {
             "icon": "heart",
             "text": "Pour l'histoire du soir"
           }
         },
-        "item_2": {
+        "item_4": {
           "type": "item",
           "settings": {
             "icon": "baby",
             "text": "Prête pour la chambre de bébé"
           }
         },
-        "item_3": {
+        "item_5": {
           "type": "item",
           "settings": {
             "icon": "moon",
             "text": "Pour les réveils de nuit"
           }
         },
-        "item_4": {
-          "type": "item",
-          "settings": {
-            "icon": "sun",
-            "text": "Une ambiance douce et chaleureuse"
-          }
-        },
-        "item_5": {
-          "type": "item",
-          "settings": {
-            "icon": "book",
-            "text": "Pour les nuits chez mamie"
-          }
-        },
         "item_6": {
           "type": "item",
           "settings": {
-            "icon": "heart",
-            "text": "Un rituel du coucher plus calme"
+            "icon": "phone",
+            "text": "Sans téléphone dans la chambre"
           }
         }
       },
@@ -132,7 +147,9 @@
     },
     "avant_apres": {
       "type": "vnl-avantapres",
-      "settings": {}
+      "settings": {
+        "caption": "À 3 h du matin, la différence entre un enfant qui se rendort et un enfant réveillé pour de bon."
+      }
     },
     "sons": {
       "type": "vnl-sons",
@@ -181,12 +198,19 @@
         "sound_4"
       ],
       "settings": {
-        "title": ""
+        "title": "Quatre sons, zéro écran."
       }
     },
     "qualite": {
       "type": "vnl-qualite",
-      "settings": {}
+      "settings": {
+        "intro": "Les solutions du soir rognent sur l'essentiel :",
+        "x_1": "Le téléphone sur YouTube toute la nuit, avec ses notifications et son écran",
+        "x_2": "La veilleuse blanche ou bleue qui éclaire comme en plein jour",
+        "x_3": "Le son qui grésille ou coupe en boucle",
+        "x_4": "Le câble à brancher près du lit",
+        "outro": "Velin, c'est une seule lueur, faite pour la nuit."
+      }
     },
     "reassurance": {
       "type": "vnl-marquee",
@@ -195,7 +219,7 @@
           "type": "item",
           "settings": {
             "icon": "truck",
-            "text": "Expédiée de France sous 24 h"
+            "text": "Expédiée sous 24 h"
           }
         },
         "item_2": {
@@ -209,14 +233,14 @@
           "type": "item",
           "settings": {
             "icon": "shield",
-            "text": "Garantie légale 2 ans"
+            "text": "Garantie 2 ans"
           }
         },
         "item_4": {
           "type": "item",
           "settings": {
             "icon": "mail",
-            "text": "Une vraie équipe vous répond"
+            "text": "Une vraie personne vous répond"
           }
         }
       },
@@ -241,71 +265,71 @@
         "faq_1": {
           "type": "faq",
           "settings": {
-            "q": "Dès quel âge peut-on l'utiliser ?",
-            "a": "Dès la naissance, comme veilleuse. Posez-la hors de portée de l'enfant, jamais dans le lit ni le berceau, et ne la laissez pas entre ses mains sans surveillance."
+            "q": "Dès quel âge peut-on l'utiliser ?",
+            "a": "Dès la naissance, comme veilleuse et fond sonore. Placez-la hors de portée, à environ 2 m du lit, jamais dans le lit. Ce n'est pas un jouet."
           }
         },
         "faq_2": {
           "type": "faq",
           "settings": {
-            "q": "Où la placer et à quel volume ?",
-            "a": "À distance du lit, idéalement à 2 mètres, avec un volume bas : le son doit couvrir les bruits de la maison, pas les dépasser. Le minuteur l'éteint une fois qu'il dort."
+            "q": "Où la placer et à quel volume ?",
+            "a": "Sur une commode ou une étagère, à environ 2 m du lit. Gardez un volume bas, proche d'une pluie fine. Programmez le minuteur pour couper le son après l'endormissement."
           }
         },
         "faq_3": {
           "type": "faq",
           "settings": {
-            "q": "Combien de temps tient la batterie ?",
-            "a": "De 4 à 12 heures selon la luminosité et le volume (environ 4 heures au maximum). Elle se recharge en moins d'une heure et peut rester branchée : la charge s'arrête seule quand la batterie est pleine."
+            "q": "Combien de temps tient la batterie ?",
+            "a": "De 4 à 12 heures selon la luminosité et le volume. Elle se recharge en moins d'une heure en USB-C et peut rester branchée."
           }
         },
         "faq_4": {
           "type": "faq",
           "settings": {
-            "q": "Combien de couleurs ?",
-            "a": "18 couleurs, dont un mode lumière rouge, plus des modes animés. Vous pouvez associer n'importe quelle couleur à n'importe quel son."
+            "q": "Combien de couleurs ?",
+            "a": "18 couleurs, dont un mode rouge pour la nuit, en lumière fixe, animée ou en dégradé."
           }
         },
         "faq_5": {
           "type": "faq",
           "settings": {
-            "q": "Peut-on l'utiliser sans le son ?",
-            "a": "Oui. Par défaut, elle s'allume en lumière seule. Le bruit blanc ou le Bluetooth s'activent seulement si vous le souhaitez."
+            "q": "Peut-on l'utiliser sans le son ?",
+            "a": "Oui. Lumière seule, son seul, ou les deux."
           }
         },
         "faq_6": {
           "type": "faq",
           "settings": {
-            "q": "La lumière fatigue-t-elle les yeux ?",
-            "a": "Les LED ne scintillent pas et la luminosité descend jusqu'à une lueur très faible, pensée pour la nuit."
+            "q": "La lumière fatigue-t-elle les yeux ?",
+            "a": "Les LED sont sans scintillement et la luminosité descend très bas. En mode rouge, elle éclaire juste assez pour voir."
           }
         },
         "faq_7": {
           "type": "faq",
           "settings": {
-            "q": "Résiste-t-elle à l'eau ?",
-            "a": "Non, elle n'est pas étanche. Elle supporte la vapeur d'une salle de bain, posée débranchée sur une surface sèche, loin des éclaboussures."
+            "q": "Résiste-t-elle à l'eau ?",
+            "a": "Non. Elle supporte l'humidité d'une salle de bain mais ne doit pas être mouillée."
           }
         },
         "faq_8": {
           "type": "faq",
           "settings": {
-            "q": "Va-t-il mieux dormir ?",
-            "a": "On ne peut pas le promettre : chaque enfant est différent. La veilleuse aide à installer un rituel calme et régulier. Si ses nuits vous inquiètent, parlez-en à votre pédiatre."
+            "q": "Va-t-il mieux dormir ?",
+            "a": "On ne promet pas de miracle : chaque enfant est différent. Ce qu'elle apporte, c'est un rituel identique chaque soir, une lumière douce et un fond sonore qui masque les bruits de la maison. Si elle ne change rien chez vous, vous avez 30 nuits pour être remboursé."
           }
         },
         "faq_9": {
           "type": "faq",
           "settings": {
-            "q": "Quand vais-je recevoir ma commande ?",
-            "a": "Expédiée sous 24 h ouvrées depuis la France, livrée en 72 h ouvrées en France métropolitaine. Vous recevez un numéro de suivi dès le départ du colis."
+            "q": "Quand vais-je recevoir ma commande ?",
+            "a": "Expédiée sous 24 h ouvrées, livrée en 5 à 9 jours ouvrés. Vous recevez le numéro de suivi par e-mail."
           }
         },
         "faq_10": {
           "type": "faq",
           "settings": {
-            "q": "Et si elle ne nous convient pas ?",
-            "a": "Vous avez 30 nuits pour l'essayer. Écrivez-nous et nous vous remboursons."
+            "q": "Et si elle ne nous convient pas ?",
+            "a": "Écrivez-nous dans les 30 nuits suivant la réception, nous vous remboursons."
           }
         }
       },
@@ -341,14 +365,86 @@
       "block_order": [
         "app-block-review-list_1"
       ],
-      "settings": {}
+      "settings": {},
+      "disabled": true
+    },
+    "rouge": {
+      "type": "vnl-rouge",
+      "settings": {},
+      "blocks": {
+        "picto_1": {
+          "type": "picto",
+          "settings": {
+            "icon": "bottle",
+            "text": "Pour le biberon de nuit"
+          }
+        },
+        "picto_2": {
+          "type": "picto",
+          "settings": {
+            "icon": "ghost",
+            "text": "Pour la peur du noir"
+          }
+        },
+        "picto_3": {
+          "type": "picto",
+          "settings": {
+            "icon": "bed",
+            "text": "Pour se rendormir"
+          }
+        }
+      },
+      "block_order": [
+        "picto_1",
+        "picto_2",
+        "picto_3"
+      ]
+    },
+    "rituel": {
+      "type": "vnl-rituel",
+      "settings": {
+        "title": "Le rituel du soir, en 3 étapes"
+      },
+      "blocks": {
+        "step_1": {
+          "type": "step",
+          "settings": {
+            "time": "20 h",
+            "title": "Lumière ambrée",
+            "text": "On éteint le plafonnier, on lit l'histoire à la lueur de la veilleuse."
+          }
+        },
+        "step_2": {
+          "type": "step",
+          "settings": {
+            "time": "20 h 15",
+            "title": "Rouge + bruit marron",
+            "text": "On passe en rouge, on lance le son, volume bas."
+          }
+        },
+        "step_3": {
+          "type": "step",
+          "settings": {
+            "time": "20 h 45",
+            "title": "Elle s'éteint seule",
+            "text": "Le minuteur coupe tout. Vous, vous avez votre soirée."
+          }
+        }
+      },
+      "block_order": [
+        "step_1",
+        "step_2",
+        "step_3"
+      ]
     }
   },
   "order": [
     "main",
     "usages",
     "avant_apres",
+    "rouge",
     "sons",
+    "rituel",
     "qualite",
     "reassurance",
     "faq",

@@ -24,6 +24,7 @@
     <span class="line" aria-hidden="true"></span>
     <input type="range" min="0" max="100" value="50" aria-label="Comparer avant et après">
   </div>
+  {%- if s.caption != blank -%}<p class="txt" style="text-align:center;max-width:560px;margin:22px auto 0">{{ s.caption }}</p>{%- endif -%}
 </div></div>
 <script>
 (function () {
@@ -39,6 +40,7 @@
   "name": "Veilleuse · Avant / après",
   "settings": [
     { "type": "text", "id": "title", "label": "Titre", "default": "Plafonnier ou petite lueur ?" },
+    { "type": "textarea", "id": "caption", "label": "Texte sous le curseur (vide = masqué)", "default": "À 3 h du matin, la différence entre un enfant qui se rendort et un enfant réveillé pour de bon." },
     { "type": "image_picker", "id": "before", "label": "Photo avant (16:10)" },
     { "type": "text", "id": "before_label", "label": "Étiquette avant", "default": "Avant" },
     { "type": "image_picker", "id": "after", "label": "Photo après (16:10, même cadrage)" },

@@ -90,6 +90,7 @@
   #vnl-{{ section.id }} .sold span{padding:4px 14px;border-radius:999px;background:var(--bg2);font-size:13px;font-weight:700}
   #vnl-{{ section.id }} .cta{margin-top:14px}
   #vnl-{{ section.id }} .err{margin:8px 0 0;font-size:13px;font-weight:700;color:var(--sale)}
+  #vnl-{{ section.id }} .secure{margin-top:12px;text-align:center;font-size:12.5px;color:var(--muted)}
   #vnl-{{ section.id }} .pay{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:14px}
   #vnl-{{ section.id }} .pay svg{width:38px;height:24px}
   #vnl-{{ section.id }} .acc{margin-top:22px;border-top:1px solid var(--dark)}
@@ -231,6 +232,7 @@
     <div class="cta">
       <button type="button" class="vnl-btn" data-atc>Ajouter au panier · <span data-atc-price>{{ unit | money }}</span></button>
     </div>
+    {%- if s.secure_line != blank -%}<p class="secure">{{ s.secure_line }}</p>{%- endif -%}
     <div class="pay">{%- for type in shop.enabled_payment_types -%}{{ type | payment_type_svg_tag }}{%- endfor -%}</div>
 
     <div class="acc">
@@ -369,7 +371,7 @@
     { "type": "header", "content": "Engagements (3 lignes, vide = masquée)" },
     { "type": "text", "id": "perk_1", "label": "Ligne bouclier", "default": "Garantie légale de 2 ans" },
     { "type": "text", "id": "perk_2", "label": "Ligne flèche retour", "default": "30 nuits pour l'essayer, satisfait ou remboursé" },
-    { "type": "text", "id": "perk_3", "label": "Ligne camion", "default": "Expédiée de France sous 24 h" },
+    { "type": "text", "id": "perk_3", "label": "Ligne camion", "default": "Expédiée sous 24 h, livrée en 5 à 9 jours ouvrés" },
     { "type": "header", "content": "Packs" },
     { "type": "text", "id": "packs_title", "label": "Titre des packs", "default": "Choisissez votre lumière" },
     { "type": "text", "id": "unit_singular", "label": "Unité (singulier)", "default": "veilleuse" },
@@ -391,6 +393,8 @@
     { "type": "header", "content": "Option ajoutée au pack (ex. coffret cadeau)" },
     { "type": "product", "id": "upsell_product", "label": "Produit en option (vide = masqué)", "info": "Ajouté en autant d'exemplaires que de veilleuses, au prix du produit." },
     { "type": "text", "id": "upsell_text", "label": "Texte de l'option", "default": "+ Coffret cadeau" },
+    { "type": "header", "content": "Sous le bouton" },
+    { "type": "text", "id": "secure_line", "label": "Ligne sous le bouton (vide = masquée)", "default": "Paiement sécurisé · Une vraie personne répond à vos e-mails" },
     { "type": "header", "content": "Sous les packs" },
     { "type": "text", "id": "sold_line", "label": "Pastille de ventes (chiffre réel uniquement, vide = masquée)" }
   ],

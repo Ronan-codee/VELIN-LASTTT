@@ -362,8 +362,8 @@
           "type": "feature_item",
           "settings": {
             "icon_type": "truck",
-            "title": "LIVRAISON EN FRANCE",
-            "text": "On livre dans toute la France métropolitaine. Un suivi vous est envoyé pour chaque commande"
+            "title": "EXPÉDIÉE SOUS 24 H",
+            "text": "Livrée en 5 à 9 jours ouvrés. Un suivi vous est envoyé pour chaque commande"
           }
         }
       },

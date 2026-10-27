@@ -14,6 +14,31 @@
     "blocks_WRXHdq": {
       "type": "_blocks",
       "name": "Rotating announcement bar",
+      "blocks": {
+        "ai_gen_block_938a584_fUwhDg": {
+          "type": "ai_gen_block_938a584",
+          "name": "Rotating announcement bar",
+          "settings": {
+            "message_1": "<p>Livraison offerte · Expédiée sous 24 h avec suivi · 30 nuits pour l'essayer</p>",
+            "promo_title": "",
+            "promo_subtitle": "",
+            "countdown_end": "",
+            "message_2": "",
+            "message_3": "",
+            "message_4": "",
+            "rotation_interval": 3,
+            "background_color": "#260d04",
+            "text_color": "#f3ece5",
+            "link_color": "#f3ece5",
+            "font_size": 13,
+            "padding": 9
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_938a584_fUwhDg"
+      ],
       "settings": {}
     },
     "header": {

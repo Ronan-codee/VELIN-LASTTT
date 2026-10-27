@@ -1,0 +1,58 @@
+{%- comment -%} Texte + visuel (même composant que « Choisir la qualité. ») : pourquoi une lumière rouge la nuit. Trois pictos sous le texte. {%- endcomment -%}
+{%- assign s = section.settings -%}
+{% render 'vnl-head' %}
+<style>
+  #vnl-r-{{ section.id }} .r-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:center}
+  #vnl-r-{{ section.id }} h2{text-align:left;font-size:clamp(32px,4vw,48px)}
+  #vnl-r-{{ section.id }} .r-txt{margin-top:18px}
+  #vnl-r-{{ section.id }} .r-pics{display:flex;gap:28px;margin-top:28px;flex-wrap:wrap}
+  #vnl-r-{{ section.id }} .r-pic{display:flex;flex-direction:column;align-items:center;gap:10px;width:112px;text-align:center;font-size:14px;font-weight:700;line-height:1.3}
+  #vnl-r-{{ section.id }} .r-pic i{display:grid;place-items:center;width:60px;height:60px;border-radius:50%;background:var(--bg2);color:var(--dark)}
+  #vnl-r-{{ section.id }} .r-vis{position:relative;aspect-ratio:1/1;border-radius:var(--rl);overflow:hidden;background:var(--bg2)}
+  #vnl-r-{{ section.id }} .r-vis img{width:100%;height:100%;object-fit:cover}
+  @media (max-width:900px){#vnl-r-{{ section.id }} .r-grid{grid-template-columns:minmax(0,1fr);gap:28px}#vnl-r-{{ section.id }} .r-pics{justify-content:space-between;gap:12px}#vnl-r-{{ section.id }} .r-pic{width:96px}}
+</style>
+<div class="vnl" id="vnl-r-{{ section.id }}"><div class="vnl-wrap vnl-sec">
+  <div class="r-grid">
+    <div>
+      <h2>{{ s.title }}</h2>
+      {%- if s.text != blank -%}<p class="r-txt">{{ s.text }}</p>{%- endif -%}
+      <div class="r-pics">
+        {%- for b in section.blocks -%}
+        <div class="r-pic" {{ b.shopify_attributes }}>
+          <i><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            {%- case b.settings.icon -%}
+              {%- when 'ghost' -%}<path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z"/>
+              {%- when 'bed' -%}<path d="M2 20v-8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v8"/><path d="M4 10V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4"/><path d="M12 4v6"/><path d="M2 18h20"/>
+              {%- when 'moon' -%}<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+              {%- else -%}<path d="M8 2h8"/><path d="M9 2v2.789a4 4 0 0 1-.672 2.219l-.656.984A4 4 0 0 0 7 10.212V20a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-9.789a4 4 0 0 0-.672-2.219l-.656-.984A4 4 0 0 1 15 4.788V2"/><path d="M7 15a6.472 6.472 0 0 1 5 0 6.47 6.47 0 0 0 5 0"/>
+            {%- endcase -%}
+          </svg></i>
+          {{ b.settings.text }}
+        </div>
+        {%- endfor -%}
+      </div>
+    </div>
+    <div class="r-vis">{%- if s.image != blank -%}{{ s.image | image_url: width: 1000 | image_tag: loading: 'lazy', widths: '500, 800, 1000', sizes: '(max-width: 900px) 100vw, 50vw', alt: s.title }}{%- else -%}<div class="vnl-mock"><span>{{ s.placeholder }}</span></div>{%- endif -%}</div>
+  </div>
+</div></div>
+
+{% schema %}
+{
+  "name": "Veilleuse · Rouge",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Titre", "default": "Pourquoi du rouge, la nuit ?" },
+    { "type": "textarea", "id": "text", "label": "Texte", "default": "La lumière blanche ou bleue des veilleuses classiques ressemble à la lumière du jour. La lumière rouge, elle, est la moins stimulante pour l'œil. Assez pour voir, changer une couche ou rassurer. Pas assez pour dire au cerveau que c'est le matin." },
+    { "type": "image_picker", "id": "image", "label": "Photo (1:1)" },
+    { "type": "text", "id": "placeholder", "label": "Libellé de l'emplacement photo (éditeur)", "default": "VEILLEUSE EN MODE ROUGE, CHAMBRE DANS LE NOIR · 1:1" }
+  ],
+  "blocks": [
+    { "type": "picto", "name": "Picto", "settings": [
+      { "type": "select", "id": "icon", "label": "Pictogramme", "default": "bottle", "options": [
+        { "value": "bottle", "label": "Biberon" }, { "value": "ghost", "label": "Fantôme" }, { "value": "bed", "label": "Lit" }, { "value": "moon", "label": "Lune" } ] },
+      { "type": "text", "id": "text", "label": "Texte", "default": "Pour le biberon de nuit" }
+    ] }
+  ],
+  "presets": [ { "name": "Veilleuse · Rouge" } ]
+}
+{% endschema %}

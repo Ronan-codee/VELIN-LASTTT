@@ -1,0 +1,40 @@
+{%- comment -%} Le rituel du soir en 3 colonnes numérotées (une sous l'autre sur mobile). Un bloc = une étape. {%- endcomment -%}
+{%- assign s = section.settings -%}
+{% render 'vnl-head' %}
+<style>
+  #vnl-rt-{{ section.id }} .steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-top:36px}
+  #vnl-rt-{{ section.id }} .step{background:var(--bg2);border-radius:var(--rl);padding:28px 26px}
+  #vnl-rt-{{ section.id }} .step .n{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:var(--dark);color:#F3ECE5;font-family:'Playfair Display',Georgia,serif;font-size:22px}
+  #vnl-rt-{{ section.id }} .step b{display:block;margin-top:18px;font-size:18px;font-weight:800;line-height:1.3}
+  #vnl-rt-{{ section.id }} .step p{margin-top:8px;font-size:15.5px}
+  @media (max-width:900px){#vnl-rt-{{ section.id }} .steps{grid-template-columns:minmax(0,1fr);margin-top:24px}#vnl-rt-{{ section.id }} .step{padding:22px 20px}}
+</style>
+<div class="vnl" id="vnl-rt-{{ section.id }}"><div class="vnl-wrap vnl-sec">
+  <h2>{{ s.title }}</h2>
+  <div class="steps">
+    {%- for b in section.blocks -%}
+    <div class="step" {{ b.shopify_attributes }}>
+      <span class="n">{{ forloop.index }}</span>
+      <b>{{ b.settings.time }} — {{ b.settings.title }}</b>
+      <p>{{ b.settings.text }}</p>
+    </div>
+    {%- endfor -%}
+  </div>
+</div></div>
+
+{% schema %}
+{
+  "name": "Veilleuse · Rituel",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Titre", "default": "Le rituel du soir, en 3 étapes" }
+  ],
+  "blocks": [
+    { "type": "step", "name": "Étape", "settings": [
+      { "type": "text", "id": "time", "label": "Heure", "default": "20 h" },
+      { "type": "text", "id": "title", "label": "Titre", "default": "Étape" },
+      { "type": "textarea", "id": "text", "label": "Texte", "default": "Description de l'étape." }
+    ] }
+  ],
+  "presets": [ { "name": "Veilleuse · Rituel" } ]
+}
+{% endschema %}

@@ -36,6 +36,13 @@
     padding: 0 20px;
   }
 
+  @media (max-width: 600px) {
+    .ai-announcement-bar__message-{{ ai_gen_id }}:not(.is-promo) {
+      white-space: normal;
+      line-height: 1.35;
+    }
+  }
+
   .ai-announcement-bar__message-{{ ai_gen_id }}.active {
     opacity: 1;
     transform: translateY(0);

@@ -140,33 +140,37 @@
         "sound_1": {
           "type": "sound",
           "settings": {
+            "sound": "deep",
             "name": "Bruit marron profond",
             "desc": "Très grave, comme un grondement lointain",
-            "bg": "#2B1A12"
+            "bg": "#260C02"
           }
         },
         "sound_2": {
           "type": "sound",
           "settings": {
+            "sound": "brown",
             "name": "Bruit marron",
             "desc": "Grave et enveloppant, comme une vague",
-            "bg": "#7A3E10"
+            "bg": "#8B4303"
           }
         },
         "sound_3": {
           "type": "sound",
           "settings": {
+            "sound": "pink",
             "name": "Bruit rose",
             "desc": "Plus doux, comme une pluie fine",
-            "bg": "#B0306E"
+            "bg": "#CD08A8"
           }
         },
         "sound_4": {
           "type": "sound",
           "settings": {
+            "sound": "white",
             "name": "Bruit blanc",
             "desc": "Un souffle régulier, comme un ventilateur",
-            "bg": "#17153F"
+            "bg": "#000000"
           }
         }
       },

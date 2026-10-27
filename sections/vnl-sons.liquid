@@ -5,7 +5,7 @@
 {%- endcomment -%}
 {%- assign s = section.settings -%}
 {%- assign has_media = false -%}
-{%- for b in section.blocks -%}{%- if b.settings.audio != blank or b.settings.video != blank or b.settings.image != blank -%}{%- assign has_media = true -%}{%- endif -%}{%- endfor -%}
+{%- for b in section.blocks -%}{%- if b.settings.sound != 'none' or b.settings.audio != blank or b.settings.video != blank or b.settings.image != blank -%}{%- assign has_media = true -%}{%- endif -%}{%- endfor -%}
 {%- if has_media or request.design_mode -%}
 {% render 'vnl-head' %}
 <style>
@@ -33,9 +33,18 @@
   </div>
   <div class="s-grid">
     {%- for b in section.blocks -%}
-      {%- if b.settings.audio != blank or b.settings.video != blank or b.settings.image != blank or request.design_mode -%}
-      {%- if b.settings.audio != blank -%}
-      <button type="button" class="s-card" style="background:{{ b.settings.bg }}" data-audio="{{ b.settings.audio | escape }}" aria-pressed="false" aria-label="Écouter : {{ b.settings.name | escape }}" {{ b.shopify_attributes }}>
+      {%- assign snd_src = b.settings.audio -%}
+      {%- if snd_src == blank -%}
+        {%- case b.settings.sound -%}
+          {%- when 'white' -%}{%- assign snd_src = 'vnl-noise-white.mp3' | asset_url -%}
+          {%- when 'pink' -%}{%- assign snd_src = 'vnl-noise-pink.mp3' | asset_url -%}
+          {%- when 'brown' -%}{%- assign snd_src = 'vnl-noise-brown.mp3' | asset_url -%}
+          {%- when 'deep' -%}{%- assign snd_src = 'vnl-noise-deep.mp3' | asset_url -%}
+        {%- endcase -%}
+      {%- endif -%}
+      {%- if snd_src != blank or b.settings.video != blank or b.settings.image != blank or request.design_mode -%}
+      {%- if snd_src != blank -%}
+      <button type="button" class="s-card" style="background:{{ b.settings.bg }}" data-audio="{{ snd_src | escape }}" aria-pressed="false" aria-label="Écouter : {{ b.settings.name | escape }}" {{ b.shopify_attributes }}>
       {%- else -%}
       <div class="s-card" style="background:{{ b.settings.bg }}" {{ b.shopify_attributes }}>
       {%- endif -%}
@@ -44,9 +53,9 @@
         {%- elsif b.settings.image != blank -%}
           {{ b.settings.image | image_url: width: 600 | image_tag: loading: 'lazy', alt: '' }}
         {%- endif -%}
-        <span class="wave" aria-hidden="true"><i style="height:30%"></i><i style="height:60%"></i><i style="height:100%"></i><i style="height:70%"></i>{% if b.settings.audio != blank %}<b data-ico>▶</b>{% endif %}<i style="height:70%"></i><i style="height:100%"></i><i style="height:60%"></i><i style="height:30%"></i></span>
+        <span class="wave" aria-hidden="true"><i style="height:30%"></i><i style="height:60%"></i><i style="height:100%"></i><i style="height:70%"></i>{% if snd_src != blank %}<b data-ico>▶</b>{% endif %}<i style="height:70%"></i><i style="height:100%"></i><i style="height:60%"></i><i style="height:30%"></i></span>
         <span class="cap"><b>{{ b.settings.name }}</b>{%- if b.settings.desc != blank -%}<span>{{ b.settings.desc }}</span>{%- endif -%}</span>
-      {%- if b.settings.audio != blank -%}</button>{%- else -%}</div>{%- endif -%}
+      {%- if snd_src != blank -%}</button>{%- else -%}</div>{%- endif -%}
       {%- endif -%}
     {%- endfor -%}
   </div>
@@ -80,7 +89,10 @@
   ],
   "blocks": [
     { "type": "sound", "name": "Son", "settings": [
-      { "type": "url", "id": "audio", "label": "Extrait audio (MP3)", "info": "Déposez le MP3 dans Contenu > Fichiers, copiez son lien et collez-le ici." },
+      { "type": "select", "id": "sound", "label": "Son intégré", "default": "white", "options": [
+        { "value": "none", "label": "Aucun (utiliser le lien ci-dessous)" }, { "value": "white", "label": "Bruit blanc" }, { "value": "pink", "label": "Bruit rose" },
+        { "value": "brown", "label": "Bruit marron" }, { "value": "deep", "label": "Bruit marron profond" } ] },
+      { "type": "url", "id": "audio", "label": "Ou votre propre MP3 (remplace le son intégré)", "info": "Déposez le MP3 dans Contenu > Fichiers, copiez son lien et collez-le ici." },
       { "type": "color", "id": "bg", "label": "Couleur de la tuile", "default": "#201E4D" },
       { "type": "video", "id": "video", "label": "Ou vidéo de fond (sans son, en boucle)" },
       { "type": "image_picker", "id": "image", "label": "Ou image de fond (1:1)" },

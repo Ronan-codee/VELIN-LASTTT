@@ -14,15 +14,27 @@
       "blocks": {
         "clip_1": {
           "type": "clip",
-          "settings": {}
+          "settings": {
+            "video": "shopify://files/videos/4-violet-bureau_1.mp4"
+          }
         },
         "clip_2": {
           "type": "clip",
-          "settings": {}
+          "settings": {
+            "video": "shopify://files/videos/3-bleu-douche_1.mp4"
+          }
         },
         "clip_3": {
           "type": "clip",
-          "settings": {}
+          "settings": {
+            "video": "shopify://files/videos/1-ambre-chambre_1.mp4"
+          }
+        },
+        "clip_WiT94F": {
+          "type": "clip",
+          "settings": {
+            "video": "shopify://files/videos/2-rouge-bain_1.mp4"
+          }
         },
         "info_2": {
           "type": "info",
@@ -57,12 +69,14 @@
         "clip_1",
         "clip_2",
         "clip_3",
+        "clip_WiT94F",
         "info_2",
         "info_3",
         "info_4",
         "info_5"
       ],
       "settings": {
+        "hero_bg": "#f3ece5",
         "title": "Veilleuse Velin",
         "tagline": "LUMIÈRE ROUGE + BRUIT BLANC + MINUTEUR",
         "subtitle": "Une lueur douce et un souffle régulier pour un coucher plus calme, et des réveils de nuit sans allumer le plafonnier. 🧡",
@@ -70,6 +84,9 @@
         "perk_2": "30 nuits pour l'essayer, satisfait ou remboursé",
         "perk_3": "Expédiée sous 24 h, livrée en 5 à 9 jours ouvrés",
         "packs_title": "Choisissez votre lumière",
+        "unit_singular": "veilleuse",
+        "unit_plural": "veilleuses",
+        "each_label": "/ unité",
         "pack1_name": "Une",
         "pack1_sub": "Pour sa chambre",
         "pack1_badge": "",
@@ -81,7 +98,11 @@
         "pack3_sub": "Pour la fratrie, ou à offrir",
         "pack3_badge": "Meilleur prix",
         "pack3_price": "132",
-        "secure_line": "Paiement sécurisé · Une vraie personne répond à vos e-mails"
+        "variant_label": "Coloris",
+        "upsell_product": "",
+        "upsell_text": "+ Coffret cadeau",
+        "secure_line": "Paiement sécurisé · Une vraie personne répond à vos e-mails",
+        "sold_line": ""
       }
     },
     "usages": {
@@ -130,12 +151,6 @@
           }
         }
       },
-      "settings": {
-        "aria": "Usages",
-        "bg": "#8C4404",
-        "fg": "#F3ECE5",
-        "serif": true
-      },
       "block_order": [
         "item_1",
         "item_2",
@@ -143,12 +158,23 @@
         "item_4",
         "item_5",
         "item_6"
-      ]
+      ],
+      "settings": {
+        "aria": "Usages",
+        "bg": "#8c4404",
+        "fg": "#f3ece5",
+        "serif": true,
+        "pad": 22,
+        "speed": 45
+      }
     },
     "avant_apres": {
       "type": "vnl-avantapres",
       "settings": {
-        "caption": "À 3 h du matin, la différence entre un enfant qui se rendort et un enfant réveillé pour de bon."
+        "title": "Plafonnier ou petite lueur ?",
+        "caption": "À 3 h du matin, la différence entre un enfant qui se rendort et un enfant réveillé pour de bon.",
+        "before_label": "Avant",
+        "after_label": "Après"
       }
     },
     "sons": {
@@ -158,36 +184,40 @@
           "type": "sound",
           "settings": {
             "sound": "deep",
+            "audio": "",
+            "bg": "#260c02",
             "name": "Bruit marron profond",
-            "desc": "Très grave, comme un grondement lointain",
-            "bg": "#260C02"
+            "desc": "Très grave, comme un grondement lointain"
           }
         },
         "sound_2": {
           "type": "sound",
           "settings": {
             "sound": "brown",
+            "audio": "",
+            "bg": "#8b4303",
             "name": "Bruit marron",
-            "desc": "Grave et enveloppant, comme une vague",
-            "bg": "#8B4303"
+            "desc": "Grave et enveloppant, comme une vague"
           }
         },
         "sound_3": {
           "type": "sound",
           "settings": {
             "sound": "pink",
+            "audio": "",
+            "bg": "#cd08a8",
             "name": "Bruit rose",
-            "desc": "Plus doux, comme une pluie fine",
-            "bg": "#CD08A8"
+            "desc": "Plus doux, comme une pluie fine"
           }
         },
         "sound_4": {
           "type": "sound",
           "settings": {
             "sound": "white",
+            "audio": "",
+            "bg": "#000000",
             "name": "Bruit blanc",
-            "desc": "Un souffle régulier, comme un ventilateur",
-            "bg": "#000000"
+            "desc": "Un souffle régulier, comme un ventilateur"
           }
         }
       },
@@ -198,18 +228,95 @@
         "sound_4"
       ],
       "settings": {
-        "title": "Quatre sons, zéro écran."
+        "title": "Quatre sons, zéro écran.",
+        "text": "Touchez une tuile pour l'écouter."
+      }
+    },
+    "rouge": {
+      "type": "vnl-rouge",
+      "blocks": {
+        "picto_1": {
+          "type": "picto",
+          "settings": {
+            "icon": "bottle",
+            "text": "Pour le biberon de nuit"
+          }
+        },
+        "picto_2": {
+          "type": "picto",
+          "settings": {
+            "icon": "ghost",
+            "text": "Pour la peur du noir"
+          }
+        },
+        "picto_3": {
+          "type": "picto",
+          "settings": {
+            "icon": "bed",
+            "text": "Pour se rendormir"
+          }
+        }
+      },
+      "block_order": [
+        "picto_1",
+        "picto_2",
+        "picto_3"
+      ],
+      "settings": {
+        "title": "Pourquoi du rouge, la nuit ?",
+        "text": "La lumière blanche ou bleue des veilleuses classiques ressemble à la lumière du jour. La lumière rouge, elle, est la moins stimulante pour l'œil. Assez pour voir, changer une couche ou rassurer. Pas assez pour dire au cerveau que c'est le matin.",
+        "placeholder": "VEILLEUSE EN MODE ROUGE, CHAMBRE DANS LE NOIR · 1:1"
+      }
+    },
+    "rituel": {
+      "type": "vnl-rituel",
+      "blocks": {
+        "step_1": {
+          "type": "step",
+          "settings": {
+            "time": "20 h",
+            "title": "Lumière ambrée",
+            "text": "On éteint le plafonnier, on lit l'histoire à la lueur de la veilleuse."
+          }
+        },
+        "step_2": {
+          "type": "step",
+          "settings": {
+            "time": "20 h 15",
+            "title": "Rouge + bruit marron",
+            "text": "On passe en rouge, on lance le son, volume bas."
+          }
+        },
+        "step_3": {
+          "type": "step",
+          "settings": {
+            "time": "20 h 45",
+            "title": "Elle s'éteint seule",
+            "text": "Le minuteur coupe tout. Vous, vous avez votre soirée."
+          }
+        }
+      },
+      "block_order": [
+        "step_1",
+        "step_2",
+        "step_3"
+      ],
+      "settings": {
+        "title": "Le rituel du soir, en 3 étapes"
       }
     },
     "qualite": {
       "type": "vnl-qualite",
       "settings": {
+        "title": "Choisir la qualité.",
         "intro": "Les solutions du soir rognent sur l'essentiel :",
         "x_1": "Le téléphone sur YouTube toute la nuit, avec ses notifications et son écran",
         "x_2": "La veilleuse blanche ou bleue qui éclaire comme en plein jour",
         "x_3": "Le son qui grésille ou coupe en boucle",
         "x_4": "Le câble à brancher près du lit",
-        "outro": "Velin, c'est une seule lueur, faite pour la nuit."
+        "outro": "Velin, c'est une seule lueur, faite pour la nuit.",
+        "label_other": "Les autres",
+        "label_us": "Velin"
       }
     },
     "reassurance": {
@@ -244,20 +351,20 @@
           }
         }
       },
-      "settings": {
-        "aria": "Nos engagements",
-        "bg": "#260D04",
-        "fg": "#FFFFFF",
-        "serif": false,
-        "pad": 20,
-        "speed": 40
-      },
       "block_order": [
         "item_1",
         "item_2",
         "item_3",
         "item_4"
-      ]
+      ],
+      "settings": {
+        "aria": "Nos engagements",
+        "bg": "#260d04",
+        "fg": "#ffffff",
+        "serif": false,
+        "pad": 20,
+        "speed": 40
+      }
     },
     "faq": {
       "type": "vnl-faq",
@@ -365,85 +472,16 @@
       "block_order": [
         "app-block-review-list_1"
       ],
-      "settings": {},
-      "disabled": true
-    },
-    "rouge": {
-      "type": "vnl-rouge",
-      "settings": {},
-      "blocks": {
-        "picto_1": {
-          "type": "picto",
-          "settings": {
-            "icon": "bottle",
-            "text": "Pour le biberon de nuit"
-          }
-        },
-        "picto_2": {
-          "type": "picto",
-          "settings": {
-            "icon": "ghost",
-            "text": "Pour la peur du noir"
-          }
-        },
-        "picto_3": {
-          "type": "picto",
-          "settings": {
-            "icon": "bed",
-            "text": "Pour se rendormir"
-          }
-        }
-      },
-      "block_order": [
-        "picto_1",
-        "picto_2",
-        "picto_3"
-      ]
-    },
-    "rituel": {
-      "type": "vnl-rituel",
-      "settings": {
-        "title": "Le rituel du soir, en 3 étapes"
-      },
-      "blocks": {
-        "step_1": {
-          "type": "step",
-          "settings": {
-            "time": "20 h",
-            "title": "Lumière ambrée",
-            "text": "On éteint le plafonnier, on lit l'histoire à la lueur de la veilleuse."
-          }
-        },
-        "step_2": {
-          "type": "step",
-          "settings": {
-            "time": "20 h 15",
-            "title": "Rouge + bruit marron",
-            "text": "On passe en rouge, on lance le son, volume bas."
-          }
-        },
-        "step_3": {
-          "type": "step",
-          "settings": {
-            "time": "20 h 45",
-            "title": "Elle s'éteint seule",
-            "text": "Le minuteur coupe tout. Vous, vous avez votre soirée."
-          }
-        }
-      },
-      "block_order": [
-        "step_1",
-        "step_2",
-        "step_3"
-      ]
+      "disabled": true,
+      "settings": {}
     }
   },
   "order": [
     "main",
     "usages",
     "avant_apres",
-    "rouge",
     "sons",
+    "rouge",
     "rituel",
     "qualite",
     "reassurance",

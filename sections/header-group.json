@@ -13,7 +13,6 @@
   "sections": {
     "blocks_WRXHdq": {
       "type": "_blocks",
-      "name": "Rotating announcement bar",
       "blocks": {
         "ai_gen_block_938a584_fUwhDg": {
           "type": "ai_gen_block_938a584",
@@ -27,7 +26,7 @@
             "message_3": "",
             "message_4": "",
             "rotation_interval": 3,
-            "background_color": "#260d04",
+            "background_color": "#7E440B",
             "text_color": "#f3ece5",
             "link_color": "#f3ece5",
             "font_size": 13,
@@ -39,6 +38,7 @@
       "block_order": [
         "ai_gen_block_938a584_fUwhDg"
       ],
+      "name": "Rotating announcement bar",
       "settings": {}
     },
     "header": {

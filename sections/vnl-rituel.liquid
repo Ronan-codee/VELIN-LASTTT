@@ -15,7 +15,7 @@
     {%- for b in section.blocks -%}
     <div class="step" {{ b.shopify_attributes }}>
       <span class="n">{{ forloop.index }}</span>
-      <b>{{ b.settings.time }} — {{ b.settings.title }}</b>
+      <b>{% if b.settings.time != blank %}{{ b.settings.time }} — {% endif %}{{ b.settings.title }}</b>
       <p>{{ b.settings.text }}</p>
     </div>
     {%- endfor -%}
@@ -30,7 +30,7 @@
   ],
   "blocks": [
     { "type": "step", "name": "Étape", "settings": [
-      { "type": "text", "id": "time", "label": "Heure", "default": "20 h" },
+      { "type": "text", "id": "time", "label": "Heure (vide = masquée)", "default": "" },
       { "type": "text", "id": "title", "label": "Titre", "default": "Étape" },
       { "type": "textarea", "id": "text", "label": "Texte", "default": "Description de l'étape." }
     ] }

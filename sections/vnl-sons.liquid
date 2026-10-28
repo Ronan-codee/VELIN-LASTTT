@@ -23,6 +23,7 @@
   #vnl-snd-{{ section.id }} .cap{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:16px 12px}
   #vnl-snd-{{ section.id }} .cap b{display:block;font-size:14px;font-weight:600}
   #vnl-snd-{{ section.id }} .cap span{display:block;font-size:12px;line-height:1.35;opacity:.8;margin-top:2px}
+  #vnl-snd-{{ section.id }} .s-note{text-align:center;margin-top:22px;color:var(--muted)}
   @media (max-width:900px){#vnl-snd-{{ section.id }} .s-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
   @media (prefers-reduced-motion:reduce){#vnl-snd-{{ section.id }} .s-card.is-playing .wave i{animation:none}}
 </style>
@@ -59,6 +60,7 @@
       {%- endif -%}
     {%- endfor -%}
   </div>
+  {%- if s.footnote != blank -%}<p class="s-note">{{ s.footnote }}</p>{%- endif -%}
 </div></div>
 <script>
 (function () {
@@ -85,6 +87,7 @@
   "name": "Veilleuse · Sons",
   "settings": [
     { "type": "text", "id": "title", "label": "Titre (vide = masqué)", "default": "Un son pour chaque nuit" },
+    { "type": "text", "id": "footnote", "label": "Ligne sous les tuiles (vide = masquée)", "default": "Ou connectez votre téléphone et diffusez votre propre playlist." },
     { "type": "textarea", "id": "text", "label": "Texte", "default": "Touchez une tuile pour l'écouter." }
   ],
   "blocks": [

@@ -138,7 +138,7 @@
             {%- if m.media_type == 'image' -%}<div class="slide">{%- if forloop.first -%}{{ m | image_url: width: 1200 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '500, 800, 1000, 1200', sizes: '(max-width: 900px) 100vw, 55vw' }}{%- else -%}{{ m | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '500, 800, 1000, 1200', sizes: '(max-width: 900px) 100vw, 55vw' }}{%- endif -%}</div>{%- endif -%}
           {%- endfor -%}
         {%- else -%}
-          {%- assign mock_labels = "Veilleuse allumée, tenue en main|Démo des ambiances lumineuses|Chambre d'enfant, lumière douce|Deux veilleuses sur le lit|Sur la table de nuit, avec télécommande|Récapitulatif des fonctions" | split: '|' -%}
+          {%- assign mock_labels = "VEILLEUSE ALLUMÉE, TENUE EN MAIN|LECTURE AU LIT À LA LUEUR AMBRÉE|SALLE DE BAIN DANS LE NOIR, DOUCHE|DEUX VEILLEUSES SUR LE LIT|TABLE DE NUIT AVEC TÉLÉCOMMANDE|TÉLÉPHONE CONNECTÉ EN BLUETOOTH" | split: '|' -%}
           {%- for l in mock_labels -%}<div class="slide"><div class="vnl-mock"><span>{{ l }} · 1:1</span></div></div>{%- endfor -%}
         {%- endif -%}
       </div>
@@ -366,8 +366,8 @@
     { "type": "color", "id": "hero_bg", "label": "Fond de la zone d'achat (héros)", "default": "#F3ECE5" },
     { "type": "header", "content": "Titre" },
     { "type": "text", "id": "title", "label": "Titre (vide = nom du produit)", "default": "Veilleuse Velin" },
-    { "type": "text", "id": "tagline", "label": "Ligne fonctions", "default": "Lumière + sons apaisants + minuteur" },
-    { "type": "textarea", "id": "subtitle", "label": "Description courte", "default": "Une lumière tamisée et un fond sonore doux pour transformer le coucher en petit rituel calme. 🧡" },
+    { "type": "text", "id": "tagline", "label": "Ligne fonctions", "default": "LUMIÈRE DOUCE + SONS APAISANTS + ENCEINTE" },
+    { "type": "textarea", "id": "subtitle", "label": "Description courte", "default": "Éteignez le plafonnier. Une lueur chaude, 18 couleurs et un fond sonore doux pour que le soir redevienne calme. 🧡" },
     { "type": "header", "content": "Engagements (3 lignes, vide = masquée)" },
     { "type": "text", "id": "perk_1", "label": "Ligne bouclier", "default": "Garantie légale de 2 ans" },
     { "type": "text", "id": "perk_2", "label": "Ligne flèche retour", "default": "30 nuits pour l'essayer, satisfait ou remboursé" },
@@ -379,14 +379,14 @@
     { "type": "text", "id": "each_label", "label": "Libellé du prix unitaire", "default": "/ unité" },
     { "type": "image_picker", "id": "pack_img", "label": "Vignette des packs (carrée)", "info": "Vide = image principale du produit." },
     { "type": "text", "id": "pack1_name", "label": "Pack 1 · nom", "default": "Une" },
-    { "type": "text", "id": "pack1_sub", "label": "Pack 1 · détail", "default": "Pour sa chambre" },
+    { "type": "text", "id": "pack1_sub", "label": "Pack 1 · détail", "default": "Pour votre chambre" },
     { "type": "text", "id": "pack1_badge", "label": "Pack 1 · badge (vide = aucun)" },
     { "type": "text", "id": "pack2_name", "label": "Pack 2 · nom", "default": "Deux" },
-    { "type": "text", "id": "pack2_sub", "label": "Pack 2 · détail", "default": "Une par chambre, ou une pour les vacances" },
+    { "type": "text", "id": "pack2_sub", "label": "Pack 2 · détail", "default": "Chambre + salle de bain, ou une à offrir" },
     { "type": "text", "id": "pack2_badge", "label": "Pack 2 · badge", "default": "Le plus choisi" },
     { "type": "text", "id": "pack2_price", "label": "Prix du lot de 2 (ex. 99,90)", "info": "Identique à la remise automatique Shopify. Vide = 2 × prix unitaire." },
     { "type": "text", "id": "pack3_name", "label": "Pack 3 · nom", "default": "Trois" },
-    { "type": "text", "id": "pack3_sub", "label": "Pack 3 · détail", "default": "Pour la fratrie, ou à offrir" },
+    { "type": "text", "id": "pack3_sub", "label": "Pack 3 · détail", "default": "Pour toute la maison, ou à offrir" },
     { "type": "text", "id": "pack3_badge", "label": "Pack 3 · badge (vide = aucun)" },
     { "type": "text", "id": "pack3_price", "label": "Prix du lot de 3 (ex. 134,90)", "info": "Identique à la remise automatique Shopify. Vide = 3 × prix unitaire." },
     { "type": "text", "id": "variant_label", "label": "Libellé du choix de variante", "default": "Coloris" },

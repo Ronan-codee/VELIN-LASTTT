@@ -17,8 +17,8 @@
 <div class="vnl" id="vnl-ba-{{ section.id }}"><div class="vnl-wrap vnl-sec">
   <h2>{{ s.title }}</h2>
   <div class="ba" data-ba>
-    <div class="before">{%- if s.before != blank -%}{{ s.before | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '600, 900, 1200, 1600', alt: s.before_label }}{%- else -%}<div class="vnl-mock"><span>Avant · plafonnier allumé · 16:10</span></div>{%- endif -%}</div>
-    <div class="after">{%- if s.after != blank -%}{{ s.after | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '600, 900, 1200, 1600', alt: s.after_label }}{%- else -%}<div class="vnl-mock" style="background:linear-gradient(150deg,#C26A1E,#8C4404)"><span style="color:#fff">Après · veilleuse seule · 16:10</span></div>{%- endif -%}</div>
+    <div class="before">{%- if s.before != blank -%}{{ s.before | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '600, 900, 1200, 1600', alt: s.before_label }}{%- else -%}<div class="vnl-mock"><span>AVANT · PLAFONNIER ALLUMÉ, SALON · 16:10</span></div>{%- endif -%}</div>
+    <div class="after">{%- if s.after != blank -%}{{ s.after | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '600, 900, 1200, 1600', alt: s.after_label }}{%- else -%}<div class="vnl-mock" style="background:linear-gradient(150deg,#C26A1E,#8C4404)"><span style="color:#fff">APRÈS · VEILLEUSE SEULE, LUEUR AMBRÉE · 16:10</span></div>{%- endif -%}</div>
     <span class="lab" style="left:16px">{{ s.before_label }}</span>
     <span class="lab" style="right:16px">{{ s.after_label }}</span>
     <span class="line" aria-hidden="true"></span>
@@ -40,7 +40,7 @@
   "name": "Veilleuse · Avant / après",
   "settings": [
     { "type": "text", "id": "title", "label": "Titre", "default": "Plafonnier ou petite lueur ?" },
-    { "type": "textarea", "id": "caption", "label": "Texte sous le curseur (vide = masqué)", "default": "À 3 h du matin, la différence entre un enfant qui se rendort et un enfant réveillé pour de bon." },
+    { "type": "textarea", "id": "caption", "label": "Texte sous le curseur (vide = masqué)", "default": "Même pièce, même soir. Seule la lumière a changé." },
     { "type": "image_picker", "id": "before", "label": "Photo avant (16:10)" },
     { "type": "text", "id": "before_label", "label": "Étiquette avant", "default": "Avant" },
     { "type": "image_picker", "id": "after", "label": "Photo après (16:10, même cadrage)" },

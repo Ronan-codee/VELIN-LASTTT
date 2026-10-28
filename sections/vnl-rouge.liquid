@@ -6,7 +6,7 @@
   #vnl-r-{{ section.id }} h2{text-align:left;font-size:clamp(32px,4vw,48px)}
   #vnl-r-{{ section.id }} .r-txt{margin-top:18px}
   #vnl-r-{{ section.id }} .r-pics{display:flex;gap:28px;margin-top:28px;flex-wrap:wrap}
-  #vnl-r-{{ section.id }} .r-pic{display:flex;flex-direction:column;align-items:center;gap:10px;width:112px;text-align:center;font-size:14px;font-weight:700;line-height:1.3}
+  #vnl-r-{{ section.id }} .r-pic{display:flex;flex-direction:column;align-items:center;gap:10px;width:118px;text-align:center;font-size:14px;font-weight:700;line-height:1.3}
   #vnl-r-{{ section.id }} .r-pic i{display:grid;place-items:center;width:60px;height:60px;border-radius:50%;background:var(--bg2);color:var(--dark)}
   #vnl-r-{{ section.id }} .r-vis{position:relative;aspect-ratio:1/1;border-radius:var(--rl);overflow:hidden;background:var(--bg2)}
   #vnl-r-{{ section.id }} .r-vis img{width:100%;height:100%;object-fit:cover}
@@ -22,6 +22,9 @@
         <div class="r-pic" {{ b.shopify_attributes }}>
           <i><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             {%- case b.settings.icon -%}
+              {%- when 'flame' -%}<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+              {%- when 'sparkles' -%}<path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+              {%- when 'music' -%}<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
               {%- when 'ghost' -%}<path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z"/>
               {%- when 'bed' -%}<path d="M2 20v-8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v8"/><path d="M4 10V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4"/><path d="M12 4v6"/><path d="M2 18h20"/>
               {%- when 'moon' -%}<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
@@ -39,20 +42,20 @@
 
 {% schema %}
 {
-  "name": "Veilleuse · Rouge",
+  "name": "Veilleuse · Couleurs",
   "settings": [
-    { "type": "text", "id": "title", "label": "Titre", "default": "Pourquoi du rouge, la nuit ?" },
-    { "type": "textarea", "id": "text", "label": "Texte", "default": "La lumière blanche ou bleue des veilleuses classiques ressemble à la lumière du jour. La lumière rouge, elle, est la moins stimulante pour l'œil. Assez pour voir, changer une couche ou rassurer. Pas assez pour dire au cerveau que c'est le matin." },
+    { "type": "text", "id": "title", "label": "Titre", "default": "Une couleur pour chaque soir" },
+    { "type": "textarea", "id": "text", "label": "Texte", "default": "Ambrée comme une bougie pour lire. Couleurs lentes et animées pour décrocher. Rythmée sur votre musique quand des amis passent. Rouge, la plus douce, quand vous éteignez tout." },
     { "type": "image_picker", "id": "image", "label": "Photo (1:1)" },
-    { "type": "text", "id": "placeholder", "label": "Libellé de l'emplacement photo (éditeur)", "default": "VEILLEUSE EN MODE ROUGE, CHAMBRE DANS LE NOIR · 1:1" }
+    { "type": "text", "id": "placeholder", "label": "Libellé de l'emplacement photo (éditeur)", "default": "LA VEILLEUSE EN 4 COULEURS CÔTE À CÔTE · 1:1" }
   ],
   "blocks": [
     { "type": "picto", "name": "Picto", "settings": [
-      { "type": "select", "id": "icon", "label": "Pictogramme", "default": "bottle", "options": [
-        { "value": "bottle", "label": "Biberon" }, { "value": "ghost", "label": "Fantôme" }, { "value": "bed", "label": "Lit" }, { "value": "moon", "label": "Lune" } ] },
-      { "type": "text", "id": "text", "label": "Texte", "default": "Pour le biberon de nuit" }
+      { "type": "select", "id": "icon", "label": "Pictogramme", "default": "flame", "options": [
+        { "value": "flame", "label": "Flamme" }, { "value": "sparkles", "label": "Étincelles" }, { "value": "music", "label": "Musique" }, { "value": "bottle", "label": "Biberon" }, { "value": "ghost", "label": "Fantôme" }, { "value": "bed", "label": "Lit" }, { "value": "moon", "label": "Lune" } ] },
+      { "type": "text", "id": "text", "label": "Texte", "default": "Ambrée, pour lire" }
     ] }
   ],
-  "presets": [ { "name": "Veilleuse · Rouge" } ]
+  "presets": [ { "name": "Veilleuse · Couleurs" } ]
 }
 {% endschema %}

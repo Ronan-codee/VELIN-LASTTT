@@ -18,6 +18,12 @@
             "video": "shopify://files/videos/4-violet-bureau_1.mp4"
           }
         },
+        "clip_WiT94F": {
+          "type": "clip",
+          "settings": {
+            "video": "shopify://files/videos/2-rouge-bain_1.mp4"
+          }
+        },
         "clip_2": {
           "type": "clip",
           "settings": {
@@ -28,12 +34,6 @@
           "type": "clip",
           "settings": {
             "video": "shopify://files/videos/1-ambre-chambre_1.mp4"
-          }
-        },
-        "clip_WiT94F": {
-          "type": "clip",
-          "settings": {
-            "video": "shopify://files/videos/2-rouge-bain_1.mp4"
           }
         },
         "info_2": {
@@ -67,9 +67,9 @@
       },
       "block_order": [
         "clip_1",
+        "clip_WiT94F",
         "clip_2",
         "clip_3",
-        "clip_WiT94F",
         "info_2",
         "info_3",
         "info_4",

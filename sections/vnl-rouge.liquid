@@ -10,7 +10,7 @@
   #vnl-r-{{ section.id }} .r-pic i{display:grid;place-items:center;width:60px;height:60px;border-radius:50%;background:var(--bg2);color:var(--dark)}
   #vnl-r-{{ section.id }} .r-vis{position:relative;aspect-ratio:1/1;border-radius:var(--rl);overflow:hidden;background:var(--bg2)}
   #vnl-r-{{ section.id }} .r-vis img{width:100%;height:100%;object-fit:cover}
-  @media (max-width:900px){#vnl-r-{{ section.id }} .r-grid{grid-template-columns:minmax(0,1fr);gap:28px}#vnl-r-{{ section.id }} .r-pics{justify-content:space-between;gap:12px}#vnl-r-{{ section.id }} .r-pic{width:96px}}
+  @media (max-width:900px){#vnl-r-{{ section.id }} .r-grid{grid-template-columns:minmax(0,1fr);gap:28px}#vnl-r-{{ section.id }} .r-pics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 12px}#vnl-r-{{ section.id }} .r-pic{width:auto}}
 </style>
 <div class="vnl" id="vnl-r-{{ section.id }}"><div class="vnl-wrap vnl-sec">
   <div class="r-grid">

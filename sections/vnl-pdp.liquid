@@ -10,9 +10,6 @@
 {%- assign clip_blocks = section.blocks | where: 'type', 'clip' -%}
 {%- assign info_blocks = section.blocks | where: 'type', 'info' -%}
 {%- assign app_blocks = section.blocks | where: 'type', '@app' -%}
-{%- assign unit = product.price -%}
-{%- assign multi = true -%}
-{%- if product.has_only_default_variant -%}{%- assign multi = false -%}{%- endif -%}
 {%- assign up = s.upsell_product -%}
 {%- assign up_v = up.selected_or_first_available_variant -%}
 {%- assign r_avg = product.metafields.air_reviews_product.review_avg.value -%}
@@ -20,7 +17,7 @@
 
 {% render 'vnl-head' %}
 <style>
-  #vnl-{{ section.id }} .pdp{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);gap:48px;align-items:start;padding:32px 0 56px}
+  #vnl-{{ section.id }} .pdp{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);gap:48px;align-items:start;padding:28px 0 32px}
   #vnl-{{ section.id }} .gal{position:sticky;top:90px;min-width:0}
   #vnl-{{ section.id }} .stagewrap{position:relative}
   #vnl-{{ section.id }} .stage{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;border-radius:var(--rl)}
@@ -59,42 +56,41 @@
 
   #vnl-{{ section.id }} .bt{display:flex;align-items:center;gap:12px;margin:22px 0 14px;font-size:14px;font-weight:800;color:var(--brown);white-space:nowrap}
   #vnl-{{ section.id }} .bt::before,#vnl-{{ section.id }} .bt::after{content:"";flex:1;height:2px;background:var(--line)}
-  #vnl-{{ section.id }} .packs{display:grid;gap:14px}
-  #vnl-{{ section.id }} .pack{position:relative;border:1px solid var(--line);border-radius:var(--r);background:var(--bg);transition:background .15s}
-  #vnl-{{ section.id }} .pack.is-active{border:2px solid var(--brown);background:var(--bg2)}
-  #vnl-{{ section.id }} .pack-head{display:grid;grid-template-columns:auto auto 1fr auto;align-items:center;gap:12px;padding:14px 16px;cursor:pointer}
-  #vnl-{{ section.id }} .pack-head input{position:absolute;opacity:0;pointer-events:none}
-  #vnl-{{ section.id }} .radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--brown);display:grid;place-items:center}
-  #vnl-{{ section.id }} .pack.is-active .radio::after{content:"";width:8px;height:8px;border-radius:50%;background:var(--brown)}
+  #vnl-{{ section.id }} .packs{display:grid;gap:16px}
+  #vnl-{{ section.id }} .pack{position:relative;display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;align-items:center;gap:12px;padding:16px;border:1px solid var(--line);border-radius:var(--r);background:var(--bg);cursor:pointer;transition:background .15s,border-color .15s,box-shadow .15s}
+  #vnl-{{ section.id }} .pack:hover{border-color:rgba(38,13,4,.45)}
+  #vnl-{{ section.id }} .pack.is-active{border-color:var(--dark);box-shadow:inset 0 0 0 1px var(--dark);background:var(--bg2)}
+  #vnl-{{ section.id }} .pack:focus{outline:none}
+  #vnl-{{ section.id }} .pack:focus-visible{outline:2px solid var(--dark);outline-offset:3px}
+  #vnl-{{ section.id }} .radio{width:20px;height:20px;border-radius:50%;border:2px solid var(--brown);display:grid;place-items:center;background:var(--bg)}
+  #vnl-{{ section.id }} .pack.is-active .radio{border-color:var(--brown)}
+  #vnl-{{ section.id }} .pack.is-active .radio::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--brown)}
   #vnl-{{ section.id }} .thumbs-n{display:flex}
-  #vnl-{{ section.id }} .thumbs-n span{width:40px;height:40px;border-radius:6px;overflow:hidden;background:var(--bg3);border:2px solid var(--bg);margin-left:-14px}
+  #vnl-{{ section.id }} .thumbs-n span{width:44px;height:44px;border-radius:8px;overflow:hidden;background:var(--bg3);border:2px solid var(--bg);margin-left:-18px}
   #vnl-{{ section.id }} .thumbs-n span:first-child{margin-left:0}
   #vnl-{{ section.id }} .thumbs-n img{width:100%;height:100%;object-fit:cover}
-  #vnl-{{ section.id }} .pid b{display:block;font-size:17px;font-weight:800}
-  #vnl-{{ section.id }} .pid small{display:block;font-size:13.5px;color:var(--muted)}
-  #vnl-{{ section.id }} .pp{text-align:right;white-space:nowrap}
-  #vnl-{{ section.id }} .pp b{font-size:17px;font-weight:800;color:var(--brown)}
-  #vnl-{{ section.id }} .pp small{font-size:12.5px;color:var(--muted);font-weight:600}
-  #vnl-{{ section.id }} .pp s{display:block;font-size:13px;color:var(--muted)}
-  #vnl-{{ section.id }} .badge{position:absolute;top:-11px;right:14px;z-index:2;padding:3px 10px;border-radius:6px;background:var(--brown);color:#fff;font-size:11.5px;font-weight:800;line-height:1.4}
-  #vnl-{{ section.id }} .pack-body{display:none;padding:0 16px 14px}
-  #vnl-{{ section.id }} .pack.is-active .pack-body{display:grid;gap:10px}
-  #vnl-{{ section.id }} .pack-body:not(:has(> :not([hidden]))){display:none}
-  #vnl-{{ section.id }} .sel-row{display:flex;flex-wrap:wrap;gap:8px}
-  #vnl-{{ section.id }} .sel-row label{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700}
-  #vnl-{{ section.id }} .sel-row select{min-height:38px;padding:6px 30px 6px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;font:inherit;font-size:14px}
-  #vnl-{{ section.id }} .upsell{display:flex;align-items:center;gap:10px;margin:0 -14px -12px;padding:10px 14px;border-radius:0 0 10px 10px;background:var(--bg3);color:var(--dark);font-size:13.5px;cursor:pointer}
+  #vnl-{{ section.id }} .pid{min-width:0}
+  #vnl-{{ section.id }} .pid b{display:block;font-size:18px;font-weight:800;color:var(--brown);line-height:1.2}
+  #vnl-{{ section.id }} .pid small{display:block;margin-top:2px;font-size:13.5px;line-height:1.35;color:#6E625A}
+  #vnl-{{ section.id }} .save{display:inline-block;margin-top:6px;padding:2px 9px;border-radius:6px;background:rgba(140,68,4,.12);color:var(--brown);font-size:12px;font-weight:800;font-style:normal}
+  #vnl-{{ section.id }} .pp{display:flex;flex-direction:column;align-items:flex-end;text-align:right;white-space:nowrap;line-height:1.25}
+  #vnl-{{ section.id }} .pp b{font-size:20px;font-weight:800;color:var(--brown)}
+  #vnl-{{ section.id }} .pp small{font-size:12.5px;color:#6E625A;font-weight:600}
+  #vnl-{{ section.id }} .pp s{font-size:13.5px;color:#8C817A}
+  #vnl-{{ section.id }} .pp .tot{font-size:12.5px;color:#8C817A}
+  #vnl-{{ section.id }} .badge{position:absolute;top:-12px;right:16px;z-index:2;padding:3px 11px;border-radius:6px;background:var(--dark);color:#F3ECE5;font-size:12px;font-weight:800;line-height:1.45;box-shadow:0 2px 6px rgba(38,13,4,.25);white-space:nowrap}
+  #vnl-{{ section.id }} .upsell{display:flex;align-items:center;gap:10px;margin-top:12px;padding:10px 14px;border-radius:var(--r);background:var(--bg3);color:var(--dark);font-size:13.5px;cursor:pointer}
   #vnl-{{ section.id }} .upsell.is-on{background:var(--sel)}
   #vnl-{{ section.id }} .upsell input{width:16px;height:16px;accent-color:var(--brown)}
   #vnl-{{ section.id }} .upsell img{width:30px;height:30px;border-radius:5px;object-fit:cover}
   #vnl-{{ section.id }} .upsell span{flex:1}
   #vnl-{{ section.id }} .upsell b{font-weight:800}
-  #vnl-{{ section.id }} .stock{font-size:13px;font-weight:700;color:var(--sale)}
+  #vnl-{{ section.id }} .stock{margin-top:8px;font-size:13px;font-weight:700;color:var(--sale)}
   #vnl-{{ section.id }} .sold{display:flex;justify-content:center;margin:14px 0 0}
   #vnl-{{ section.id }} .sold span{padding:4px 14px;border-radius:999px;background:var(--bg2);font-size:13px;font-weight:700}
   #vnl-{{ section.id }} .cta{margin-top:14px}
   #vnl-{{ section.id }} .err{margin:8px 0 0;font-size:13px;font-weight:700;color:var(--sale)}
-  #vnl-{{ section.id }} .secure{margin-top:12px;text-align:center;font-size:12.5px;color:var(--muted)}
+  #vnl-{{ section.id }} .secure{margin-top:12px;text-align:center;font-size:13px;color:var(--muted)}
   #vnl-{{ section.id }} .pay{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:14px}
   #vnl-{{ section.id }} .pay svg{width:38px;height:24px}
   #vnl-{{ section.id }} .acc{margin-top:22px;border-top:1px solid var(--dark)}
@@ -112,16 +108,24 @@
   #vnl-{{ section.id }} .sticky .who{display:flex;align-items:center;gap:12px;min-width:0}
   #vnl-{{ section.id }} .sticky .who img{width:46px;height:46px;border-radius:8px;object-fit:cover}
   #vnl-{{ section.id }} .sticky .who b{display:block;font-size:15px}
-  #vnl-{{ section.id }} .sticky .who small{display:block;font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #vnl-{{ section.id }} .sticky .who select{display:block;margin-top:2px;padding:2px 22px 2px 0;border:0;background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23260D04' stroke-width='2.4'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right center/14px;font:inherit;font-size:13.5px;color:var(--dark);cursor:pointer;-webkit-appearance:none;appearance:none}
   #vnl-{{ section.id }} .sticky .vnl-btn{width:auto;min-height:46px;padding:10px 26px}
 
   @media (max-width:900px){
-    #vnl-{{ section.id }} .pdp{grid-template-columns:minmax(0,1fr);gap:24px;padding:16px 0 40px}
+    #vnl-{{ section.id }} .pdp{grid-template-columns:minmax(0,1fr);gap:24px;padding:16px 0 24px}
     #vnl-{{ section.id }} .gal{position:static}
-    #vnl-{{ section.id }} .pack-head{gap:10px;padding:12px}
-    #vnl-{{ section.id }} .thumbs-n span{width:34px;height:34px}
-    #vnl-{{ section.id }} .sticky .who{display:none}
-    #vnl-{{ section.id }} .sticky .vnl-btn{width:100%}
+    #vnl-{{ section.id }} .sticky{padding:10px 16px;gap:10px}
+    #vnl-{{ section.id }} .sticky .who img{display:none}
+    #vnl-{{ section.id }} .sticky .who b{font-size:14px}
+    #vnl-{{ section.id }} .sticky .vnl-btn{min-height:44px;padding:10px 16px;font-size:15px;white-space:nowrap}
+  }
+  @media (max-width:520px){
+    #vnl-{{ section.id }} .pack{grid-template-columns:auto auto minmax(0,1fr);gap:4px 10px;padding:14px 12px}
+    #vnl-{{ section.id }} .pack .radio,#vnl-{{ section.id }} .pack .thumbs-n{grid-row:1 / span 2}
+    #vnl-{{ section.id }} .thumbs-n span{width:36px;height:36px;margin-left:-16px}
+    #vnl-{{ section.id }} .pp{grid-column:3;flex-direction:row;flex-wrap:wrap;align-items:baseline;gap:2px 8px;text-align:left;white-space:normal}
+    #vnl-{{ section.id }} .pid b{font-size:17px}
+    #vnl-{{ section.id }} .pp b{font-size:18px}
   }
 </style>
 
@@ -203,56 +207,49 @@
 
     <div id="acheter" style="scroll-margin-top:96px"></div>
     <p class="bt">{{ s.packs_title }}</p>
-    <div class="packs" role="radiogroup" aria-label="{{ s.packs_title | escape }}">
+{%- comment -%}
+      Packs = variantes « 1 veilleuse », « 2 veilleuses », « 3 veilleuses » : le nombre est lu au début du nom de la variante.
+      Prix unitaire = prix de la variante ÷ nombre de veilleuses (arrondi à l'euro) ; économie = prix de « 1 veilleuse » × n − prix de la variante.
+    {%- endcomment -%}
+    {%- assign base = 0 -%}
+    {%- for v in product.variants -%}{%- assign vn = v.title | split: ' ' | first | plus: 0 -%}{%- if vn == 1 -%}{%- assign base = v.price -%}{%- endif -%}{%- endfor -%}
+    {%- if base == 0 -%}{%- assign base = product.price_min -%}{%- endif -%}
+    {%- assign default_label = '' -%}
+    <div class="packs" role="radiogroup" aria-label="{{ s.packs_title | escape }}" data-packs>
       {%- for n in (1..3) -%}
-        {%- assign total = unit | times: n -%}
-        {%- assign price = total -%}
-        {%- if n == 2 and s.pack2_price != blank -%}{%- assign price = s.pack2_price | replace: ',', '.' | times: 100 | round -%}{%- endif -%}
-        {%- if n == 3 and s.pack3_price != blank -%}{%- assign price = s.pack3_price | replace: ',', '.' | times: 100 | round -%}{%- endif -%}
-        {%- assign each = price | times: 1.0 | divided_by: n | round -%}
+        {%- assign pv = nil -%}
+        {%- for v in product.variants -%}{%- assign vn = v.title | split: ' ' | first | plus: 0 -%}{%- if vn == n -%}{%- assign pv = v -%}{%- break -%}{%- endif -%}{%- endfor -%}
+        {%- if pv == nil -%}{%- continue -%}{%- endif -%}
+        {%- assign each = pv.price | times: 1.0 | divided_by: n | divided_by: 100.0 | round | times: 100 -%}
+        {%- assign saving = base | times: n | minus: pv.price -%}
         {%- case n -%}
           {%- when 1 -%}{%- assign p_name = s.pack1_name -%}{%- assign p_sub = s.pack1_sub -%}{%- assign p_badge = s.pack1_badge -%}
           {%- when 2 -%}{%- assign p_name = s.pack2_name -%}{%- assign p_sub = s.pack2_sub -%}{%- assign p_badge = s.pack2_badge -%}
           {%- when 3 -%}{%- assign p_name = s.pack3_name -%}{%- assign p_sub = s.pack3_sub -%}{%- assign p_badge = s.pack3_badge -%}
         {%- endcase -%}
-        <div class="pack{% if n == 2 %} is-active{% endif %}" data-n="{{ n }}" data-price="{{ price }}" data-label="{{ price | money | escape }}"{% if up != blank and up_v.available %} data-label-up="{{ up_v.price | times: n | plus: price | money | escape }}"{% endif %}>
+        {%- assign is_def = false -%}{%- if n == 2 -%}{%- assign is_def = true -%}{%- assign default_label = pv.price | money_without_trailing_zeros -%}{%- endif -%}
+        <div class="pack{% if is_def %} is-active{% endif %}" role="radio" aria-checked="{{ is_def }}" tabindex="{% if is_def %}0{% else %}-1{% endif %}" data-n="{{ n }}" data-variant="{{ pv.id }}" data-avail="{{ pv.available }}" data-label="{{ pv.price | money_without_trailing_zeros | escape }}"{% if up != blank and up_v.available %} data-label-up="{{ up_v.price | times: n | plus: pv.price | money_without_trailing_zeros | escape }}"{% endif %} aria-label="{{ p_name | escape }}, {{ pv.title | escape }}, {{ pv.price | money_without_trailing_zeros | escape }}">
           {%- if p_badge != blank -%}<span class="badge">{{ p_badge }}</span>{%- endif -%}
-          <label class="pack-head">
-            <input type="radio" name="vnl-pack-{{ section.id }}" value="{{ n }}"{% if n == 2 %} checked{% endif %}>
-            <span class="radio" aria-hidden="true"></span>
-            <span class="thumbs-n" aria-hidden="true">{%- assign pack_img = s.pack_img | default: product.featured_image -%}{% for i in (1..n) %}<span>{% if pack_img %}<img src="{{ pack_img | image_url: width: 120 }}" alt="" width="40" height="40" loading="lazy">{% endif %}</span>{% endfor %}</span>
-            <span class="pid"><b>{{ p_name }}</b>{%- if p_sub != blank -%}<small>{{ p_sub }}</small>{%- endif -%}</span>
-            <span class="pp"><b>{{ each | money }}</b> <small>{{ s.each_label }}</small>{%- if each < unit -%}<s>{{ unit | money }}</s>{%- endif -%}</span>
-          </label>
-          <div class="pack-body">
-            {%- if multi -%}
-            <div class="sel-row">
-              {%- for i in (1..n) -%}
-                <label>{% if n > 1 %}#{{ i }}{% endif %}
-                  <select data-variant-select aria-label="{{ s.variant_label | escape }} {{ i }}">
-                    {%- for v in product.variants -%}<option value="{{ v.id }}"{% unless v.available %} disabled{% endunless %}>{{ v.title }}{% unless v.available %} (épuisé){% endunless %}</option>{%- endfor -%}
-                  </select>
-                </label>
-              {%- endfor -%}
-            </div>
-            {%- endif -%}
-            <p class="stock" data-stock hidden></p>
-            {%- if up != blank and up_v.available -%}
-            <label class="upsell" data-upsell>
-              <input type="checkbox" data-upsell-box>
-              {%- if up.featured_image -%}<img src="{{ up.featured_image | image_url: width: 80 }}" alt="" width="30" height="30" loading="lazy">{%- endif -%}
-              <span>{{ s.upsell_text }}</span>
-              <b>{{ up_v.price | times: n | money }}</b>
-            </label>
-            {%- endif -%}
-          </div>
+          <span class="radio" aria-hidden="true"></span>
+          <span class="thumbs-n" aria-hidden="true">{%- assign pack_img = s.pack_img | default: product.featured_image -%}{% for i in (1..n) %}<span>{% if pack_img %}<img src="{{ pack_img | image_url: width: 120 }}" alt="" width="44" height="44" loading="lazy">{% endif %}</span>{% endfor %}</span>
+          <span class="pid"><b>{{ p_name }}</b>{%- if p_sub != blank -%}<small>{{ p_sub }}</small>{%- endif -%}{%- if saving > 0 -%}<em class="save">Vous économisez {{ saving | money_without_trailing_zeros }}</em>{%- endif -%}</span>
+          <span class="pp"><span><b>{{ each | money_without_trailing_zeros }}</b> <small>{{ s.each_label }}</small></span>{%- if saving > 0 -%}<s>{{ base | money_without_trailing_zeros }}</s>{%- endif -%}{%- if n > 1 -%}<span class="tot">soit {{ pv.price | money_without_trailing_zeros }}</span>{%- endif -%}</span>
         </div>
       {%- endfor -%}
     </div>
+    {%- if default_label == '' -%}{%- assign default_label = product.selected_or_first_available_variant.price | money_without_trailing_zeros -%}{%- endif -%}
+    {%- if up != blank and up_v.available -%}
+    <label class="upsell" data-upsell>
+      <input type="checkbox" data-upsell-box>
+      {%- if up.featured_image -%}<img src="{{ up.featured_image | image_url: width: 80 }}" alt="" width="30" height="30" loading="lazy">{%- endif -%}
+      <span>{{ s.upsell_text }}</span>
+    </label>
+    {%- endif -%}
+    <p class="stock" data-stock hidden>Ce pack est épuisé pour le moment.</p>
 
     {%- if s.sold_line != blank -%}<p class="sold"><span>{{ s.sold_line }}</span></p>{%- endif -%}
     <div class="cta">
-      <button type="button" class="vnl-btn" data-atc>Ajouter au panier · <span data-atc-price>{{ unit | money }}</span></button>
+      <button type="button" class="vnl-btn" data-atc>Ajouter au panier · <span data-atc-price>{{ default_label }}</span></button>
     </div>
     {%- if s.secure_line != blank -%}<p class="secure">{{ s.secure_line }}</p>{%- endif -%}
     <div class="pay">{%- for type in shop.enabled_payment_types -%}{{ type | payment_type_svg_tag }}{%- endfor -%}</div>
@@ -266,21 +263,20 @@
 </div></div></div>
 
 <div class="sticky" data-sticky>
-  <div class="who">{%- if product.featured_image -%}<img src="{{ product.featured_image | image_url: width: 100 }}" alt="" width="46" height="46" loading="lazy">{%- endif -%}<div><b>{{ s.title | default: product.title }}</b><small data-sticky-sub></small></div></div>
-  <button type="button" class="vnl-btn" data-atc-sticky>Ajouter au panier · <span data-sticky-price>{{ unit | money }}</span></button>
+  <div class="who">{%- if product.featured_image -%}<img src="{{ product.featured_image | image_url: width: 100 }}" alt="" width="46" height="46" loading="lazy">{%- endif -%}<div><b>{{ s.title | default: product.title }}</b>
+    <select data-sticky-pack aria-label="Choisir le pack">{%- for n in (1..3) -%}<option value="{{ n }}"{% if n == 2 %} selected{% endif %}>{{ n }} {% if n > 1 %}{{ s.unit_plural }}{% else %}{{ s.unit_singular }}{% endif %}</option>{%- endfor -%}</select></div></div>
+  <button type="button" class="vnl-btn" data-atc-sticky>Ajouter au panier · <span data-sticky-price>{{ default_label }}</span></button>
 </div>
 
-<script type="application/json" id="vnl-data-{{ section.id }}">{"default":{{ product.selected_or_first_available_variant.id | default: 0 }},"upsell":{% if up != blank and up_v.available %}{{ up_v.id }}{% else %}null{% endif %},"variants":[{% for v in product.variants %}{"id":{{ v.id }},"title":{{ v.title | json }},"a":{{ v.available }},"q":{% if v.inventory_management != blank and v.inventory_policy != 'continue' %}{{ v.inventory_quantity | at_least: 0 }}{% else %}null{% endif %}}{% unless forloop.last %},{% endunless %}{% endfor %}]}</script>
+<script type="application/json" id="vnl-data-{{ section.id }}">{"upsell":{% if up != blank and up_v.available %}{{ up_v.id }}{% else %}null{% endif %}}</script>
 <script>
 (function () {
   var root = document.getElementById('vnl-{{ section.id }}');
   if (!root || root.dataset.ready) return;
   root.dataset.ready = '1';
   var data = JSON.parse(document.getElementById('vnl-data-{{ section.id }}').textContent);
-  var UNIT = {{ s.unit_singular | json }}, UNITS = {{ s.unit_plural | json }}, LOW = 10;
   var $ = function (q, c) { return (c || root).querySelector(q); };
   var $$ = function (q, c) { return [].slice.call((c || root).querySelectorAll(q)); };
-  function byId(id) { return data.variants.filter(function (v) { return v.id === id; })[0]; }
 
   /* Galerie : vignettes en dessous, flèches en boucle, glisser */
   var stage = $('[data-stage]'), slides = $$('.slide', stage), thumbs = $('[data-thumbs]'), cur = 0;
@@ -300,52 +296,41 @@
     var i = Math.round(stage.scrollLeft / slides[0].offsetWidth); if (i !== cur) { cur = i; mark(); }
   }, { passive: true });
 
-  /* Packs */
-  var packs = $$('.pack'), active = $('.pack.is-active') || packs[0];
-  var atc = $('[data-atc]'), sticky = $('[data-atc-sticky]'), upOn = false;
-  function picks() {
-    var sel = $$('[data-variant-select]', active);
-    if (sel.length) return sel.map(function (x) { return +x.value; });
-    var out = []; for (var i = 0; i < +active.dataset.n; i++) out.push(data.default); return out;
-  }
+  /* Packs : une carte = une variante « Pack », ajoutée en quantité 1 */
+  var group = $('[data-packs]'), packs = $$('.pack', group), active = $('.pack.is-active', group) || packs[0];
+  var atc = $('[data-atc]'), sticky = $('[data-atc-sticky]'), stickySel = $('[data-sticky-pack]'), upOn = false;
   function lines() {
-    var q = {}, order = [];
-    picks().forEach(function (id) { if (!q[id]) { q[id] = 0; order.push(id); } q[id]++; });
-    var out = order.map(function (id) { return { id: id, quantity: q[id] }; });
+    var out = [{ id: +active.dataset.variant, quantity: 1 }];
     if (upOn && data.upsell) out.push({ id: data.upsell, quantity: +active.dataset.n });
     return out;
   }
-  function ok() { return lines().every(function (l) { if (l.id === data.upsell) return true; var v = byId(l.id); return v && v.a && (v.q === null || l.quantity <= v.q); }); }
-  function stockMsg() {
-    var el = $('[data-stock]', active); if (!el) return;
-    var msg = '';
-    lines().forEach(function (l) {
-      var v = byId(l.id); if (!v || msg) return;
-      if (!v.a || (v.q !== null && l.quantity > v.q)) msg = v.q > 0 ? 'Il ne reste que ' + v.q + ' en stock. Choisissez un pack plus petit.' : 'Épuisé pour le moment.';
-      else if (v.q !== null && v.q <= LOW) msg = 'Plus que ' + v.q + ' en stock';
-    });
-    el.textContent = msg; el.hidden = !msg;
-  }
+  function ok() { return active && active.dataset.avail === 'true'; }
   function sync() {
-    var n = +active.dataset.n, names = $$('[data-variant-select]', active).map(function (x) { return byId(+x.value).title; });
     var p = (upOn && active.dataset.labelUp) || active.dataset.label;
     $('[data-atc-price]').textContent = p; $('[data-sticky-price]').textContent = p;
-    $('[data-sticky-sub]').textContent = n + ' ' + (n > 1 ? UNITS : UNIT) + (names.length ? ' · ' + names.join(' + ') : '');
+    if (stickySel) stickySel.value = active.dataset.n;
     $$('[data-upsell]').forEach(function (u) { u.classList.toggle('is-on', upOn); $('[data-upsell-box]', u).checked = upOn; });
-    stockMsg();
+    $('[data-stock]').hidden = ok();
     atc.disabled = sticky.disabled = !ok();
   }
-  function setActive(p) {
-    var first = $('[data-variant-select]', active), firstVal = first && first.value;
-    packs.forEach(function (x) { x.classList.toggle('is-active', x === p); });
-    active = p; active.querySelector('input[type=radio]').checked = true;
-    var f = $('[data-variant-select]', active); if (f && firstVal) f.value = firstVal;
+  function setActive(p, focus) {
+    if (!p) return;
+    packs.forEach(function (x) { var on = x === p; x.classList.toggle('is-active', on); x.setAttribute('aria-checked', on ? 'true' : 'false'); x.tabIndex = on ? 0 : -1; });
+    active = p; if (focus) p.focus();
     sync();
   }
-  packs.forEach(function (p) {
-    p.querySelector('input[type=radio]').addEventListener('change', function () { setActive(p); });
-    $$('[data-variant-select]', p).forEach(function (x) { x.addEventListener('change', sync); });
+  packs.forEach(function (p, i) {
+    p.addEventListener('click', function () { setActive(p); });
+    p.addEventListener('keydown', function (e) {
+      var k = e.key, j = null;
+      if (k === 'ArrowDown' || k === 'ArrowRight') j = (i + 1) % packs.length;
+      else if (k === 'ArrowUp' || k === 'ArrowLeft') j = (i - 1 + packs.length) % packs.length;
+      else if (k === 'Home') j = 0; else if (k === 'End') j = packs.length - 1;
+      else if (k === ' ' || k === 'Enter') { e.preventDefault(); setActive(p); return; }
+      if (j !== null) { e.preventDefault(); setActive(packs[j], true); }
+    });
   });
+  if (stickySel) stickySel.addEventListener('change', function () { setActive(packs.filter(function (x) { return x.dataset.n === stickySel.value; })[0]); });
   $$('[data-upsell-box]').forEach(function (b) { b.addEventListener('change', function () { upOn = b.checked; sync(); }); });
   sync();
 
@@ -403,7 +388,7 @@
     { "type": "text", "id": "perk_1", "label": "Ligne bouclier", "default": "Garantie légale de 2 ans" },
     { "type": "text", "id": "perk_2", "label": "Ligne flèche retour", "default": "30 nuits pour l'essayer, satisfait ou remboursé" },
     { "type": "text", "id": "perk_3", "label": "Ligne camion", "default": "Expédiée sous 24 h, livrée en 5 à 9 jours ouvrés" },
-    { "type": "header", "content": "Packs" },
+    { "type": "header", "content": "Packs", "info": "Les prix viennent des variantes « Pack » du produit (1 veilleuse, 2 veilleuses, 3 veilleuses)." },
     { "type": "text", "id": "packs_title", "label": "Titre des packs", "default": "Choisissez votre lumière" },
     { "type": "text", "id": "unit_singular", "label": "Unité (singulier)", "default": "veilleuse" },
     { "type": "text", "id": "unit_plural", "label": "Unité (pluriel)", "default": "veilleuses" },
@@ -415,17 +400,14 @@
     { "type": "text", "id": "pack2_name", "label": "Pack 2 · nom", "default": "Deux" },
     { "type": "text", "id": "pack2_sub", "label": "Pack 2 · détail", "default": "Chambre + salle de bain, ou une à offrir" },
     { "type": "text", "id": "pack2_badge", "label": "Pack 2 · badge", "default": "Le plus choisi" },
-    { "type": "text", "id": "pack2_price", "label": "Prix du lot de 2 (ex. 99,90)", "info": "Identique à la remise automatique Shopify. Vide = 2 × prix unitaire." },
     { "type": "text", "id": "pack3_name", "label": "Pack 3 · nom", "default": "Trois" },
     { "type": "text", "id": "pack3_sub", "label": "Pack 3 · détail", "default": "Pour toute la maison, ou à offrir" },
-    { "type": "text", "id": "pack3_badge", "label": "Pack 3 · badge (vide = aucun)" },
-    { "type": "text", "id": "pack3_price", "label": "Prix du lot de 3 (ex. 134,90)", "info": "Identique à la remise automatique Shopify. Vide = 3 × prix unitaire." },
-    { "type": "text", "id": "variant_label", "label": "Libellé du choix de variante", "default": "Coloris" },
+    { "type": "text", "id": "pack3_badge", "label": "Pack 3 · badge (vide = aucun)", "default": "Idéal à offrir" },
     { "type": "header", "content": "Option ajoutée au pack (ex. coffret cadeau)" },
-    { "type": "product", "id": "upsell_product", "label": "Produit en option (vide = masqué)", "info": "Ajouté en autant d'exemplaires que de veilleuses, au prix du produit." },
+    { "type": "product", "id": "upsell_product", "label": "Produit en option (vide = masqué)", "info": "Ajouté en autant d'exemplaires que de veilleuses du pack, au prix du produit." },
     { "type": "text", "id": "upsell_text", "label": "Texte de l'option", "default": "+ Coffret cadeau" },
     { "type": "header", "content": "Sous le bouton" },
-    { "type": "text", "id": "secure_line", "label": "Ligne sous le bouton (vide = masquée)", "default": "Paiement sécurisé · Une vraie personne répond à vos e-mails" },
+    { "type": "text", "id": "secure_line", "label": "Ligne sous le bouton (vide = masquée)", "default": "Livraison offerte · 30 nuits pour l'essayer · Garantie 2 ans" },
     { "type": "header", "content": "Sous les packs" },
     { "type": "text", "id": "sold_line", "label": "Pastille de ventes (chiffre réel uniquement, vide = masquée)" }
   ],

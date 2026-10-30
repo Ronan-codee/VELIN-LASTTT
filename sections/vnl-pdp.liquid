@@ -45,6 +45,10 @@
   #vnl-{{ section.id }} .stars i b::before{content:"★★★★★"}
   #vnl-{{ section.id }} .price{display:flex;align-items:baseline;gap:10px;margin-top:10px;font-size:22px;font-weight:800}
   #vnl-{{ section.id }} .price s{font-size:16px;font-weight:600;color:var(--muted)}
+  #vnl-{{ section.id }} .emo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 18px;margin-top:18px}
+  #vnl-{{ section.id }} .emo li{display:flex;align-items:center;gap:10px;font-size:14.5px;font-weight:700;line-height:1.3}
+  #vnl-{{ section.id }} .emo i{flex:none;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--bg2);color:var(--dark)}
+  @media (max-width:520px){#vnl-{{ section.id }} .emo{grid-template-columns:minmax(0,1fr);gap:10px}}
   #vnl-{{ section.id }} .perks{display:grid;gap:8px;margin-top:16px}
   #vnl-{{ section.id }} .perks li{display:flex;align-items:center;gap:10px;font-size:14.5px}
   #vnl-{{ section.id }} .perks svg{flex:none}
@@ -151,6 +155,22 @@
     <h1>{{ s.title | default: product.title }}</h1>
     {%- if s.tagline != blank -%}<p class="tagline">{{ s.tagline }}</p>{%- endif -%}
     {%- if s.subtitle != blank -%}<p class="desc">{{ s.subtitle }}</p>{%- endif -%}
+    <ul class="emo">
+      {%- for k in (1..4) -%}
+        {%- capture ek %}emo_{{ k }}_text{% endcapture -%}{%- capture ei %}emo_{{ k }}_icon{% endcapture -%}
+        {%- assign et = s[ek] -%}{%- assign eicon = s[ei] -%}
+        {%- if et != blank -%}
+        <li><i><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          {%- case eicon -%}
+            {%- when 'flame' -%}<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+            {%- when 'phone' -%}<rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/><path d="m3 3 18 18"/>
+            {%- when 'heart' -%}<path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/>
+            {%- else -%}<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+          {%- endcase -%}
+        </svg></i>{{ et }}</li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
     {%- if r_avg != blank and r_n > 0 -%}
       <a class="stars" href="#avis" aria-label="Note {{ r_avg | replace: '.', ',' }} sur 5, {{ r_n }} avis"><i aria-hidden="true"><b style="width:{{ r_avg | times: 20 }}%"></b></i>{{ r_n }} avis</a>
     {%- else -%}
@@ -368,6 +388,15 @@
     { "type": "text", "id": "title", "label": "Titre (vide = nom du produit)", "default": "Veilleuse Velin" },
     { "type": "text", "id": "tagline", "label": "Ligne fonctions", "default": "LUMIÈRE DOUCE + SONS APAISANTS + ENCEINTE" },
     { "type": "textarea", "id": "subtitle", "label": "Description courte", "default": "Éteignez le plafonnier. Une lueur chaude, 18 couleurs et un fond sonore doux pour que le soir redevienne calme. 🧡" },
+    { "type": "header", "content": "Bénéfices (4 puces, vide = masquée)" },
+    { "type": "select", "id": "emo_1_icon", "label": "Puce 1 · picto", "default": "moon", "options": [ { "value": "moon", "label": "Lune" }, { "value": "flame", "label": "Flamme" }, { "value": "phone", "label": "Téléphone barré" }, { "value": "heart", "label": "Cœur" } ] },
+    { "type": "text", "id": "emo_1_text", "label": "Puce 1 · texte", "default": "Un moment rien qu’à vous" },
+    { "type": "select", "id": "emo_2_icon", "label": "Puce 2 · picto", "default": "flame", "options": [ { "value": "moon", "label": "Lune" }, { "value": "flame", "label": "Flamme" }, { "value": "phone", "label": "Téléphone barré" }, { "value": "heart", "label": "Cœur" } ] },
+    { "type": "text", "id": "emo_2_text", "label": "Puce 2 · texte", "default": "La chaleur d’une bougie, sans flamme" },
+    { "type": "select", "id": "emo_3_icon", "label": "Puce 3 · picto", "default": "phone", "options": [ { "value": "moon", "label": "Lune" }, { "value": "flame", "label": "Flamme" }, { "value": "phone", "label": "Téléphone barré" }, { "value": "heart", "label": "Cœur" } ] },
+    { "type": "text", "id": "emo_3_text", "label": "Puce 3 · texte", "default": "Écrans éteints, esprit apaisé" },
+    { "type": "select", "id": "emo_4_icon", "label": "Puce 4 · picto", "default": "heart", "options": [ { "value": "moon", "label": "Lune" }, { "value": "flame", "label": "Flamme" }, { "value": "phone", "label": "Téléphone barré" }, { "value": "heart", "label": "Cœur" } ] },
+    { "type": "text", "id": "emo_4_text", "label": "Puce 4 · texte", "default": "Un cocon dans chaque pièce" },
     { "type": "header", "content": "Engagements (3 lignes, vide = masquée)" },
     { "type": "text", "id": "perk_1", "label": "Ligne bouclier", "default": "Garantie légale de 2 ans" },
     { "type": "text", "id": "perk_2", "label": "Ligne flèche retour", "default": "30 nuits pour l'essayer, satisfait ou remboursé" },

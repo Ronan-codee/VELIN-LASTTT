@@ -102,7 +102,15 @@
         "upsell_product": "",
         "upsell_text": "+ Coffret cadeau",
         "secure_line": "Paiement sécurisé · Une vraie personne répond à vos e-mails",
-        "sold_line": ""
+        "sold_line": "",
+        "emo_1_icon": "moon",
+        "emo_1_text": "Un moment rien qu’à vous",
+        "emo_2_icon": "flame",
+        "emo_2_text": "La chaleur d’une bougie, sans flamme",
+        "emo_3_icon": "phone",
+        "emo_3_text": "Écrans éteints, esprit apaisé",
+        "emo_4_icon": "heart",
+        "emo_4_text": "Un cocon dans chaque pièce"
       }
     },
     "usages": {

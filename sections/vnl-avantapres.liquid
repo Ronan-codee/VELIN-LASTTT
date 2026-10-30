@@ -5,7 +5,7 @@
 {%- if ba_show -%}
 {% render 'vnl-head' %}
 <style>
-  #vnl-ba-{{ section.id }} .ba{position:relative;margin-top:32px;aspect-ratio:16/10;border-radius:var(--rl);overflow:hidden;background:var(--bg2);user-select:none;--x:50%}
+  #vnl-ba-{{ section.id }} .ba{position:relative;margin-top:32px;aspect-ratio:16/10;border-radius:var(--rl);overflow:hidden;background:var(--bg2);user-select:none;--x:{{ s.start | default: 48 }}%}
   #vnl-ba-{{ section.id }} .ba>div{position:absolute;inset:0}
   #vnl-ba-{{ section.id }} .ba img{width:100%;height:100%;object-fit:cover}
   #vnl-ba-{{ section.id }} .ba .after{clip-path:inset(0 0 0 var(--x))}
@@ -22,7 +22,7 @@
     <span class="lab" style="left:16px">{{ s.before_label }}</span>
     <span class="lab" style="right:16px">{{ s.after_label }}</span>
     <span class="line" aria-hidden="true"></span>
-    <input type="range" min="0" max="100" value="50" aria-label="Comparer avant et après">
+    <input type="range" min="0" max="100" value="{{ s.start | default: 48 }}" aria-label="Comparer avant et après">
   </div>
   {%- if s.caption != blank -%}<p class="txt" style="text-align:center;max-width:560px;margin:22px auto 0">{{ s.caption }}</p>{%- endif -%}
 </div></div>
@@ -41,6 +41,7 @@
   "settings": [
     { "type": "text", "id": "title", "label": "Titre", "default": "Plafonnier ou petite lueur ?" },
     { "type": "textarea", "id": "caption", "label": "Texte sous le curseur (vide = masqué)", "default": "Même pièce, même soir. Seule la lumière a changé." },
+    { "type": "range", "id": "start", "label": "Position de départ du curseur", "min": 30, "max": 70, "step": 1, "unit": "%", "default": 48, "info": "48 % : le trait passe au centre de la lampe sur les photos actuelles." },
     { "type": "image_picker", "id": "before", "label": "Photo avant (16:10)" },
     { "type": "text", "id": "before_label", "label": "Étiquette avant", "default": "Avant" },
     { "type": "image_picker", "id": "after", "label": "Photo après (16:10, même cadrage)" },

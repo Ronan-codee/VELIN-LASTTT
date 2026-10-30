@@ -15,25 +15,25 @@
         "clip_1": {
           "type": "clip",
           "settings": {
-            "video": "shopify://files/videos/4-violet-bureau_1.mp4"
+            "video": "shopify://files/videos/4-violet-bureau-texte.mp4"
           }
         },
         "clip_WiT94F": {
           "type": "clip",
           "settings": {
-            "video": "shopify://files/videos/2-rouge-bain_1.mp4"
+            "video": "shopify://files/videos/2-rouge-bain-texte.mp4"
           }
         },
         "clip_2": {
           "type": "clip",
           "settings": {
-            "video": "shopify://files/videos/3-bleu-douche_1.mp4"
+            "video": "shopify://files/videos/3-bleu-douche-texte.mp4"
           }
         },
         "clip_3": {
           "type": "clip",
           "settings": {
-            "video": "shopify://files/videos/1-ambre-chambre_1.mp4"
+            "video": "shopify://files/videos/1-ambre-chambre-texte.mp4"
           }
         },
         "info_2": {
@@ -80,6 +80,14 @@
         "title": "Veilleuse Velin",
         "tagline": "LUMIÈRE DOUCE + SONS APAISANTS + ENCEINTE",
         "subtitle": "Éteignez le plafonnier. Une lueur chaude, 18 couleurs et un fond sonore doux pour que le soir redevienne calme. 🧡",
+        "emo_1_icon": "moon",
+        "emo_1_text": "Un moment rien qu’à vous",
+        "emo_2_icon": "flame",
+        "emo_2_text": "La chaleur d’une bougie, sans flamme",
+        "emo_3_icon": "phone",
+        "emo_3_text": "Écrans éteints, esprit apaisé",
+        "emo_4_icon": "heart",
+        "emo_4_text": "Un cocon dans chaque pièce",
         "perk_1": "",
         "perk_2": "",
         "perk_3": "",
@@ -102,15 +110,7 @@
         "upsell_product": "",
         "upsell_text": "+ Coffret cadeau",
         "secure_line": "Paiement sécurisé · Une vraie personne répond à vos e-mails",
-        "sold_line": "",
-        "emo_1_icon": "moon",
-        "emo_1_text": "Un moment rien qu’à vous",
-        "emo_2_icon": "flame",
-        "emo_2_text": "La chaleur d’une bougie, sans flamme",
-        "emo_3_icon": "phone",
-        "emo_3_text": "Écrans éteints, esprit apaisé",
-        "emo_4_icon": "heart",
-        "emo_4_text": "Un cocon dans chaque pièce"
+        "sold_line": ""
       }
     },
     "usages": {
@@ -181,6 +181,7 @@
       "settings": {
         "title": "Plafonnier ou petite lueur ?",
         "caption": "Même pièce, même soir. Seule la lumière a changé.",
+        "start": 48,
         "before": "shopify://shop_images/hf_20261027_211210_975229f7-d20a-4e6a-b80b-d6f67adfdcf0.png",
         "before_label": "Avant",
         "after": "shopify://shop_images/hf_20261027_211210_2a86aea8-60c2-4ca8-8656-b179c8b72ca2.png",
@@ -239,8 +240,8 @@
       ],
       "settings": {
         "title": "Quatre sons pour couper du bruit.",
-        "text": "Touchez une tuile pour l'écouter.",
-        "footnote": "Ou connectez votre téléphone et diffusez votre propre playlist."
+        "footnote": "Ou connectez votre téléphone et diffusez votre propre playlist.",
+        "text": "Touchez une tuile pour l'écouter."
       }
     },
     "rouge": {

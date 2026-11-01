@@ -194,8 +194,8 @@
             "sound": "deep",
             "audio": "",
             "bg": "#260c02",
-            "name": "Bruit marron profond",
-            "desc": "Très grave, comme un grondement lointain"
+            "name": "Orage lointain",
+            "desc": "Bruit marron profond · très grave, enveloppant"
           }
         },
         "sound_2": {
@@ -204,8 +204,8 @@
             "sound": "brown",
             "audio": "",
             "bg": "#8b4303",
-            "name": "Bruit marron",
-            "desc": "Grave et enveloppant, comme une vague"
+            "name": "Vagues au loin",
+            "desc": "Bruit marron · grave et régulier"
           }
         },
         "sound_3": {
@@ -214,8 +214,8 @@
             "sound": "pink",
             "audio": "",
             "bg": "#cd08a8",
-            "name": "Bruit rose",
-            "desc": "Plus doux, comme une pluie fine"
+            "name": "Pluie fine",
+            "desc": "Bruit rose · doux et feutré"
           }
         },
         "sound_4": {
@@ -224,8 +224,8 @@
             "sound": "white",
             "audio": "",
             "bg": "#000000",
-            "name": "Bruit blanc",
-            "desc": "Un souffle régulier, comme un ventilateur"
+            "name": "Souffle d'air",
+            "desc": "Bruit blanc · comme un ventilateur"
           }
         }
       },

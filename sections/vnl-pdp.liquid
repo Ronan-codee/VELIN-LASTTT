@@ -57,6 +57,11 @@
 
   #vnl-{{ section.id }} .bt{display:flex;align-items:center;gap:12px;margin:22px 0 14px;font-size:14px;font-weight:800;color:var(--brown);white-space:nowrap}
   #vnl-{{ section.id }} .bt::before,#vnl-{{ section.id }} .bt::after{content:"";flex:1;height:2px;background:var(--line)}
+  #vnl-{{ section.id }} .low{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:14px;font-weight:700;color:var(--sale)}
+  #vnl-{{ section.id }} .low[hidden]{display:none}
+  #vnl-{{ section.id }} .low::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--sale);flex:none;animation:vnl-pulse 1.8s ease-in-out infinite}
+  @keyframes vnl-pulse{50%{opacity:.35}}
+  @media (prefers-reduced-motion:reduce){#vnl-{{ section.id }} .low::before{animation:none}}
   #vnl-{{ section.id }} .packs{display:grid;gap:16px}
   #vnl-{{ section.id }} .pack{position:relative;display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;align-items:center;gap:12px;padding:16px;border:1px solid var(--line);border-radius:var(--r);background:var(--bg);cursor:pointer;transition:background .15s,border-color .15s,box-shadow .15s}
   #vnl-{{ section.id }} .pack:hover{border-color:rgba(38,13,4,.45)}
@@ -250,7 +255,7 @@
           {%- when 3 -%}{%- assign p_name = s.pack3_name -%}{%- assign p_sub = s.pack3_sub -%}{%- assign p_badge = s.pack3_badge -%}
         {%- endcase -%}
         {%- assign is_def = false -%}{%- if n == 2 -%}{%- assign is_def = true -%}{%- assign default_label = pv.price | money_without_trailing_zeros -%}{%- endif -%}
-        <div class="pack{% if is_def %} is-active{% endif %}" role="radio" aria-checked="{{ is_def }}" tabindex="{% if is_def %}0{% else %}-1{% endif %}" data-n="{{ n }}" data-variant="{{ pv.id }}" data-avail="{{ pv.available }}" data-label="{{ pv.price | money_without_trailing_zeros | escape }}"{% if up != blank and up_v.available %} data-label-up="{{ up_v.price | times: n | plus: pv.price | money_without_trailing_zeros | escape }}"{% endif %} aria-label="{{ p_name | escape }}, {{ pv.title | escape }}, {{ pv.price | money_without_trailing_zeros | escape }}">
+        <div class="pack{% if is_def %} is-active{% endif %}" role="radio" aria-checked="{{ is_def }}" tabindex="{% if is_def %}0{% else %}-1{% endif %}" data-n="{{ n }}" data-variant="{{ pv.id }}" data-avail="{{ pv.available }}"{% if pv.inventory_management == 'shopify' %} data-qty="{{ pv.inventory_quantity }}"{% endif %} data-label="{{ pv.price | money_without_trailing_zeros | escape }}"{% if up != blank and up_v.available %} data-label-up="{{ up_v.price | times: n | plus: pv.price | money_without_trailing_zeros | escape }}"{% endif %} aria-label="{{ p_name | escape }}, {{ pv.title | escape }}, {{ pv.price | money_without_trailing_zeros | escape }}">
           {%- if p_badge != blank -%}<span class="badge">{{ p_badge }}</span>{%- endif -%}
           <span class="radio" aria-hidden="true"></span>
           <span class="thumbs-n" aria-hidden="true">{%- assign pack_img = s.pack_img | default: product.featured_image -%}{% for i in (1..real_qty) %}<span>{% if pack_img %}<img src="{{ pack_img | image_url: width: 120 }}" alt="" width="44" height="44" loading="lazy">{% endif %}</span>{% endfor %}</span>
@@ -267,6 +272,7 @@
       <span>{{ s.upsell_text }}</span>
     </label>
     {%- endif -%}
+    <p class="low" data-low data-max="{{ s.low_max }}" data-text="{{ s.low_text | escape }}" hidden></p>
     <p class="stock" data-stock hidden>Ce pack est épuisé pour le moment.</p>
 
     {%- if s.sold_line != blank -%}<p class="sold"><span>{{ s.sold_line }}</span></p>{%- endif -%}
@@ -361,6 +367,13 @@
     if (stickySel) stickySel.value = active.dataset.n;
     $$('[data-upsell]').forEach(function (u) { u.classList.toggle('is-on', upOn); $('[data-upsell-box]', u).checked = upOn; });
     $('[data-stock]').hidden = ok();
+    var low = $('[data-low]');
+    if (low) {
+      var q = active.dataset.qty === undefined ? NaN : +active.dataset.qty, mx = +low.dataset.max;
+      var show = ok() && q > 0 && q <= mx;
+      low.hidden = !show;
+      if (show) low.textContent = low.dataset.text.replace('{n}', q);
+    }
     atc.disabled = sticky.disabled = !ok();
   }
   function setActive(p, focus) {
@@ -472,6 +485,8 @@
     { "type": "header", "content": "Titre" },
     { "type": "text", "id": "title", "label": "Titre (vide = nom du produit)", "default": "Veilleuse Velin" },
     { "type": "text", "id": "tagline", "label": "Ligne fonctions" },
+    { "type": "range", "id": "low_max", "label": "Stock faible : afficher quand il reste au plus", "min": 1, "max": 30, "step": 1, "default": 10, "info": "Le nombre affiché est le stock réel Shopify de la formule choisie. Rien ne s'affiche au-dessus de ce seuil." },
+    { "type": "text", "id": "low_text", "label": "Texte stock faible", "default": "Plus que {n} en stock", "info": "{n} est remplacé par le stock réel." },
     { "type": "textarea", "id": "subtitle", "label": "Description courte", "default": "Éteignez le plafonnier. Une lueur chaude, 18 couleurs et un fond sonore doux pour que le soir redevienne calme. 🧡" },
     { "type": "header", "content": "Bénéfices (4 puces, vide = masquée)" },
     { "type": "select", "id": "emo_1_icon", "label": "Puce 1 · picto", "default": "moon", "options": [ { "value": "moon", "label": "Lune" }, { "value": "flame", "label": "Flamme" }, { "value": "phone", "label": "Téléphone barré" }, { "value": "heart", "label": "Cœur" } ] },

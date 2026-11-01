@@ -18,7 +18,7 @@
           "type": "ai_gen_block_938a584",
           "name": "Rotating announcement bar",
           "settings": {
-            "message_1": "<p><strong>Black Friday</strong> est là ! Achetez-en 3, la 4e <strong>OFFERTE</strong></p>",
+            "message_1": "<p><strong>Black Friday</strong> est là&nbsp;! Achetez-en 3, la 4e <strong>OFFERTE</strong></p>",
             "promo_title": "",
             "promo_subtitle": "",
             "countdown_end": "",
@@ -26,10 +26,10 @@
             "message_3": "",
             "message_4": "",
             "rotation_interval": 3,
-            "background_color": "#7E440B",
+            "background_color": "#7e440b",
             "text_color": "#f3ece5",
             "link_color": "#f3ece5",
-            "font_size": 13,
+            "font_size": 12,
             "padding": 9
           },
           "blocks": {}

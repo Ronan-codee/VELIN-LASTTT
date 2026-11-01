@@ -69,7 +69,8 @@
           "settings": {
             "author": "Julie.P",
             "stars": 5,
-            "text": "Je l'utilise tous les soirs avant de dormir. L'ambiance lumineuse est magnifique et avec une petite musique relaxante, ça crée une atmosphère vraiment agréable. Je recommande !"
+            "text": "Je l'utilise tous les soirs avant de dormir. L'ambiance lumineuse est magnifique et avec une petite musique relaxante, ça crée une atmosphère vraiment agréable. Je recommande !",
+            "avatar": "shopify://shop_images/Selfie_en_famille_devant_la_tour_Eiffel.png"
           }
         }
       },
@@ -116,10 +117,13 @@
         "upsell_product": "",
         "upsell_text": "+ Coffret cadeau",
         "secure_line": "Livraison offerte · 30 nuits pour l'essayer · Garantie 2 ans",
-        "sold_line": "",
         "track_on": true,
+        "track_1": "Commande validée",
+        "track_2": "Colis expédié",
+        "track_3": "Chez vous",
         "track_ship": 1,
-        "track_deliver": 3
+        "track_deliver": 3,
+        "sold_line": ""
       }
     },
     "usages": {

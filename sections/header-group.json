@@ -18,7 +18,7 @@
           "type": "ai_gen_block_938a584",
           "name": "Rotating announcement bar",
           "settings": {
-            "message_1": "<p>Livraison offerte · Expédiée sous 24 h avec suivi · 30 nuits pour l'essayer</p>",
+            "message_1": "<p><strong>Black Friday</strong> est là ! Achetez-en 3, la 4e <strong>OFFERTE</strong></p>",
             "promo_title": "",
             "promo_subtitle": "",
             "countdown_end": "",

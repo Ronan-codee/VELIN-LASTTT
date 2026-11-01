@@ -209,7 +209,8 @@
     <p class="bt">{{ s.packs_title }}</p>
 {%- comment -%}
       Packs = variantes « 1 veilleuse », « 2 veilleuses », « 3 veilleuses » : le nombre est lu au début du nom de la variante.
-      Prix unitaire = prix de la variante ÷ nombre de veilleuses (arrondi à l'euro) ; économie = prix de « 1 veilleuse » × n − prix de la variante.
+      Prix unitaire = prix de la variante ÷ nombre réel de veilleuses (arrondi à l'euro) ; économie = prix de « 1 veilleuse » × nombre réel − prix de la variante.
+      Le pack « 3 veilleuses » livre 4 lampes (3 + 1 offerte) : nombre réel = 4, la variante reste ajoutée en quantité 1.
     {%- endcomment -%}
     {%- assign base = 0 -%}
     {%- for v in product.variants -%}{%- assign vn = v.title | split: ' ' | first | plus: 0 -%}{%- if vn == 1 -%}{%- assign base = v.price -%}{%- endif -%}{%- endfor -%}
@@ -220,8 +221,9 @@
         {%- assign pv = nil -%}
         {%- for v in product.variants -%}{%- assign vn = v.title | split: ' ' | first | plus: 0 -%}{%- if vn == n -%}{%- assign pv = v -%}{%- break -%}{%- endif -%}{%- endfor -%}
         {%- if pv == nil -%}{%- continue -%}{%- endif -%}
-        {%- assign each = pv.price | times: 1.0 | divided_by: n | divided_by: 100.0 | round | times: 100 -%}
-        {%- assign saving = base | times: n | minus: pv.price -%}
+        {%- assign real_qty = n -%}{%- if n == 3 -%}{%- assign real_qty = 4 -%}{%- endif -%}
+        {%- assign each = pv.price | times: 1.0 | divided_by: real_qty | divided_by: 100.0 | round | times: 100 -%}
+        {%- assign saving = base | times: real_qty | minus: pv.price -%}
         {%- case n -%}
           {%- when 1 -%}{%- assign p_name = s.pack1_name -%}{%- assign p_sub = s.pack1_sub -%}{%- assign p_badge = s.pack1_badge -%}
           {%- when 2 -%}{%- assign p_name = s.pack2_name -%}{%- assign p_sub = s.pack2_sub -%}{%- assign p_badge = s.pack2_badge -%}
@@ -231,7 +233,7 @@
         <div class="pack{% if is_def %} is-active{% endif %}" role="radio" aria-checked="{{ is_def }}" tabindex="{% if is_def %}0{% else %}-1{% endif %}" data-n="{{ n }}" data-variant="{{ pv.id }}" data-avail="{{ pv.available }}" data-label="{{ pv.price | money_without_trailing_zeros | escape }}"{% if up != blank and up_v.available %} data-label-up="{{ up_v.price | times: n | plus: pv.price | money_without_trailing_zeros | escape }}"{% endif %} aria-label="{{ p_name | escape }}, {{ pv.title | escape }}, {{ pv.price | money_without_trailing_zeros | escape }}">
           {%- if p_badge != blank -%}<span class="badge">{{ p_badge }}</span>{%- endif -%}
           <span class="radio" aria-hidden="true"></span>
-          <span class="thumbs-n" aria-hidden="true">{%- assign pack_img = s.pack_img | default: product.featured_image -%}{% for i in (1..n) %}<span>{% if pack_img %}<img src="{{ pack_img | image_url: width: 120 }}" alt="" width="44" height="44" loading="lazy">{% endif %}</span>{% endfor %}</span>
+          <span class="thumbs-n" aria-hidden="true">{%- assign pack_img = s.pack_img | default: product.featured_image -%}{% for i in (1..real_qty) %}<span>{% if pack_img %}<img src="{{ pack_img | image_url: width: 120 }}" alt="" width="44" height="44" loading="lazy">{% endif %}</span>{% endfor %}</span>
           <span class="pid"><b>{{ p_name }}</b>{%- if p_sub != blank -%}<small>{{ p_sub }}</small>{%- endif -%}{%- if saving > 0 -%}<em class="save">Vous économisez {{ saving | money_without_trailing_zeros }}</em>{%- endif -%}</span>
           <span class="pp"><span><b>{{ each | money_without_trailing_zeros }}</b> <small>{{ s.each_label }}</small></span>{%- if saving > 0 -%}<s>{{ base | money_without_trailing_zeros }}</s>{%- endif -%}{%- if n > 1 -%}<span class="tot">soit {{ pv.price | money_without_trailing_zeros }}</span>{%- endif -%}</span>
         </div>
@@ -400,9 +402,9 @@
     { "type": "text", "id": "pack2_name", "label": "Pack 2 · nom", "default": "Deux" },
     { "type": "text", "id": "pack2_sub", "label": "Pack 2 · détail", "default": "Chambre + salle de bain, ou une à offrir" },
     { "type": "text", "id": "pack2_badge", "label": "Pack 2 · badge", "default": "Le plus choisi" },
-    { "type": "text", "id": "pack3_name", "label": "Pack 3 · nom", "default": "Trois" },
+    { "type": "text", "id": "pack3_name", "label": "Pack 3 · nom", "default": "Trois + 1 offerte" },
     { "type": "text", "id": "pack3_sub", "label": "Pack 3 · détail", "default": "Pour toute la maison, ou à offrir" },
-    { "type": "text", "id": "pack3_badge", "label": "Pack 3 · badge (vide = aucun)", "default": "Idéal à offrir" },
+    { "type": "text", "id": "pack3_badge", "label": "Pack 3 · badge (vide = aucun)", "default": "1 offerte" },
     { "type": "header", "content": "Option ajoutée au pack (ex. coffret cadeau)" },
     { "type": "product", "id": "upsell_product", "label": "Produit en option (vide = masqué)", "info": "Ajouté en autant d'exemplaires que de veilleuses du pack, au prix du produit." },
     { "type": "text", "id": "upsell_text", "label": "Texte de l'option", "default": "+ Coffret cadeau" },

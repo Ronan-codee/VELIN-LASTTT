@@ -277,7 +277,7 @@
     <ol class="track" aria-label="Délais de livraison" data-track data-ship="{{ s.track_ship }}" data-deliver="{{ s.track_deliver }}">
       <li><i><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></i><b>{{ s.track_1 }}</b><span data-track-date="0">Aujourd'hui</span></li>
       <li><i><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></i><b>{{ s.track_2 }}</b><span data-track-date="1">sous 24 h</span></li>
-      <li><i><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></i><b>{{ s.track_3 }}</b><span data-track-date="2">72 h ouvrées</span></li>
+      <li><i><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></i><b>{{ s.track_3 }}</b><span data-track-date="2">2 à 4 jours ouvrés</span></li>
     </ol>
     {%- endif -%}
     <div class="pay">{%- for type in shop.enabled_payment_types -%}{{ type | payment_type_svg_tag }}{%- endfor -%}</div>
@@ -424,7 +424,10 @@
     function addOpen(d, n) { var r = d; while (n > 0) { r = plus(r, 1); if (open(r)) n--; } return r; }
     var fmt = new Intl.DateTimeFormat('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' });
     function label(d) { var t = fmt.format(d); return t.charAt(0).toUpperCase() + t.slice(1); }
-    var out = ["Aujourd'hui, " + label(base).toLowerCase(), label(addOpen(base, SHIP)), label(addOpen(base, DELIVER))];
+    var dm = new Intl.DateTimeFormat('fr-FR', { day: 'numeric' }), dmo = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'short' });
+    var d1 = addOpen(base, Math.max(SHIP, DELIVER - 2)), d2 = addOpen(base, DELIVER);
+    var range = d1.getMonth() === d2.getMonth() ? dm.format(d1) + ' – ' + dmo.format(d2) : dmo.format(d1) + ' – ' + dmo.format(d2);
+    var out = ["Aujourd'hui, " + label(base).toLowerCase(), label(addOpen(base, SHIP)), range];
     spans.forEach(function (sp) { sp.textContent = out[+sp.getAttribute('data-track-date')]; });
   })();
 
@@ -470,8 +473,8 @@
     { "type": "text", "id": "emo_4_text", "label": "Puce 4 · texte", "default": "Un cocon dans chaque pièce" },
     { "type": "header", "content": "Engagements (3 lignes, vide = masquée)" },
     { "type": "text", "id": "perk_1", "label": "Ligne bouclier", "default": "Garantie légale de 2 ans" },
-    { "type": "text", "id": "perk_2", "label": "Ligne flèche retour", "default": "30 nuits pour l'essayer, satisfait ou remboursé" },
-    { "type": "text", "id": "perk_3", "label": "Ligne camion", "default": "Expédiée sous 24 h, livrée en 72 h ouvrées" },
+    { "type": "text", "id": "perk_2", "label": "Ligne flèche retour", "default": "30 jours pour l'essayer, satisfait ou remboursé" },
+    { "type": "text", "id": "perk_3", "label": "Ligne camion", "default": "Expédiée sous 24 h, livrée en 2 à 4 jours ouvrés" },
     { "type": "header", "content": "Packs", "info": "Les prix viennent des variantes « Pack » du produit (1 veilleuse, 2 veilleuses, 3 veilleuses)." },
     { "type": "text", "id": "packs_title", "label": "Titre des packs", "default": "Choisissez votre lumière" },
     { "type": "text", "id": "unit_singular", "label": "Unité (singulier)", "default": "veilleuse" },
@@ -491,14 +494,14 @@
     { "type": "product", "id": "upsell_product", "label": "Produit en option (vide = masqué)", "info": "Ajouté en autant d'exemplaires que de veilleuses du pack, au prix du produit." },
     { "type": "text", "id": "upsell_text", "label": "Texte de l'option", "default": "+ Coffret cadeau" },
     { "type": "header", "content": "Sous le bouton" },
-    { "type": "text", "id": "secure_line", "label": "Ligne sous le bouton (vide = masquée)", "default": "Livraison offerte · 30 nuits pour l'essayer · Garantie 2 ans" },
+    { "type": "text", "id": "secure_line", "label": "Ligne sous le bouton (vide = masquée)", "default": "Livraison offerte · 30 jours pour l'essayer · Garantie 2 ans" },
     { "type": "header", "content": "Frise de livraison (sous le bouton)" },
     { "type": "checkbox", "id": "track_on", "label": "Afficher la frise", "default": true },
     { "type": "text", "id": "track_1", "label": "Étape 1", "default": "Commande validée" },
     { "type": "text", "id": "track_2", "label": "Étape 2", "default": "Colis expédié" },
     { "type": "text", "id": "track_3", "label": "Étape 3", "default": "Chez vous" },
     { "type": "range", "id": "track_ship", "label": "Expédition : jours ouvrés après la commande", "min": 0, "max": 5, "step": 1, "default": 1, "info": "1 = expédiée sous 24 h." },
-    { "type": "range", "id": "track_deliver", "label": "Livraison : jours ouvrés après la commande", "min": 1, "max": 10, "step": 1, "default": 3, "info": "3 = livrée en 72 h ouvrées." },
+    { "type": "range", "id": "track_deliver", "label": "Livraison : dernier jour ouvré après la commande", "min": 1, "max": 10, "step": 1, "default": 5, "info": "5 = livrée en 2 à 4 jours ouvrés après l'expédition (1 jour d'expédition) ; la frise affiche la fourchette." },
     { "type": "header", "content": "Sous les packs" },
     { "type": "text", "id": "sold_line", "label": "Pastille de ventes (chiffre réel uniquement, vide = masquée)" }
   ],

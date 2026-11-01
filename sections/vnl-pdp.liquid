@@ -91,6 +91,25 @@
   #vnl-{{ section.id }} .cta{margin-top:14px}
   #vnl-{{ section.id }} .err{margin:8px 0 0;font-size:13px;font-weight:700;color:var(--sale)}
   #vnl-{{ section.id }} .secure{margin-top:12px;text-align:center;font-size:13px;color:var(--muted)}
+  #vnl-{{ section.id }} .track{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:20px}
+  #vnl-{{ section.id }} .track li{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 4px}
+  #vnl-{{ section.id }} .track i{position:relative;z-index:1;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--bg2);color:var(--dark)}
+  #vnl-{{ section.id }} .track li:last-child i{background:var(--dark);color:var(--bg)}
+  #vnl-{{ section.id }} .track li:not(:last-child)::after{content:"";position:absolute;top:16px;left:calc(50% + 24px);right:calc(-50% + 24px);height:2px;background:var(--line)}
+  #vnl-{{ section.id }} .track b{margin-top:8px;font-size:13.5px;font-weight:800;line-height:1.25}
+  #vnl-{{ section.id }} .track span{margin-top:2px;font-size:12.5px;line-height:1.3;color:#6E625A}
+  #vnl-{{ section.id }} .revs{position:relative;margin-top:18px}
+  #vnl-{{ section.id }} .rev-track{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+  #vnl-{{ section.id }} .rev-track::-webkit-scrollbar{display:none}
+  #vnl-{{ section.id }} .rev{flex:0 0 100%;scroll-snap-align:start;padding:16px 18px;border:1px solid var(--line);border-radius:var(--rl);background:var(--bg2)}
+  #vnl-{{ section.id }} .rev-h{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  #vnl-{{ section.id }} .av{display:grid;place-items:center;flex:none;width:40px;height:40px;border-radius:50%;overflow:hidden;background:var(--dark);color:var(--bg);font-weight:800;font-size:16px}
+  #vnl-{{ section.id }} .av img{width:100%;height:100%;object-fit:cover}
+  #vnl-{{ section.id }} .rev-h b{font-size:16px;font-weight:800}
+  #vnl-{{ section.id }} .rs{color:var(--brown);letter-spacing:2px;font-size:15px}
+  #vnl-{{ section.id }} .rev p{margin-top:10px;font-size:14.5px;line-height:1.55}
+  #vnl-{{ section.id }} .rev-nav{display:flex;justify-content:center;gap:8px;margin-top:10px}
+  #vnl-{{ section.id }} .rev-nav button{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--bg2);color:var(--dark)}
   #vnl-{{ section.id }} .pay{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:14px}
   #vnl-{{ section.id }} .pay svg{width:38px;height:24px}
   #vnl-{{ section.id }} .acc{margin-top:22px;border-top:1px solid var(--dark)}
@@ -254,7 +273,35 @@
       <button type="button" class="vnl-btn" data-atc>Ajouter au panier · <span data-atc-price>{{ default_label }}</span></button>
     </div>
     {%- if s.secure_line != blank -%}<p class="secure">{{ s.secure_line }}</p>{%- endif -%}
+    {%- if s.track_on -%}
+    <ol class="track" aria-label="Délais de livraison" data-track data-ship="{{ s.track_ship }}" data-deliver="{{ s.track_deliver }}">
+      <li><i><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></i><b>{{ s.track_1 }}</b><span data-track-date="0">Aujourd'hui</span></li>
+      <li><i><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></i><b>{{ s.track_2 }}</b><span data-track-date="1">sous 24 h</span></li>
+      <li><i><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></i><b>{{ s.track_3 }}</b><span data-track-date="2">72 h ouvrées</span></li>
+    </ol>
+    {%- endif -%}
     <div class="pay">{%- for type in shop.enabled_payment_types -%}{{ type | payment_type_svg_tag }}{%- endfor -%}</div>
+    {%- assign rev_blocks = section.blocks | where: 'type', 'review' -%}
+    {%- if rev_blocks.size > 0 -%}
+    <div class="revs" data-revs>
+      <div class="rev-track" data-rev-track>
+        {%- for b in rev_blocks -%}
+        {%- assign rst = b.settings.stars | default: 5 -%}
+        <article class="rev" {{ b.shopify_attributes }}>
+          <div class="rev-h">
+            <span class="av">{%- if b.settings.avatar != blank -%}{{ b.settings.avatar | image_url: width: 120 | image_tag: loading: 'lazy', width: 40, height: 40, alt: '' }}{%- else -%}{{ b.settings.author | slice: 0, 1 }}{%- endif -%}</span>
+            <b>{{ b.settings.author }}</b>
+            <span class="rs" role="img" aria-label="{{ rst }} sur 5">{{ '★★★★★' | slice: 0, rst }}{{ '☆☆☆☆☆' | slice: 0, 5 | slice: rst, 5 }}</span>
+          </div>
+          <p>{{ b.settings.text }}</p>
+        </article>
+        {%- endfor -%}
+      </div>
+      {%- if rev_blocks.size > 1 -%}
+      <div class="rev-nav"><button type="button" data-rev-prev aria-label="Avis précédent"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><button type="button" data-rev-next aria-label="Avis suivant"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button></div>
+      {%- endif -%}
+    </div>
+    {%- endif -%}
 
     <div class="acc">
       {%- for b in info_blocks -%}
@@ -355,6 +402,41 @@
   atc.addEventListener('click', function () { add(atc); });
   sticky.addEventListener('click', function () { add(sticky); });
 
+  /* Frise de livraison : dates réelles, heure de Paris, jours ouvrés (fériés exclus), recalculées à chaque visite */
+  (function () {
+    var tr = $('[data-track]'); if (!tr) return;
+    var SHIP = +tr.dataset.ship, DELIVER = +tr.dataset.deliver, spans = $$('[data-track-date]', tr);
+    var now = new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Paris' }));
+    var base = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    function plus(d, n) { var r = new Date(d); r.setDate(r.getDate() + n); return r; }
+    function easter(y) {
+      var a = y % 19, b = Math.floor(y / 100), c = y % 100, d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25), g = Math.floor((b - f + 1) / 3),
+        h = (19 * a + b - d - g + 15) % 30, i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7, m = Math.floor((a + 11 * h + 22 * l) / 451),
+        mo = Math.floor((h + l - 7 * m + 114) / 31), da = (h + l - 7 * m + 114) % 31 + 1;
+      return new Date(y, mo - 1, da);
+    }
+    function holiday(d) {
+      if (['0-1', '4-1', '4-8', '6-14', '7-15', '10-1', '10-11', '11-25'].indexOf(d.getMonth() + '-' + d.getDate()) > -1) return true;
+      var e = easter(d.getFullYear());
+      return [1, 39, 50].some(function (n) { var x = plus(e, n); return x.getMonth() === d.getMonth() && x.getDate() === d.getDate(); });
+    }
+    function open(d) { var w = d.getDay(); return w !== 0 && w !== 6 && !holiday(d); }
+    function addOpen(d, n) { var r = d; while (n > 0) { r = plus(r, 1); if (open(r)) n--; } return r; }
+    var fmt = new Intl.DateTimeFormat('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' });
+    function label(d) { var t = fmt.format(d); return t.charAt(0).toUpperCase() + t.slice(1); }
+    var out = ["Aujourd'hui, " + label(base).toLowerCase(), label(addOpen(base, SHIP)), label(addOpen(base, DELIVER))];
+    spans.forEach(function (sp) { sp.textContent = out[+sp.getAttribute('data-track-date')]; });
+  })();
+
+  /* Avis : défilement et flèches quand il y en a plusieurs */
+  (function () {
+    var tk = $('[data-rev-track]'); if (!tk) return;
+    var prev = $('[data-rev-prev]'), next = $('[data-rev-next]');
+    function step(dir) { tk.scrollBy({ left: dir * tk.clientWidth, behavior: 'smooth' }); }
+    if (prev) prev.addEventListener('click', function () { step(-1); });
+    if (next) next.addEventListener('click', function () { step(1); });
+  })();
+
   /* Barre collante : visible une fois le bouton d'ajout dépassé */
   var st = $('[data-sticky]');
   if ('IntersectionObserver' in window) {
@@ -389,7 +471,7 @@
     { "type": "header", "content": "Engagements (3 lignes, vide = masquée)" },
     { "type": "text", "id": "perk_1", "label": "Ligne bouclier", "default": "Garantie légale de 2 ans" },
     { "type": "text", "id": "perk_2", "label": "Ligne flèche retour", "default": "30 nuits pour l'essayer, satisfait ou remboursé" },
-    { "type": "text", "id": "perk_3", "label": "Ligne camion", "default": "Expédiée sous 24 h, livrée en 5 à 9 jours ouvrés" },
+    { "type": "text", "id": "perk_3", "label": "Ligne camion", "default": "Expédiée sous 24 h, livrée en 72 h ouvrées" },
     { "type": "header", "content": "Packs", "info": "Les prix viennent des variantes « Pack » du produit (1 veilleuse, 2 veilleuses, 3 veilleuses)." },
     { "type": "text", "id": "packs_title", "label": "Titre des packs", "default": "Choisissez votre lumière" },
     { "type": "text", "id": "unit_singular", "label": "Unité (singulier)", "default": "veilleuse" },
@@ -410,12 +492,25 @@
     { "type": "text", "id": "upsell_text", "label": "Texte de l'option", "default": "+ Coffret cadeau" },
     { "type": "header", "content": "Sous le bouton" },
     { "type": "text", "id": "secure_line", "label": "Ligne sous le bouton (vide = masquée)", "default": "Livraison offerte · 30 nuits pour l'essayer · Garantie 2 ans" },
+    { "type": "header", "content": "Frise de livraison (sous le bouton)" },
+    { "type": "checkbox", "id": "track_on", "label": "Afficher la frise", "default": true },
+    { "type": "text", "id": "track_1", "label": "Étape 1", "default": "Commande validée" },
+    { "type": "text", "id": "track_2", "label": "Étape 2", "default": "Colis expédié" },
+    { "type": "text", "id": "track_3", "label": "Étape 3", "default": "Chez vous" },
+    { "type": "range", "id": "track_ship", "label": "Expédition : jours ouvrés après la commande", "min": 0, "max": 5, "step": 1, "default": 1, "info": "1 = expédiée sous 24 h." },
+    { "type": "range", "id": "track_deliver", "label": "Livraison : jours ouvrés après la commande", "min": 1, "max": 10, "step": 1, "default": 3, "info": "3 = livrée en 72 h ouvrées." },
     { "type": "header", "content": "Sous les packs" },
     { "type": "text", "id": "sold_line", "label": "Pastille de ventes (chiffre réel uniquement, vide = masquée)" }
   ],
   "blocks": [
     { "type": "@app" },
     { "type": "slide", "name": "Image de galerie", "settings": [ { "type": "image_picker", "id": "image", "label": "Image (1:1)" } ] },
+    { "type": "review", "name": "Avis client", "settings": [
+      { "type": "text", "id": "author", "label": "Prénom (ex. Julie.P)", "default": "Prénom.N" },
+      { "type": "range", "id": "stars", "label": "Étoiles", "min": 1, "max": 5, "step": 1, "default": 5 },
+      { "type": "textarea", "id": "text", "label": "Avis (client réel uniquement)", "default": "Avis de votre client." },
+      { "type": "image_picker", "id": "avatar", "label": "Photo (carrée, facultatif)" }
+    ] },
     { "type": "clip", "name": "Vidéo courte", "settings": [ { "type": "video", "id": "video", "label": "Vidéo 9:16, sans son, en boucle" } ] },
     { "type": "info", "name": "Accordéon", "settings": [
       { "type": "text", "id": "title", "label": "Titre" },

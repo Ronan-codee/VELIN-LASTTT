@@ -61,7 +61,15 @@
           "type": "info",
           "settings": {
             "title": "Livraison et retours",
-            "text": "<p>Expédiée sous 24 h ouvrées, livrée en 5 à 9 jours ouvrés. Numéro de suivi envoyé par e-mail dès l'expédition.</p><p>30 nuits pour l'essayer : si elle ne vous convient pas, écrivez-nous et nous vous remboursons. Garantie légale de conformité de 2 ans.</p>"
+            "text": "<p>Expédiée sous 24 h ouvrées, livrée en 72 h ouvrées. Numéro de suivi envoyé par e-mail dès l'expédition.</p><p>30 nuits pour l'essayer : si elle ne vous convient pas, écrivez-nous et nous vous remboursons. Garantie légale de conformité de 2 ans.</p>"
+          }
+        },
+        "review_1": {
+          "type": "review",
+          "settings": {
+            "author": "Julie.P",
+            "stars": 5,
+            "text": "Je l'utilise tous les soirs avant de dormir. L'ambiance lumineuse est magnifique et avec une petite musique relaxante, ça crée une atmosphère vraiment agréable. Je recommande !"
           }
         }
       },
@@ -73,7 +81,8 @@
         "info_2",
         "info_3",
         "info_4",
-        "info_5"
+        "info_5",
+        "review_1"
       ],
       "settings": {
         "hero_bg": "#f3ece5",
@@ -107,7 +116,10 @@
         "upsell_product": "",
         "upsell_text": "+ Coffret cadeau",
         "secure_line": "Livraison offerte · 30 nuits pour l'essayer · Garantie 2 ans",
-        "sold_line": ""
+        "sold_line": "",
+        "track_on": true,
+        "track_ship": 1,
+        "track_deliver": 3
       }
     },
     "usages": {
@@ -449,7 +461,7 @@
           "type": "faq",
           "settings": {
             "q": "Quand vais-je recevoir ma commande ?",
-            "a": "Expédiée sous 24 h ouvrées, livrée en 5 à 9 jours ouvrés. Vous recevez le numéro de suivi par e-mail."
+            "a": "Expédiée sous 24 h ouvrées, livrée en 72 h ouvrées. Vous recevez le numéro de suivi par e-mail."
           }
         },
         "faq_10": {

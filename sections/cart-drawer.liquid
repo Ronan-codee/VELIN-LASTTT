@@ -165,6 +165,15 @@
                     </span>
                   {% endif %}
                 </div>
+                {%- if item.product.template_suffix == 'veilleuse' and item.quantity >= 4 -%}
+                  {%- assign cd_free_n = item.quantity | divided_by: 4 -%}
+                  {%- assign cd_free_full = cd_free_n | times: 4 -%}
+                  {%- assign cd_free_save = item.original_line_price | minus: item.final_line_price -%}
+                  <p class="cart-drawer__veil-free">
+                    <span>🎁 {% if item.quantity == cd_free_full %}{{ item.quantity | minus: cd_free_n }} + {{ cd_free_n }} offerte{% if cd_free_n > 1 %}s{% endif %}{% else %}Offre 3 + 1 offerte appliquée{% endif %}</span>
+                    {%- if cd_free_save > 0 -%}<b>−{{ cd_free_save | money }}</b>{%- endif -%}
+                  </p>
+                {%- endif -%}
               </div>
             </li>
           {%- endcapture -%}
@@ -258,6 +267,10 @@
 </div>
 
 {% render 'cart-drawer-css' %}
+<style>
+  .cart-drawer__veil-free{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 0 0;padding:9px 12px;border-radius:10px;background:#8C4404;color:#F3ECE5;font-family:'Nunito Sans',sans-serif;font-size:14px;font-weight:800;line-height:1.2}
+  .cart-drawer__veil-free b{font-weight:800;white-space:nowrap}
+</style>
 {%- if cd_veil_only -%}{% render 'vnl-cart-veil' %}{%- endif -%}
 
 {% render 'cart-drawer-js' %}

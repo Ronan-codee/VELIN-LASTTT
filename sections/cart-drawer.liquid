@@ -238,10 +238,13 @@
           <span>{{ cart.total_price | money }}</span>
         </div>
         {%- if cd_pillow_mode -%}
-          <p class="cart-drawer__delivery cart-drawer__delivery--pillow">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7Z" stroke="currentColor" stroke-width="1.6"/><path d="M14 10h3.3a1 1 0 0 1 .8.4l2.4 3.2a1 1 0 0 1 .2.6V16a1 1 0 0 1-1 1H14v-7Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="7" cy="18" r="1.6" stroke="currentColor" stroke-width="1.6"/><circle cx="17.5" cy="18" r="1.6" stroke="currentColor" stroke-width="1.6"/></svg>
-            <span>{{ cd_s.pillow_ship }}</span>
-          </p>
+          {%- assign cd_ship_parts = cd_s.pillow_ship | split: ', ' -%}
+          <div class="cart-drawer__delivery cart-drawer__delivery--pillow cart-drawer__delivery--rows">
+            <p><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg><span>{{ cd_ship_parts[0] | capitalize }}</span></p>
+            {%- if cd_ship_parts.size > 1 -%}
+            <p><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg><span>{{ cd_ship_parts[1] | capitalize }}</span></p>
+            {%- endif -%}
+          </div>
           {%- if cd_s.klarna_on -%}
             <p class="cart-drawer__klarna">ou <strong>3 ×</strong> {{ cart.total_price | divided_by: 3.0 | round | money }} sans frais avec <em>Klarna</em></p>
           {%- endif -%}
@@ -270,6 +273,9 @@
 <style>
   .cart-drawer__veil-free{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 0 0;padding:9px 12px;border-radius:10px;background:#8C4404;color:#F3ECE5;font-family:'Nunito Sans',sans-serif;font-size:14px;font-weight:800;line-height:1.2}
   .cart-drawer__veil-free b{font-weight:800;white-space:nowrap}
+  .cart-drawer__delivery--rows{display:grid!important;justify-content:center!important;gap:6px;margin:2px auto 0;width:fit-content}
+  .cart-drawer__delivery--rows p{display:flex;align-items:center;gap:10px;margin:0;text-align:left;line-height:1.3}
+  .cart-drawer__delivery--rows svg{flex:none;width:20px;height:20px}
 </style>
 {%- if cd_veil_only -%}{% render 'vnl-cart-veil' %}{%- endif -%}
 

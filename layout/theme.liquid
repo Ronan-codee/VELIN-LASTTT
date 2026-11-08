@@ -7,9 +7,10 @@
       doesn't allow a URL redirect targeting "/" (root), so this redirects
       client-side as early as possible in <head>, before render.
     {%- endcomment -%}
-    {%- if request.page_type == 'index' -%}
-      <meta http-equiv="refresh" content="0; url={{ all_products['velin-housse-de-couette-2-en-1'].url }}">
-      <script>window.location.replace("{{ all_products['velin-housse-de-couette-2-en-1'].url }}");</script>
+    {%- assign redirect_product = all_products['veilleuse-velin'] -%}
+    {%- if request.page_type == 'index' and redirect_product != blank and redirect_product.url != blank -%}
+      <meta http-equiv="refresh" content="0; url={{ redirect_product.url }}">
+      <script>window.location.replace("{{ redirect_product.url }}");</script>
     {%- endif -%}
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="{{ settings.color_background }}">

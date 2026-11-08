@@ -64,7 +64,8 @@
         "show_more_options": "⭐️⭐️⭐️⭐️⭐️ 4,8/5 | 175 avis | Retour gratuit"
       },
       "delivery_options": {
-        "pickup_point": "Livraison en locker"
+        "pickup_point": "Livraison en locker",
+        "ship": "Livraison à domicile"
       }
     }
   }

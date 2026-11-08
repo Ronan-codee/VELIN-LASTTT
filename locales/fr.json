@@ -57,5 +57,12 @@
       "quantity": "Quantité",
       "total": "Total"
     }
+  },
+  "shopify": {
+    "checkout": {
+      "alternative_payment_method_banner": {
+        "show_more_options": "⭐️⭐️⭐️⭐️⭐️ 4,8/5 | 175 avis | Retour gratuit"
+      }
+    }
   }
 }

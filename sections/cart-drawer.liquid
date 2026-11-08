@@ -277,7 +277,8 @@
   .cart-drawer__delivery--rows p{display:flex;align-items:center;gap:10px;margin:0;text-align:left;line-height:1.3}
   .cart-drawer__delivery--rows svg{flex:none;width:20px;height:20px}
 </style>
-{%- if cd_veil_only -%}{% render 'vnl-cart-veil' %}{%- endif -%}
+{%- comment -%} Toujours rendu : le script du panier ne remplace que le bloc du tiroir, pas ces styles, qui doivent donc déjà être dans la page (panier vide au chargement). Toutes les règles sont limitées à .cart-drawer--veil. {%- endcomment -%}
+{% render 'vnl-cart-veil' %}
 
 {% render 'cart-drawer-js' %}
 

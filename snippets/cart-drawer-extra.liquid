@@ -90,7 +90,7 @@
       fetch('/cart/add.js', { method: 'POST', body: new FormData(f), headers: { 'Accept': 'application/json' } });
     });
     if (CART_RE.test(location.pathname)) {
-      location.replace('/products/oreiller-enfant-velin?cart=open');
+      location.replace('/products/veilleuse-velin?cart=open');
     } else if (/[?&]cart=open\b/.test(location.search)) {
       history.replaceState(null, '', location.pathname);
       window.addEventListener('load', openDrawer);

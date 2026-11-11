@@ -9,8 +9,9 @@
     {%- endcomment -%}
     {%- assign redirect_product = all_products['veilleuse-velin'] -%}
     {%- if request.page_type == 'index' and redirect_product != blank and redirect_product.url != blank -%}
-      <meta http-equiv="refresh" content="0; url={{ redirect_product.url }}">
-      <script>window.location.replace("{{ redirect_product.url }}");</script>
+      {%- comment -%} Le script garde les paramètres UTM de l'adresse (?utm_source=…) ; la balise noscript sert de secours sans JavaScript. {%- endcomment -%}
+      <script>window.location.replace("{{ redirect_product.url }}" + window.location.search);</script>
+      <noscript><meta http-equiv="refresh" content="0; url={{ redirect_product.url }}"></noscript>
     {%- endif -%}
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {%- comment -%} Seule la veilleuse doit apparaître sur Google : les anciens produits et collections restent accessibles par lien direct mais demandent à ne plus être indexés. {%- endcomment -%}

@@ -13,6 +13,12 @@
       <script>window.location.replace("{{ redirect_product.url }}");</script>
     {%- endif -%}
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    {%- comment -%} Seule la veilleuse doit apparaître sur Google : les anciens produits et collections restent accessibles par lien direct mais demandent à ne plus être indexés. {%- endcomment -%}
+    {%- if request.page_type == 'product' and product.handle != 'veilleuse-velin' -%}
+      <meta name="robots" content="noindex, follow">
+    {%- elsif request.page_type == 'collection' and collection.handle != 'nos-produits' -%}
+      <meta name="robots" content="noindex, follow">
+    {%- endif -%}
     <meta name="theme-color" content="{{ settings.color_background }}">
     <link rel="canonical" href="{{ canonical_url }}">
 

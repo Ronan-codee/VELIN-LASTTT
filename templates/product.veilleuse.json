@@ -15,13 +15,13 @@
         "clip_1": {
           "type": "clip",
           "settings": {
-            "video": "shopify://files/videos/4-violet-bureau-texte.mp4"
+            "video": "shopify://files/videos/chambre_CH5_v2.mp4"
           }
         },
         "clip_WiT94F": {
           "type": "clip",
           "settings": {
-            "video": "shopify://files/videos/2-rouge-bain-texte.mp4"
+            "video": "shopify://files/videos/rouge_R3_v2.mp4"
           }
         },
         "clip_2": {
@@ -89,6 +89,8 @@
         "hero_bg": "#f3ece5",
         "title": "Veilleuse Velin",
         "tagline": "",
+        "low_max": 10,
+        "low_text": "Plus que {n} en stock",
         "subtitle": "Éteignez le plafonnier. Une lueur chaude, 18 couleurs et un fond sonore doux pour que le soir redevienne calme. 🧡",
         "emo_1_icon": "moon",
         "emo_1_text": "Un moment rien qu’à vous",
@@ -105,6 +107,8 @@
         "unit_singular": "veilleuse",
         "unit_plural": "veilleuses",
         "each_label": "/ unité",
+        "pack2_total": "110",
+        "pack3_total": "177",
         "pack1_name": "Une",
         "pack1_sub": "Pour votre chambre",
         "pack1_badge": "",
@@ -518,7 +522,7 @@
           "settings": {
             "air_blockreviews_summaryHeading": "Reviews",
             "air_blockreviews_layout": "list",
-            "air_blockreviews_singleStarColor": "#16A086",
+            "air_blockreviews_singleStarColor": "#16a086",
             "air_blockreviews_primaryColor": "#121212"
           }
         }

@@ -27,13 +27,13 @@
         "clip_2": {
           "type": "clip",
           "settings": {
-            "video": "shopify://files/videos/3-bleu-douche-texte.mp4"
+            "video": "shopify://files/videos/violet_chambre-cocon_site_v1.mp4"
           }
         },
         "clip_3": {
           "type": "clip",
           "settings": {
-            "video": "shopify://files/videos/1-ambre-chambre-texte.mp4"
+            "video": "shopify://files/videos/bleu_douche-aquarium_site_v1.mp4"
           }
         },
         "info_2": {
